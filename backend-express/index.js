@@ -31,7 +31,7 @@ mongoConnect();
 // })
 
 // setting up cors
-const allowedOrigins = ["http://localhost:5173", "http://192.168.1.34:5173", "https://securevault.pages.dev/"]
+const allowedOrigins = ["http://localhost:5173", "http://192.168.1.34:5173", "https://securevault.pages.dev"]
 const corsOptions = {
     origin: allowedOrigins,
     credentials: true,
