@@ -6,7 +6,7 @@ const SecretKey = process.env.SECRET_KEY;
 
 const userLogin = async (req, res) => {
     try {
-        const user = await Users.findOne({ email: req.body.email.toString() });
+        const user = await Users.findOne({ email: req.body.email });
 
         if (!user) {
             return res.status(401).json({ message: "User Not Found!!" });
@@ -43,7 +43,7 @@ const userLogin = async (req, res) => {
 
 const userRegister = async (req, res) => {
     try {
-        if (await Users.findOne({ email: req.body.email.toString() })) {
+        if (await Users.findOne({ email: req.body.email })) {
             return res.status(409).json({ message: "Email Already Exist!!" });
         }
         const user = new Users({
