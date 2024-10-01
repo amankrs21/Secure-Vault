@@ -6,7 +6,7 @@ const SecretKey = process.env.SECRET_KEY;
 
 const userLogin = async (req, res) => {
     try {
-        const user = await Users.findOne({ email: req.body.email });
+        const user = await Users.findOne({ email: req.body.email.toString() });
 
         if (!user) {
             return res.status(401).json({ message: "User Not Found!!" });
@@ -43,7 +43,7 @@ const userLogin = async (req, res) => {
 
 const userRegister = async (req, res) => {
     try {
-        if (await Users.findOne({ email: req.body.email })) {
+        if (await Users.findOne({ email: req.body.email.toString() })) {
             return res.status(409).json({ message: "Email Already Exist!!" });
         }
         const user = new Users({
@@ -64,8 +64,9 @@ const userRegister = async (req, res) => {
 }
 
 const getAllUsers = async (req, res) => {
-    const users = Users.find({}).then((e) => {
-        return res.status(200).json(e);
+    const users = Users.find();
+    await users.then((e) => {
+        return res.status(200).json({ users: e });
     }).catch((e) => {
         console.error(e);
         return res.status(500).json({ message: "Something went wrong!!" })
