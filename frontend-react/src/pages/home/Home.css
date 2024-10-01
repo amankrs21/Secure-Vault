@@ -1,0 +1,31 @@
+.home-main {
+    width: 100%;
+    padding-top: 10px;
+
+    a {
+        text-decoration: none;
+        font-weight: bold !important;
+        color: #1976d2 !important;
+    }
+}
+
+.home-card {
+    width: auto;
+    height: auto;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f2f2f2;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+}
+
+.home-card:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.8);
+    transform: scale(1.03);
+    transition: all 0.5s ease;
+}
+
+.home-image {
+    width: 300px;
+    height: 300px;
+}
