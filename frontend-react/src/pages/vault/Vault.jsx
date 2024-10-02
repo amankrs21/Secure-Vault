@@ -9,9 +9,11 @@ import SearchIcon from '@mui/icons-material/Search';
 import AuthUser from '../../components/AuthUser';
 import PopupPin from './PopupPin';
 import AddVault from './AddVault';
+import { useLoading } from '../../components/loading/useLoading';
 
 export default function Vault() {
     const { http } = AuthUser();
+    const { setLoading } = useLoading();
     const [openPin, setOpenPin] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);
     const [vaultData, setVaultData] = useState([]);
@@ -19,26 +21,35 @@ export default function Vault() {
     const firstLogin = localStorage.getItem('authData') ? JSON.parse(localStorage.getItem('authData')).user.firstLogin : false;
 
     const handleFetch = async (key) => {
-        try {
-            const response = await http.post('/passwords', { key });
-            if (response.data.length == 0) {
-                localStorage.removeItem('SecurityPin');
-                return
-            }
-            setVaultData(response.data);
-            toast.success('Data fetched successfully!');
-        } catch (error) {
-            if (error.response && error.response.status === 400) {
-                toast.error("Invalid Security Pin!");
-                setOpenPin(true);
-            } else {
-                toast.error("Something went wrong!");
-                console.error(error);
+        setLoading(true);
+        const localVault = localStorage.getItem("localVault");
+        if (localVault) {
+            setVaultData(JSON.parse(localVault));
+        } else {
+            try {
+                const response = await http.post('/passwords', { key });
+                if (response.data.length == 0) {
+                    localStorage.removeItem('SecurityPin');
+                    return
+                }
+                setVaultData(response.data);
+                toast.success('Data fetched successfully!');
+                localStorage.setItem("localVault", JSON.stringify(response.data));
+            } catch (error) {
+                if (error.response && error.response.status === 400) {
+                    toast.error("Invalid Security Pin!");
+                    setOpenPin(true);
+                } else {
+                    toast.error("Something went wrong!");
+                    console.error(error);
+                }
             }
         }
+        setLoading(false);
     }
 
     const handleAdd = async (data) => {
+        setLoading(true);
         try {
             const response = await http.post('/password/add', data);
             toast.success(response.data.message);
@@ -46,7 +57,8 @@ export default function Vault() {
             authData.user.firstLogin = false;
             localStorage.setItem('authData', JSON.stringify(authData));
             localStorage.setItem('SecurityPin', data.key);
-            setVaultData([...vaultData, response.data.password]);
+            localStorage.removeItem("localVault");
+            handleFetch();
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 400) {
@@ -55,6 +67,7 @@ export default function Vault() {
             }
             toast.error('Something went wrong!');
         }
+        setLoading(true);
     }
 
     useEffect(() => {

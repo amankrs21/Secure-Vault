@@ -30,8 +30,13 @@ mongoConnect();
 //     next()
 // })
 
+
 // setting up cors
-const allowedOrigins = ["http://localhost:5173", "http://192.168.1.34:5173", "https://securevault.pages.dev"]
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://192.168.1.36:5173",
+    "https://securevault.pages.dev"
+]
 const corsOptions = {
     origin: allowedOrigins,
     credentials: true,
@@ -51,5 +56,5 @@ app.use("/api", router);
 
 // setting up the server for production
 app.listen(port, () => {
-    console.log(`Server running at => http://localhost:${port}/`);
+    console.log(`Server started on the PORT - ${port}/`);
 });
