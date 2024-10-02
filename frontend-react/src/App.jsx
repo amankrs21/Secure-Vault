@@ -10,24 +10,29 @@ import Home from "./pages/home/Home";
 import Vault from "./pages/vault/Vault";
 import Notes from "./pages/notes/Notes";
 import Connect from "./pages/connect/Connect";
+import { LoadingProvider } from "./components/loading/LoadingContext";
+import Loading from "./components/loading/Loading";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <LoadingProvider>
+      <Loading />
       <ToastContainer theme="colored" draggable={false} hideProgressBar={true} position="bottom-right" />
-      <Routes>
-        <Route path='/' element={<Navigate to='/login' />} />
-        <Route path='*' element={<Navigate to='/404' />} />
-        <Route path='/login' element={<Login />} />
-        <Route path="/404" element={<PageNotFound />} />
-        <Route path="/503" element={<ServerUnavl />} />
-        <Route path="/" element={<PrivateRoutes />}>
-          <Route path='/home' element={<Home />} />
-          <Route path='/vault' element={<Vault />} />
-          <Route path='/notes' element={<Notes />} />
-          <Route path='/connect' element={<Connect />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Navigate to='/login' />} />
+          <Route path='*' element={<Navigate to='/404' />} />
+          <Route path='/login' element={<Login />} />
+          <Route path="/404" element={<PageNotFound />} />
+          <Route path="/503" element={<ServerUnavl />} />
+          <Route path="/" element={<PrivateRoutes />}>
+            <Route path='/home' element={<Home />} />
+            <Route path='/vault' element={<Vault />} />
+            <Route path='/notes' element={<Notes />} />
+            <Route path='/connect' element={<Connect />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </LoadingProvider>
   )
 }

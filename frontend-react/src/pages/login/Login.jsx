@@ -8,9 +8,11 @@ import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import AuthUser from '../../components/AuthUser';
+import { useLoading } from '../../components/loading/useLoading';
 
 export default function Login() {
     const navigate = useNavigate();
+    const { setLoading } = useLoading();
     const { http, setToken } = AuthUser();
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
@@ -47,6 +49,7 @@ export default function Login() {
         setErrors(tempErrors);
 
         if (Object.keys(tempErrors).length === 0) {
+            setLoading(true);
             try {
                 const response = await http.post('/auth/login', formData);
                 setToken(response.data.token, response.data.user);
@@ -60,6 +63,7 @@ export default function Login() {
                 let errorMessage = error.response?.data?.message || "An error occurred during login. Please try again.";
                 toast.error(errorMessage);
             }
+            setLoading(false);
         }
     };
 
