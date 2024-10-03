@@ -13,12 +13,14 @@ import HomeIcon from '@mui/icons-material/Home';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import DescriptionIcon from '@mui/icons-material/Description';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
+import LogoutPop from './LogoutPop';
 
 
 export default function Header() {
     const navigate = useNavigate();
     const location = useLocation();
     const [open, setOpen] = useState(false);
+    const [openLogout, setOpenLogout] = useState(false);
 
     const toggleDrawer = (page) => {
         setOpen(!open);
@@ -32,6 +34,7 @@ export default function Header() {
 
     return (
         <AppBar position="fixed">
+            {openLogout && <LogoutPop openLogout={openLogout} setOpenLogout={setOpenLogout} />}
             <Container maxWidth="lg">
                 <Toolbar disableGutters>
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' } }} />
@@ -72,7 +75,7 @@ export default function Header() {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Logout User!!">
                             <Button variant="contained" color="warning" className='logout-button' sx={{ minWidth: '40px', padding: '8px' }}
-                                onClick={() => localStorage.clear()}>
+                                onClick={() => setOpenLogout(true)}>
                                 <LogoutIcon fontSize='small' />
                             </Button>
                         </Tooltip>

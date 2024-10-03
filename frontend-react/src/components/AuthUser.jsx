@@ -6,7 +6,7 @@ import { Navigate } from "react-router-dom";
 
 // Axios instance with default configurations
 const http = axios.create({
-    // baseURL: "http://192.168.1.36:3000/api/",
+    // baseURL: "http://192.168.1.34:3000/api/",
     baseURL: "https://security-vault.onrender.com/api/",
     headers: {
         "Content-Type": "application/json",
