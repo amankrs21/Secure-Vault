@@ -5,8 +5,13 @@ const UserVault = require('../Models/Password.js');
 const SecretKey = process.env.SECRET_KEY;
 
 const userLogin = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json({ message: "All Fields are required!!" });
+    }
     try {
-        const user = await Users.findOne({ email: req.body.email });
+        email = email.toLowerCase();
+        const user = await Users.findOne({ email: email });
 
         if (!user) {
             return res.status(401).json({ message: "User Not Found!!" });

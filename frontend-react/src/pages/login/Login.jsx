@@ -1,10 +1,13 @@
 import './Login.css';
 import { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
+import { Box, IconButton, InputAdornment } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { Avatar, Typography, TextField, Button } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import LoginIcon from '@mui/icons-material/Login';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import AuthUser from '../../components/AuthUser';
@@ -14,6 +17,7 @@ export default function Login() {
     const navigate = useNavigate();
     const { setLoading } = useLoading();
     const { http, setToken } = AuthUser();
+    const [show, setShow] = useState(false);
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
         email: '',
@@ -88,9 +92,9 @@ export default function Login() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+                    <Box component="form" onSubmit={handleSubmit}>
                         <TextField
-                            sx={{ mb: 2 }}
+                            sx={{ my: 2 }}
                             fullWidth
                             autoFocus
                             name="email"
@@ -102,13 +106,24 @@ export default function Login() {
                         />
                         <TextField
                             fullWidth
-                            type="password"
                             name="password"
                             label="Password"
+                            type={show ? 'text' : 'password'}
                             value={formData.password}
                             onChange={handleChange}
                             error={!!errors.password}
                             helperText={errors.password}
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={() => setShow(!show)} edge="end">
+                                                {show ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }
+                            }}
                         />
                         <Grid mt={1}>
                             <Typography variant="body2" className="login-forget">
@@ -119,13 +134,13 @@ export default function Login() {
                             fullWidth
                             type='submit'
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{ mt: 3, mb: 6 }}
                         >
-                            Sign In
+                            Sign In &nbsp; <LoginIcon />
                         </Button>
 
-                        <Grid className="login-register" mb={5}>
-                            <Button variant="text">
+                        <Grid sx={{ textAlign: "center" }}>
+                            <Button variant="text" onClick={() => navigate("/register")}>
                                 Don&apos;t have an account? Sign Up
                             </Button>
                         </Grid>
