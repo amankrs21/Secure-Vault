@@ -24,15 +24,17 @@ if (!process.env.MONGO_URI || !process.env.SECRET_KEY || !process.env.PASSWORD_K
 mongoConnect();
 
 
-// // Middleware to log all the requests
-// app.use((req, res, next) => {
-//     console.log(`${Date().slice(0, 24)} => (${req.method}) http://${req.ip.slice(7)}${req.url}`);
-//     next()
-// })
+// Middleware to log all the requests
+app.use((req, res, next) => {
+    console.log(`${Date().slice(0, 24)} => (${req.method}) http://${req.ip.slice(7)}${req.url}`);
+    next()
+})
 
 
 // setting up cors
 const allowedOrigins = [
+    "http://localhost:5173",
+    "http://192.168.1.34:5173",
     "https://securevault.pages.dev"
 ]
 const corsOptions = {
@@ -46,13 +48,13 @@ app.use(cors(corsOptions))
 app.use("/api", router);
 
 
-// // setting up the server locally run
-// app.listen(port, '0.0.0.0', () => {
+// setting up the server locally run
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running at => http://localhost:${port}/`);
+});
+
+
+// // setting up the server for production
+// app.listen(port, () => {
 //     console.log(`Server running at => http://localhost:${port}/`);
 // });
-
-
-// setting up the server for production
-app.listen(port, () => {
-    console.log(`Server started on the PORT - ${port}/`);
-});

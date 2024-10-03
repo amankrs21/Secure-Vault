@@ -12,6 +12,7 @@ import Notes from "./pages/notes/Notes";
 import Connect from "./pages/connect/Connect";
 import { LoadingProvider } from "./components/loading/LoadingContext";
 import Loading from "./components/loading/Loading";
+import Register from "./pages/register/Register";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path='/' element={<Navigate to='/login' />} />
           <Route path='*' element={<Navigate to='/404' />} />
           <Route path='/login' element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/404" element={<PageNotFound />} />
           <Route path="/503" element={<ServerUnavl />} />
           <Route path="/" element={<PrivateRoutes />}>

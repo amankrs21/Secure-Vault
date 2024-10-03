@@ -42,19 +42,23 @@ const userLogin = async (req, res) => {
 
 
 const userRegister = async (req, res) => {
+    const { name, email, dob, answer, password } = req.body;
+    if (!name || !email || !dob || !answer || !password) {
+        return res.status(400).json({ message: "All Fields are required!!" });
+    }
     try {
         if (await Users.findOne({ email: req.body.email })) {
             return res.status(409).json({ message: "Email Already Exist!!" });
         }
         const user = new Users({
-            "role": 0,
-            "isActive": true,
-            "name": req.body.name,
-            "email": req.body.email,
-            "dateOfBirth": req.body.dob,
-            "answer": btoa(req.body.answer),
-            "password": await bcrypt.hash(req.body.password, 10),
-        })
+            role: 0,
+            isActive: true,
+            name: name,
+            dateOfBirth: dob,
+            email: email.toLowerCase(),
+            answer: btoa(answer.toLowerCase()),
+            password: await bcrypt.hash(req.body.password, 10),
+        });
         await user.save();
         return res.status(201).json({ message: "User Registerd Successfully!!" });
     } catch (e) {
