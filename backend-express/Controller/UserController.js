@@ -10,8 +10,7 @@ const userLogin = async (req, res) => {
         return res.status(400).json({ message: "All Fields are required!!" });
     }
     try {
-        email = email.toLowerCase();
-        const user = await Users.findOne({ email: email });
+        const user = await Users.findOne({ email: email.toLowerCase() });
 
         if (!user) {
             return res.status(401).json({ message: "User Not Found!!" });
