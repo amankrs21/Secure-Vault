@@ -6,6 +6,8 @@ import {
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
+
 import AuthUser from '../../components/AuthUser';
 import PopupPin from './PopupPin';
 import AddVault from './AddVault';
@@ -149,7 +151,7 @@ export default function Vault() {
                                     <TableCell>{item.password}</TableCell>
                                     <TableCell>{item.updatedAt}</TableCell>
                                     <TableCell>
-                                        {/* Add your action buttons here */}
+                                        <EditIcon />
                                     </TableCell>
                                 </TableRow>
                             ))}
