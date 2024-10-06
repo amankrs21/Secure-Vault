@@ -7,6 +7,7 @@ import {
 import { toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import AuthUser from '../../components/AuthUser';
 import PopupPin from './PopupPin';
@@ -152,6 +153,7 @@ export default function Vault() {
                                     <TableCell>{item.updatedAt}</TableCell>
                                     <TableCell>
                                         <EditIcon />
+                                        <DeleteForeverIcon />
                                     </TableCell>
                                 </TableRow>
                             ))}
