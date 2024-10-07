@@ -26,6 +26,7 @@ export default function AddVault({ openAdd, setOpenAdd, data }) {
                     }
                     if (formJson.key) {
                         formJson.key = btoa(formJson.key);
+                        localStorage.setItem('SecurityPin', formJson.key);
                     } else {
                         formJson.key = localStorage.getItem('SecurityPin');
                     }
@@ -46,7 +47,7 @@ export default function AddVault({ openAdd, setOpenAdd, data }) {
                     label="Title (Website Name)" />
                 <TextField fullWidth variant="outlined" sx={{ marginY: 2 }}
                     name="username" label="Username (optional)" />
-                <TextField autoFocus fullWidth required variant="outlined"
+                <TextField fullWidth required variant="outlined"
                     name="password" label="Password" />
                 {!securityPin && <TextField fullWidth variant="outlined" name="key" sx={{ marginTop: 2 }}
                     label="PIN to encrypt Password" error={!!errors.key} helperText={errors.key} />}

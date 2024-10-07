@@ -117,8 +117,8 @@ const addPassword = async (req, res) => {
 const updatePassword = async (req, res) => {
     try {
         let encryptedPassword = "";
-        const { id, key, name, username, password: rawPassword } = req.body;
-        if (!id || !key || !name || !username || !rawPassword) {
+        const { id, key, title, username, password: rawPassword } = req.body;
+        if (!id || !key || !title || !username || !rawPassword) {
             return res.status(400).json({ message: "Please provide all required fields!" });
         }
         const password = await UserVault.findById(id);
@@ -126,12 +126,12 @@ const updatePassword = async (req, res) => {
             return res.status(404).json({ message: "Password not found!" });
         }
         try {
-            encryptedPassword = decrypt(rawPassword, key);
+            encryptedPassword = encrypt(rawPassword, key);
         } catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid Key!" });
         }
-        password.name = name;
+        password.title = title;
         password.username = username;
         password.password = encryptedPassword;
         await password.save();
@@ -154,7 +154,7 @@ const deletePassword = async (req, res) => {
         if (!password) {
             return res.status(404).json({ message: "Password not found!" });
         }
-        await Password.findByIdAndDelete(id);
+        await UserVault.findByIdAndDelete(id);
         return res.status(200).json({ message: "Password Deleted Successfully!" });
     } catch (error) {
         console.error(error);

@@ -2,11 +2,11 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { toast } from 'react-toastify';
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // Axios instance with default configurations
 const http = axios.create({
-    // baseURL: "http://192.168.1.34:3000/api/",
+    // baseURL: "http://192.168.1.36:3000/api/",
     baseURL: "https://security-vault.onrender.com/api/",
     headers: {
         "Content-Type": "application/json",
@@ -31,6 +31,7 @@ http.interceptors.response.use(
 );
 
 export default function AuthUser() {
+    const navigate = useNavigate();
     const [token, setToken] = useState(null);
     useEffect(() => {
         const authData = localStorage.getItem("authData");
@@ -63,7 +64,7 @@ export default function AuthUser() {
                 const currentTime = Date.now() / 1000;
                 if (decodedToken.exp < currentTime) {
                     toast.warning("Session expired. Please log in again.");
-                    <Navigate to="/" />;
+                    navigate("/");
                     localStorage.clear();
                     return false;
                 }
