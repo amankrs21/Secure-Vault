@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
+const validator = require('validator');
 const Users = require('../Models/Users.js');
 const UserVault = require('../Models/Password.js');
 const SecretKey = process.env.SECRET_KEY;
@@ -7,22 +8,30 @@ const SecretKey = process.env.SECRET_KEY;
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(400).json({ message: "All Fields are required!!" });
+        return res.status(400).json({ message: "All Fields are required!" });
     }
-    try {
-        const santizedEmail = email.trim().toLowerCase();
-        const user = await Users.findOne({ email: santizedEmail });
 
+    try {
+        const sanitizedEmail = validator.trim(validator.normalizeEmail(email));
+
+        if (!validator.isEmail(sanitizedEmail)) {
+            return res.status(400).json({ message: "Invalid email format!" });
+        }
+
+        const user = await Users.findOne({ email: sanitizedEmail });
         if (!user) {
-            return res.status(401).json({ message: "User Not Found!!" });
+            return res.status(401).json({ message: "User Not Found!" });
         }
 
         if (!user.isActive) {
-            return res.status(401).json({ message: "User is not Active!!" });
+            return res.status(401).json({ message: "User is not Active!" });
         }
 
-        if (await bcrypt.compare(req.body.password, user.password)) {
+        const isPasswordValid = bcrypt.compare(password, user.password);
+
+        if (isPasswordValid) {
             const token = jwt.sign({ id: user._id, role: user.role }, SecretKey, { expiresIn: '30m' });
+
             user.lastLogin = Date.now();
             await user.save();
 
@@ -35,16 +44,16 @@ const userLogin = async (req, res) => {
                 dateOfBirth: user.dateOfBirth,
                 firstLogin: vault.length === 0,
             };
-            return res.status(200).json({ message: "Login Successful!!", token, user: customUser });
+
+            return res.status(200).json({ message: "Login Successful!", token, user: customUser });
         } else {
-            return res.status(401).json({ message: "Invalid Credentials!!" });
+            return res.status(401).json({ message: "Invalid Credentials!" });
         }
     } catch (e) {
         console.error(e);
         return res.status(500).json({ message: "Something went wrong!" });
     }
 };
-
 
 const userRegister = async (req, res) => {
     const { name, email, dob, answer, password } = req.body;
