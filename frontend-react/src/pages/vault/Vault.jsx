@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import {
     Container, Typography, Divider, TextField, Button, Table, TableBody, TableCell,
-    TableContainer, TableHead, TableRow, Paper
+    TableContainer, TableHead, TableRow, Paper,
+    Tooltip
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
@@ -152,8 +153,13 @@ export default function Vault() {
                                     <TableCell>{item.password}</TableCell>
                                     <TableCell>{item.updatedAt}</TableCell>
                                     <TableCell>
-                                        <EditIcon />
-                                        <DeleteForeverIcon />
+                                        <Tooltip title="Edit Password" arrow sx={{ cursor: 'pointer' }}>
+                                            <EditIcon color="primary" />
+                                        </Tooltip>
+                                        &nbsp;&nbsp;
+                                        <Tooltip title="Edit Password" arrow sx={{ cursor: 'pointer' }}>
+                                            <DeleteForeverIcon color="error" />
+                                        </Tooltip>
                                     </TableCell>
                                 </TableRow>
                             ))}
