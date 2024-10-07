@@ -1,19 +1,22 @@
+import './Vault.css';
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import {
     Container, Typography, Divider, TextField, Button, Table, TableBody, TableCell,
-    TableContainer, TableHead, TableRow, Paper,
-    Tooltip
+    TableContainer, TableHead, TableRow, Paper, Tooltip
 } from '@mui/material';
 import { toast } from 'react-toastify';
 import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import AuthUser from '../../components/AuthUser';
 import PopupPin from './PopupPin';
 import AddVault from './AddVault';
+import AuthUser from '../../components/AuthUser';
 import { useLoading } from '../../components/loading/useLoading';
+import UpdateVault from './UpdateVault';
+import DeleteVault from './DeleteVault';
 
 export default function Vault() {
     const { http } = AuthUser();
@@ -21,23 +24,25 @@ export default function Vault() {
     const [openPin, setOpenPin] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);
     const [vaultData, setVaultData] = useState([]);
+    const [currentId, setCurrentId] = useState(null);
+    const [updateData, setUpdateData] = useState(null);
+    const [deleteData, setDeleteData] = useState(null);
 
     const firstLogin = localStorage.getItem('authData') ? JSON.parse(localStorage.getItem('authData')).user.firstLogin : false;
 
     const handleFetch = async (key) => {
-        setLoading(true);
         const localVault = localStorage.getItem("localVault");
         if (localVault) {
             setVaultData(JSON.parse(localVault));
         } else {
             try {
+                setLoading(true);
                 const response = await http.post('/passwords', { key });
                 if (response.data.length == 0) {
                     localStorage.removeItem('SecurityPin');
                     return
                 }
                 setVaultData(response.data);
-                toast.success('Data fetched successfully!');
                 localStorage.setItem("localVault", JSON.stringify(response.data));
             } catch (error) {
                 if (error.response && error.response.status === 400) {
@@ -47,22 +52,20 @@ export default function Vault() {
                     toast.error("Something went wrong!");
                     console.error(error);
                 }
-            }
+            } finally { setLoading(false); }
         }
-        setLoading(false);
     }
 
     const handleAdd = async (data) => {
-        setLoading(true);
         try {
+            setLoading(true);
             const response = await http.post('/password/add', data);
             toast.success(response.data.message);
             const authData = JSON.parse(localStorage.getItem('authData'));
             authData.user.firstLogin = false;
             localStorage.setItem('authData', JSON.stringify(authData));
-            localStorage.setItem('SecurityPin', data.key);
             localStorage.removeItem("localVault");
-            handleFetch();
+            handleFetch(data.key);
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 400) {
@@ -70,8 +73,34 @@ export default function Vault() {
                 return toast.error(error.response.data.message);
             }
             toast.error('Something went wrong!');
-        }
-        setLoading(true);
+        } finally { setLoading(false); }
+    }
+
+    const handleUpdate = async (data) => {
+        try {
+            setLoading(true);
+            data.key = localStorage.getItem('SecurityPin');
+            const response = await http.patch(`/password/update`, data);
+            toast.success(response.data.message);
+            localStorage.removeItem("localVault");
+            handleFetch(data.key);
+        } catch (error) {
+            console.error(error);
+            toast.error('Something went wrong!');
+        } finally { setLoading(false); }
+    }
+
+    const handleDelete = async (data) => {
+        try {
+            setLoading(true);
+            const response = await http.delete(`/password/delete`, { data: { id: data } });
+            toast.success(response.data.message);
+            localStorage.removeItem("localVault");
+            handleFetch(localStorage.getItem('SecurityPin'));
+        } catch (error) {
+            console.error(error);
+            toast.error('Something went wrong!');
+        } finally { setLoading(false); }
     }
 
     useEffect(() => {
@@ -88,7 +117,9 @@ export default function Vault() {
     return (
         <Container maxWidth="lg">
             {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} data={handleFetch} />}
-            {openAdd && <AddVault openAdd={openAdd} setOpenAdd={setOpenAdd} firstLogin={firstLogin} data={handleAdd} />}
+            {openAdd && <AddVault openAdd={openAdd} setOpenAdd={setOpenAdd} data={handleAdd} />}
+            {(updateData !== null) && <UpdateVault updateData={updateData} setUpdateData={setUpdateData} data={handleUpdate} />}
+            {(deleteData !== null) && <DeleteVault deleteData={deleteData} setDeleteData={setDeleteData} data={handleDelete} />}
 
             <Grid container justifyContent="space-between" alignItems="center" mt={3} spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }} textAlign={{ xs: 'center', md: 'left' }}>
@@ -102,7 +133,7 @@ export default function Vault() {
                         <TextField
                             fullWidth
                             variant="outlined"
-                            label="Search with Title or Username"
+                            label="Search with Title"
                             slotProps={{
                                 input: {
                                     endAdornment: <SearchIcon color='primary' />
@@ -132,32 +163,43 @@ export default function Vault() {
                     </Button>
                 </div>
             ) : (
-                <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+                <TableContainer component={Paper} sx={{ marginY: 2 }}>
                     <Table>
                         <TableHead>
                             <TableRow sx={{ backgroundColor: '#659ed8' }}>
-                                <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: 'white' }}>#</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: 'white' }}>Title</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: 'white' }}>Username</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: 'white' }}>Password</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: 'white' }}>UpdatedAt</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', fontSize: '16px', color: 'white' }}>Action</TableCell>
+                                <TableCell className='vault-table-header'>#</TableCell>
+                                <TableCell className='vault-table-header'>Title</TableCell>
+                                <TableCell className='vault-table-header'>Username</TableCell>
+                                <TableCell className='vault-table-header'>Password</TableCell>
+                                <TableCell className='vault-table-header'>Last Updated</TableCell>
+                                <TableCell className='vault-table-header'>Action</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {vaultData.map((item, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>{index + 1}</TableCell>
-                                    <TableCell>{item.title}</TableCell>
-                                    <TableCell>{item.username}</TableCell>
-                                    <TableCell>{item.password}</TableCell>
-                                    <TableCell>{item.updatedAt}</TableCell>
-                                    <TableCell>
-                                        <Tooltip title="Edit Password" arrow sx={{ cursor: 'pointer' }}>
+                                    <TableCell className='vault-table-cell'>{index + 1}</TableCell>
+                                    <TableCell className='vault-table-cell'>{item.title}</TableCell>
+                                    <TableCell className='vault-table-cell'>{item.username}</TableCell>
+                                    <TableCell className='vault-table-cell'>
+                                        {currentId == item._id ? (
+                                            <>{item.password}</>
+                                        ) : (
+                                            <Tooltip title="Show Password" arrow sx={{ cursor: 'pointer' }}>
+                                                <VisibilityOffIcon color="primary" onClick={() => setCurrentId(item._id)} />
+                                            </Tooltip>
+                                        )}
+                                    </TableCell>
+                                    <TableCell className='vault-table-cell'>
+                                        {new Date(item.updatedAt).toDateString()}<br />
+                                        {new Date(item.updatedAt).toLocaleTimeString()}
+                                    </TableCell>
+                                    <TableCell className='vault-table-cell'>
+                                        <Tooltip title="Edit Password" arrow sx={{ cursor: 'pointer' }} onClick={() => setUpdateData(item)}>
                                             <EditIcon color="primary" />
                                         </Tooltip>
                                         &nbsp;&nbsp;
-                                        <Tooltip title="Edit Password" arrow sx={{ cursor: 'pointer' }}>
+                                        <Tooltip title="Edit Password" arrow sx={{ cursor: 'pointer' }} onClick={() => setDeleteData(item._id)}>
                                             <DeleteForeverIcon color="error" />
                                         </Tooltip>
                                     </TableCell>
