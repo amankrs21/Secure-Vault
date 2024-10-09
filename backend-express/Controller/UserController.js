@@ -61,7 +61,11 @@ const userRegister = async (req, res) => {
         return res.status(400).json({ message: "All Fields are required!!" });
     }
     try {
-        if (await Users.findOne({ email: req.body.email })) {
+        const sanitizedEmail = validator.trim(validator.normalizeEmail(email));
+        if (!validator.isEmail(sanitizedEmail)) {
+            return res.status(400).json({ message: "Invalid email format!" });
+        }
+        if (await Users.findOne({ email: sanitizedEmail })) {
             return res.status(409).json({ message: "Email Already Exist!!" });
         }
         const user = new Users({
