@@ -8,11 +8,10 @@ import { useNavigate } from 'react-router-dom';
 export default function LogoutPop({ openLogout, setOpenLogout }) {
     const navigate = useNavigate();
     const handleLogout = () => {
-        localStorage.clear();
-        navigate('/login');
         toast.success('Logout successful');
         setOpenLogout(false);
-        return;
+        localStorage.clear();
+        navigate('/login');
     }
     return (
         <Dialog
