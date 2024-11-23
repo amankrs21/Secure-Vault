@@ -5,38 +5,30 @@ const Users = require('../Models/Users.js');
 const UserVault = require('../Models/Password.js');
 const SecretKey = process.env.SECRET_KEY;
 
+
 const userLogin = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
         return res.status(400).json({ message: "All Fields are required!" });
     }
-
     try {
         const sanitizedEmail = validator.trim(validator.normalizeEmail(email));
-
         if (!validator.isEmail(sanitizedEmail)) {
             return res.status(400).json({ message: "Invalid email format!" });
         }
-
         const user = await Users.findOne({ email: sanitizedEmail });
         if (!user) {
             return res.status(401).json({ message: "User Not Found!" });
         }
-
         if (!user.isActive) {
             return res.status(401).json({ message: "User is not Active!" });
         }
-
-        const isPasswordValid = bcrypt.compare(password, user.password);
-
+        const isPasswordValid = await bcrypt.compare(password, user.password);
         if (isPasswordValid) {
             const token = jwt.sign({ id: user._id, role: user.role }, SecretKey, { expiresIn: '30m' });
-
             user.lastLogin = Date.now();
             await user.save();
-
             const vault = await UserVault.find({ createdBy: user._id });
-
             const customUser = {
                 email: user.email,
                 name: user.name,
@@ -44,7 +36,6 @@ const userLogin = async (req, res) => {
                 dateOfBirth: user.dateOfBirth,
                 firstLogin: vault.length === 0,
             };
-
             return res.status(200).json({ message: "Login Successful!", token, user: customUser });
         } else {
             return res.status(401).json({ message: "Invalid Credentials!" });
@@ -55,13 +46,18 @@ const userLogin = async (req, res) => {
     }
 };
 
+
 const userRegister = async (req, res) => {
     const { name, email, dob, answer, password } = req.body;
     if (!name || !email || !dob || !answer || !password) {
         return res.status(400).json({ message: "All Fields are required!!" });
     }
     try {
-        if (await Users.findOne({ email: req.body.email })) {
+        const sanitizedEmail = validator.trim(validator.normalizeEmail(email));
+        if (!validator.isEmail(sanitizedEmail)) {
+            return res.status(400).json({ message: "Invalid email format!" });
+        }
+        if (await Users.findOne({ email: sanitizedEmail })) {
             return res.status(409).json({ message: "Email Already Exist!!" });
         }
         const user = new Users({
@@ -81,6 +77,34 @@ const userRegister = async (req, res) => {
     }
 }
 
+
+const forgetPassword = async (req, res) => {
+    const { email, dob, answer, password } = req.body;
+    if (!email || !dob || !answer || !password) {
+        return res.status(400).json({ message: "All Fields are required!!" });
+    }
+    try {
+        const sanitizedEmail = validator.trim(validator.normalizeEmail(email));
+        if (!validator.isEmail(sanitizedEmail)) {
+            return res.status(400).json({ message: "Invalid email format!" });
+        }
+        const user = await Users.findOne({ email: sanitizedEmail });
+        if (!user || !user.isActive) {
+            return res.status(401).json({ message: "User Not Found or Not Active!" });
+        }
+        if (user.dateOfBirth !== dob && btoa(answer.toLowerCase()) !== user.answer) {
+            return res.status(401).json({ message: "Invalid Credentials!" });
+        }
+        user.password = await bcrypt.hash(password, 10);
+        await user.save();
+        return res.status(200).json({ message: "Password Changed Successfully!!" });
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({ message: "Something went wrong!" });
+    }
+}
+
+
 const getAllUsers = async (req, res) => {
     const users = Users.find();
     await users.then((e) => {
@@ -90,6 +114,7 @@ const getAllUsers = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong!!" })
     })
 }
+
 
 const resetPassword = async (req, res) => {
     const user = await Users.findById(req.body.id);
@@ -113,4 +138,4 @@ const changeActiveState = async (req, res) => {
     })
 }
 
-module.exports = { userLogin, userRegister, getAllUsers, resetPassword, changeActiveState }
+module.exports = { userLogin, userRegister, forgetPassword, getAllUsers, resetPassword, changeActiveState }
