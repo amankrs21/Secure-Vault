@@ -89,7 +89,10 @@ const forgetPassword = async (req, res) => {
             return res.status(400).json({ message: "Invalid email format!" });
         }
         const user = await Users.findOne({ email: sanitizedEmail });
-        if (!user || !user.isActive) {
+        if (!user) {
+            return res.status(401).json({ message: "User Not Found!" });
+        }
+        if (!user.isActive) {
             return res.status(401).json({ message: "User Not Found or Not Active!" });
         }
         if (user.dateOfBirth !== dob && btoa(answer.toLowerCase()) !== user.answer) {
