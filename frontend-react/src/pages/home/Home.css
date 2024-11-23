@@ -2,7 +2,7 @@
     width: 100%;
     padding-top: 10px;
 
-    a {
+    .custom-home-text {
         text-decoration: none;
         font-weight: bold !important;
         color: #1976d2 !important;

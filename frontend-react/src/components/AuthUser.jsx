@@ -2,11 +2,11 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { toast } from 'react-toastify';
 import { useState, useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Axios instance with default configurations
 const http = axios.create({
-    // baseURL: "http://192.168.1.36:3000/api/",
+    // baseURL: "http://192.168.1.38:3000/api/",
     baseURL: "https://security-vault.onrender.com/api/",
     headers: {
         "Content-Type": "application/json",
@@ -20,11 +20,13 @@ const http = axios.create({
 http.interceptors.response.use(
     (response) => response,
     (error) => {
+        const navigate = useNavigate();
         if (!error.response && error.message === "Network Error") {
-            <Navigate to="/503" />;
+            toast.error("Network error. Please check your connection.");
+            navigate("/503");
         } else if (error.response.status === 403 || error.response.status === 401) {
             localStorage.clear();
-            <Navigate to="/" />;
+            navigate("/");
         }
         return Promise.reject(error);
     }

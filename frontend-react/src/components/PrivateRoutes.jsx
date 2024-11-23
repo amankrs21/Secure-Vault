@@ -12,7 +12,6 @@ export default function PrivateRoutes() {
         const authData = JSON.parse(localStorage.getItem("authData"));
         if (!authData || !isValidToken(authData.token)) {
             navigate('/login');
-            return;
         }
     }, [navigate, isValidToken]);
 
