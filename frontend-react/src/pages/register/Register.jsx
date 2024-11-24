@@ -12,6 +12,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import AuthUser from '../../components/AuthUser';
 import { useLoading } from '../../components/loading/useLoading';
+import { ERROR_MESSAGES } from '../../components/constants';
 
 export default function Register() {
     const { http } = AuthUser();
@@ -42,38 +43,30 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        let tempErrors = {};
 
-        if (!formData.name) {
-            tempErrors.name = "Name is required";
-        } if (!formData.dob) {
-            tempErrors.dob = "Date of Birth is required";
-        } if (!formData.answer) {
-            tempErrors.answer = "Secret Answer is required";
-        } if (!formData.password) {
-            tempErrors.password = "Password is required";
-        } if (!formData.email) {
-            tempErrors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            tempErrors.email = "Email address is invalid";
-        } if (formData.password !== formData.cPassword) {
-            tempErrors.cPassword = "Passwords do not match";
+        if (formData.password !== formData.cPassword) {
+            setErrors({ cPassword: ERROR_MESSAGES.PASSWORDS_NOT_MATCH });
+            return;
+        } else if (formData.password.length < 8) {
+            setErrors({
+                password: ERROR_MESSAGES.PASSWORD_TOO_SHORT,
+                cPassword: ERROR_MESSAGES.PASSWORD_TOO_SHORT
+            });
+            return;
         }
-        setErrors(tempErrors);
 
-        if (Object.keys(tempErrors).length === 0) {
+        try {
             setLoading(true);
-            try {
-                const response = await http.post('/auth/register', formData);
+            const response = await http.post('/auth/register', formData);
+            if (response) {
                 toast.success(response.data.message);
                 navigate('/login');
-            } catch (error) {
-                console.error("Registration failed:", error);
-                let errorMessage = error.response?.data?.message || "An error occurred during Register. Please try again.";
-                toast.error(errorMessage);
             }
-            setLoading(false);
-        }
+        } catch (error) {
+            console.error("Registration failed:", error);
+            let errorMessage = error.response?.data?.message || ERROR_MESSAGES.UNKNOWN_ERROR;
+            toast.error(errorMessage);
+        } finally { setLoading(false); }
     };
 
     return (
@@ -97,60 +90,17 @@ export default function Register() {
                         Sign in
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-                        <TextField
-                            autoFocus
-                            fullWidth
-                            name="name"
-                            label="Full Name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            error={!!errors.name}
-                            helperText={errors.name}
-                        />
-                        <TextField
-                            sx={{ my: 2 }}
-                            fullWidth
-                            name="email"
-                            label="Email Address"
-                            value={formData.email}
-                            onChange={handleChange}
-                            error={!!errors.email}
-                            helperText={errors.email}
-                        />
-                        <TextField
-                            fullWidth
-                            name="answer"
-                            label="What is your favorite place?"
-                            value={formData.answer}
-                            onChange={handleChange}
-                            error={!!errors.answer}
-                            helperText={errors.answer}
-                        />
-                        <TextField
-                            sx={{ my: 2 }}
-                            fullWidth
-                            type="date"
-                            name="dob"
-                            label="Your Date of Birth"
-                            value={formData.dob}
-                            onChange={handleChange}
-                            error={!!errors.dob}
-                            helperText={errors.dob}
-                            slotProps={{
-                                inputLabel: {
-                                    shrink: true,
-                                }
-                            }}
-                        />
-                        <TextField
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type={show ? 'text' : 'password'}
-                            value={formData.password}
-                            onChange={handleChange}
-                            error={!!errors.password}
-                            helperText={errors.password}
+                        <TextField autoFocus fullWidth required name="name" label="Full Name" value={formData.name}
+                            onChange={handleChange} error={!!errors.name} helperText={errors.name} />
+                        <TextField sx={{ my: 2 }} fullWidth required type='email' name="email" label="Email Address"
+                            value={formData.email} onChange={handleChange} error={!!errors.email} helperText={errors.email} />
+                        <TextField fullWidth required name="answer" label="What is your favorite place?"
+                            value={formData.answer} onChange={handleChange} error={!!errors.answer} helperText={errors.answer} />
+                        <TextField sx={{ my: 2 }} fullWidth required type="date" name="dob" label="Your Date of Birth"
+                            value={formData.dob} onChange={handleChange} error={!!errors.dob} helperText={errors.dob}
+                            slotProps={{ inputLabel: { shrink: true } }} />
+                        <TextField fullWidth required name="password" label="Password" type={show ? 'text' : 'password'}
+                            value={formData.password} onChange={handleChange} error={!!errors.password} helperText={errors.password}
                             slotProps={{
                                 input: {
                                     endAdornment: (
@@ -161,25 +111,10 @@ export default function Register() {
                                         </InputAdornment>
                                     )
                                 }
-                            }}
-                        />
-                        <TextField
-                            sx={{ my: 2 }}
-                            fullWidth
-                            type="password"
-                            name="cPassword"
-                            label="Confirm Password"
-                            value={formData.cPassword}
-                            onChange={handleChange}
-                            error={!!errors.cPassword}
-                            helperText={errors.cPassword}
-                        />
-                        <Button
-                            fullWidth
-                            type='submit'
-                            variant="contained"
-                            sx={{ mt: 1, mb: 2 }}
-                        >
+                            }} />
+                        <TextField sx={{ my: 2 }} fullWidth required type="password" name="cPassword" label="Confirm Password"
+                            value={formData.cPassword} onChange={handleChange} error={!!errors.cPassword} helperText={errors.cPassword} />
+                        <Button fullWidth type='submit' variant="contained" sx={{ mt: 1, mb: 2 }}>
                             Register &nbsp; <ExitToAppIcon />
                         </Button>
 

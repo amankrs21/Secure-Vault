@@ -10,7 +10,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+import ForgetPass from './ForgetPass';
 import AuthUser from '../../components/AuthUser';
+import { ERROR_MESSAGES } from '../../components/constants';
 import { useLoading } from '../../components/loading/useLoading';
 
 export default function Login() {
@@ -18,11 +20,8 @@ export default function Login() {
     const { setLoading } = useLoading();
     const { http, setToken } = AuthUser();
     const [show, setShow] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    const [openFP, setOpenFP] = useState(false);
+    const [formData, setFormData] = useState({ email: '', password: '' });
 
     useEffect(() => {
         const authData = JSON.parse(localStorage.getItem("authData")) || null;
@@ -36,43 +35,42 @@ export default function Login() {
         });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        let tempErrors = {};
-
-        if (!formData.email) {
-            tempErrors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            tempErrors.email = "Email address is invalid";
-        }
-
-        if (!formData.password) {
-            tempErrors.password = "Password is required";
-        }
-
-        setErrors(tempErrors);
-
-        if (Object.keys(tempErrors).length === 0) {
+    const handleForget = async (data) => {
+        try {
             setLoading(true);
-            try {
-                const response = await http.post('/auth/login', formData);
+            console.log(data);
+            const response = await http.patch('/auth/forget', data);
+            toast.success(response.data.message);
+        } catch (error) {
+            console.error(error);
+            if (error.response.data.message) {
+                return toast.error(error.response.data.message);
+            }
+            toast.error('Something went wrong!');
+        } finally { setLoading(false); }
+    };
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const response = await http.post('/auth/login', formData);
+            if (response.data.token) {
                 setToken(response.data.token, response.data.user);
                 toast.success(response.data.message);
+                setTimeout(() => { toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`); }, 3000);
                 navigate('/home');
-                setTimeout(() => {
-                    toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`);
-                }, 3000);
-            } catch (error) {
-                console.error("Login failed:", error);
-                let errorMessage = error.response?.data?.message || "An error occurred during login. Please try again.";
-                toast.error(errorMessage);
             }
-            setLoading(false);
-        }
+        } catch (error) {
+            console.error("Login failed:", error);
+            let errorMessage = error.response?.data?.message || ERROR_MESSAGES.UNKNOWN_ERROR;
+            toast.error(errorMessage);
+        } finally { setLoading(false); }
     };
 
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>
+            {openFP && <ForgetPass openFP={openFP} setOpenFP={setOpenFP} data={handleForget} />}
             <Grid
                 size={{ xs: false, sm: 4, md: 7 }}
                 sx={{
@@ -92,27 +90,11 @@ export default function Login() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit}>
-                        <TextField
-                            sx={{ my: 2 }}
-                            fullWidth
-                            autoFocus
-                            name="email"
-                            label="Email Address"
-                            value={formData.email}
-                            onChange={handleChange}
-                            error={!!errors.email}
-                            helperText={errors.email}
-                        />
-                        <TextField
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type={show ? 'text' : 'password'}
-                            value={formData.password}
-                            onChange={handleChange}
-                            error={!!errors.password}
-                            helperText={errors.password}
+                    <Box component="form" onSubmit={handleLogin}>
+                        <TextField sx={{ my: 2 }} autoFocus fullWidth required type='email' name="email"
+                            label="Email Address" value={formData.email} onChange={handleChange} />
+                        <TextField fullWidth required name="password" label="Password"
+                            type={show ? 'text' : 'password'} value={formData.password} onChange={handleChange}
                             slotProps={{
                                 input: {
                                     endAdornment: (
@@ -126,7 +108,7 @@ export default function Login() {
                             }}
                         />
                         <Grid mt={1}>
-                            <Typography variant="body2" className="login-forget">
+                            <Typography variant="body2" className="login-forget" onClick={() => setOpenFP(true)}>
                                 Forgot password?
                             </Typography>
                         </Grid>
