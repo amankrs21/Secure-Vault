@@ -12,12 +12,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import AuthUser from '../../components/AuthUser';
 import { useLoading } from '../../components/loading/useLoading';
+import ForgetPass from './ForgetPass';
 
 export default function Login() {
     const navigate = useNavigate();
     const { setLoading } = useLoading();
     const { http, setToken } = AuthUser();
     const [show, setShow] = useState(false);
+    const [openFP, setOpenFP] = useState(false);
     const [errors, setErrors] = useState({});
     const [formData, setFormData] = useState({
         email: '',
@@ -36,18 +38,30 @@ export default function Login() {
         });
     };
 
-    const handleSubmit = async (e) => {
+    const handleForget = async (data) => {
+        try {
+            setLoading(true);
+            console.log(data);
+            const response = await http.patch('/auth/forget', data);
+            toast.success(response.data.message);
+        } catch (error) {
+            console.error(error);
+            if (error.response.data.message) {
+                return toast.error(error.response.data.message);
+            }
+            toast.error('Something went wrong!');
+        } finally { setLoading(false); }
+    };
+
+    const handleLogin = async (e) => {
         e.preventDefault();
         let tempErrors = {};
 
         if (!formData.email) {
-            tempErrors.email = "Email is required";
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            tempErrors.email = "Email address is invalid";
+            tempErrors.email = "This field is required";
         }
-
         if (!formData.password) {
-            tempErrors.password = "Password is required";
+            tempErrors.password = "This field is required";
         }
 
         setErrors(tempErrors);
@@ -56,23 +70,23 @@ export default function Login() {
             setLoading(true);
             try {
                 const response = await http.post('/auth/login', formData);
-                setToken(response.data.token, response.data.user);
-                toast.success(response.data.message);
-                navigate('/home');
-                setTimeout(() => {
-                    toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`);
-                }, 3000);
+                if (response.data.token) {
+                    setToken(response.data.token, response.data.user);
+                    toast.success(response.data.message);
+                    setTimeout(() => { toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`); }, 3000);
+                    navigate('/home');
+                }
             } catch (error) {
                 console.error("Login failed:", error);
                 let errorMessage = error.response?.data?.message || "An error occurred during login. Please try again.";
                 toast.error(errorMessage);
-            }
-            setLoading(false);
+            } finally { setLoading(false); }
         }
     };
 
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>
+            {openFP && <ForgetPass openFP={openFP} setOpenFP={setOpenFP} data={handleForget} />}
             <Grid
                 size={{ xs: false, sm: 4, md: 7 }}
                 sx={{
@@ -92,11 +106,12 @@ export default function Login() {
                     <Typography component="h1" variant="h5">
                         Sign in
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit}>
+                    <Box component="form" onSubmit={handleLogin}>
                         <TextField
                             sx={{ my: 2 }}
                             fullWidth
                             autoFocus
+                            type='email'
                             name="email"
                             label="Email Address"
                             value={formData.email}
@@ -126,7 +141,7 @@ export default function Login() {
                             }}
                         />
                         <Grid mt={1}>
-                            <Typography variant="body2" className="login-forget">
+                            <Typography variant="body2" className="login-forget" onClick={() => setOpenFP(true)}>
                                 Forgot password?
                             </Typography>
                         </Grid>
