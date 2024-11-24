@@ -10,9 +10,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-import AuthUser from '../../components/AuthUser';
-import { useLoading } from '../../components/loading/useLoading';
 import ForgetPass from './ForgetPass';
+import AuthUser from '../../components/AuthUser';
+import { ERROR_MESSAGES } from '../../components/constants';
+import { useLoading } from '../../components/loading/useLoading';
 
 export default function Login() {
     const navigate = useNavigate();
@@ -20,11 +21,7 @@ export default function Login() {
     const { http, setToken } = AuthUser();
     const [show, setShow] = useState(false);
     const [openFP, setOpenFP] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    const [formData, setFormData] = useState({ email: '', password: '' });
 
     useEffect(() => {
         const authData = JSON.parse(localStorage.getItem("authData")) || null;
@@ -55,33 +52,20 @@ export default function Login() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        let tempErrors = {};
-
-        if (!formData.email) {
-            tempErrors.email = "This field is required";
-        }
-        if (!formData.password) {
-            tempErrors.password = "This field is required";
-        }
-
-        setErrors(tempErrors);
-
-        if (Object.keys(tempErrors).length === 0) {
+        try {
             setLoading(true);
-            try {
-                const response = await http.post('/auth/login', formData);
-                if (response.data.token) {
-                    setToken(response.data.token, response.data.user);
-                    toast.success(response.data.message);
-                    setTimeout(() => { toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`); }, 3000);
-                    navigate('/home');
-                }
-            } catch (error) {
-                console.error("Login failed:", error);
-                let errorMessage = error.response?.data?.message || "An error occurred during login. Please try again.";
-                toast.error(errorMessage);
-            } finally { setLoading(false); }
-        }
+            const response = await http.post('/auth/login', formData);
+            if (response.data.token) {
+                setToken(response.data.token, response.data.user);
+                toast.success(response.data.message);
+                setTimeout(() => { toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`); }, 3000);
+                navigate('/home');
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
+            let errorMessage = error.response?.data?.message || ERROR_MESSAGES.UNKNOWN_ERROR;
+            toast.error(errorMessage);
+        } finally { setLoading(false); }
     };
 
     return (
@@ -107,27 +91,10 @@ export default function Login() {
                         Sign in
                     </Typography>
                     <Box component="form" onSubmit={handleLogin}>
-                        <TextField
-                            sx={{ my: 2 }}
-                            fullWidth
-                            autoFocus
-                            type='email'
-                            name="email"
-                            label="Email Address"
-                            value={formData.email}
-                            onChange={handleChange}
-                            error={!!errors.email}
-                            helperText={errors.email}
-                        />
-                        <TextField
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type={show ? 'text' : 'password'}
-                            value={formData.password}
-                            onChange={handleChange}
-                            error={!!errors.password}
-                            helperText={errors.password}
+                        <TextField sx={{ my: 2 }} autoFocus fullWidth required type='email' name="email"
+                            label="Email Address" value={formData.email} onChange={handleChange} />
+                        <TextField fullWidth required name="password" label="Password"
+                            type={show ? 'text' : 'password'} value={formData.password} onChange={handleChange}
                             slotProps={{
                                 input: {
                                     endAdornment: (

@@ -12,6 +12,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import AuthUser from '../../components/AuthUser';
 import { useLoading } from '../../components/loading/useLoading';
+import { ERROR_MESSAGES } from '../../components/constants';
 
 export default function Register() {
     const { http } = AuthUser();
@@ -44,12 +45,12 @@ export default function Register() {
         e.preventDefault();
 
         if (formData.password !== formData.cPassword) {
-            setErrors({ cPassword: "Passwords do not match!" });
+            setErrors({ cPassword: ERROR_MESSAGES.PASSWORDS_NOT_MATCH });
             return;
         } else if (formData.password.length < 8) {
             setErrors({
-                password: "PIN should be atleast 8 characters long!",
-                cPassword: "PIN should be atleast 8 characters long!"
+                password: ERROR_MESSAGES.PASSWORD_TOO_SHORT,
+                cPassword: ERROR_MESSAGES.PASSWORD_TOO_SHORT
             });
             return;
         }
@@ -63,7 +64,7 @@ export default function Register() {
             }
         } catch (error) {
             console.error("Registration failed:", error);
-            let errorMessage = error.response?.data?.message || "An error occurred during Register. Please try again.";
+            let errorMessage = error.response?.data?.message || ERROR_MESSAGES.UNKNOWN_ERROR;
             toast.error(errorMessage);
         } finally { setLoading(false); }
     };

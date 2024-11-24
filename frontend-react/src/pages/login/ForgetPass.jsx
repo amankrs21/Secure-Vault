@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { ERROR_MESSAGES } from '../../components/constants';
 
 export default function ForgetPass({ openFP, setOpenFP, data }) {
     const [show, setShow] = useState(false);
@@ -22,12 +23,12 @@ export default function ForgetPass({ openFP, setOpenFP, data }) {
                     const formData = new FormData(event.currentTarget);
                     const formJson = Object.fromEntries(formData.entries());
                     if (formJson.password !== formJson.cPassword) {
-                        setErrors({ cPassword: "Passwords do not match!" });
+                        setErrors({ cPassword: ERROR_MESSAGES.PASSWORDS_NOT_MATCH });
                         return;
                     } else if (formJson.password.length < 8) {
                         setErrors({
-                            password: "PIN should be atleast 8 characters long!",
-                            cPassword: "PIN should be atleast 8 characters long!"
+                            password: ERROR_MESSAGES.PASSWORD_TOO_SHORT,
+                            cPassword: ERROR_MESSAGES.PASSWORD_TOO_SHORT
                         });
                         return;
                     }
