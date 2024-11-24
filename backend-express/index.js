@@ -33,7 +33,8 @@ mongoConnect();
 
 // setting up cors
 const allowedOrigins = [
-    "https://securevault.pages.dev"
+    "https://securevault.pages.dev",
+    "https://ui-backup.securevault.pages.dev",
 ]
 const corsOptions = {
     origin: allowedOrigins,
