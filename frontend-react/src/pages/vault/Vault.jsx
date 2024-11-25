@@ -31,48 +31,36 @@ export default function Vault() {
     const firstLogin = localStorage.getItem('authData') ? JSON.parse(localStorage.getItem('authData')).user.firstLogin : false;
 
     const handleFetch = async (key) => {
-        const localVault = localStorage.getItem("localVault");
-        if (localVault) {
-            setVaultData(JSON.parse(localVault));
-        } else {
-            try {
-                setLoading(true);
-                const response = await http.post('/passwords', { key });
-                if (response.data.length == 0) {
-                    localStorage.removeItem('SecurityPin');
-                    return
-                }
-                setVaultData(response.data);
-                localStorage.setItem("localVault", JSON.stringify(response.data));
-            } catch (error) {
-                if (error.response && error.response.status === 400) {
-                    toast.error("Invalid Security Pin!");
-                    setOpenPin(true);
-                } else {
-                    toast.error("Something went wrong!");
-                    console.error(error);
-                }
-            } finally { setLoading(false); }
-        }
+        try {
+            setLoading(true);
+            const response = await http.post('/passwords', { key });
+            if (response.data.length == 0) {
+                localStorage.removeItem('SecurityPin');
+                return
+            }
+            setVaultData(response.data);
+        } catch (error) {
+            console.error(error);
+            if (error.response) { toast.error(error.response.data.message); }
+            else { toast.error('Something went wrong!'); }
+            localStorage.removeItem('SecurityPin');
+            setOpenPin(true);
+        } finally { setLoading(false); }
     }
 
     const handleAdd = async (data) => {
         try {
             setLoading(true);
             const response = await http.post('/password/add', data);
-            toast.success(response.data.message);
             const authData = JSON.parse(localStorage.getItem('authData'));
             authData.user.firstLogin = false;
             localStorage.setItem('authData', JSON.stringify(authData));
-            localStorage.removeItem("localVault");
+            toast.success(response.data.message);
             handleFetch(data.key);
         } catch (error) {
             console.error(error);
-            if (error.response && error.response.status === 400) {
-                setOpenPin(true);
-                return toast.error(error.response.data.message);
-            }
-            toast.error('Something went wrong!');
+            if (error.response) { toast.error(error.response.data.message); }
+            else { toast.error('Something went wrong!'); }
         } finally { setLoading(false); }
     }
 
@@ -82,11 +70,11 @@ export default function Vault() {
             data.key = localStorage.getItem('SecurityPin');
             const response = await http.patch(`/password/update`, data);
             toast.success(response.data.message);
-            localStorage.removeItem("localVault");
             handleFetch(data.key);
         } catch (error) {
             console.error(error);
-            toast.error('Something went wrong!');
+            if (error.response) { toast.error(error.response.data.message); }
+            else { toast.error('Something went wrong!'); }
         } finally { setLoading(false); }
     }
 
@@ -95,22 +83,21 @@ export default function Vault() {
             setLoading(true);
             const response = await http.delete(`/password/delete`, { data: { id: data } });
             toast.success(response.data.message);
-            localStorage.removeItem("localVault");
             handleFetch(localStorage.getItem('SecurityPin'));
         } catch (error) {
             console.error(error);
-            toast.error('Something went wrong!');
+            if (error.response) { toast.error(error.response.data.message); }
+            else { toast.error('Something went wrong!'); }
         } finally { setLoading(false); }
     }
 
     useEffect(() => {
-        if (!firstLogin) {
-            const pin = localStorage.getItem('SecurityPin') || null;
-            if (pin) {
-                handleFetch(pin);
-            } else {
-                setOpenPin(true);
-            }
+        if (firstLogin) { return; }
+        const pin = localStorage.getItem('SecurityPin') || null;
+        if (pin) {
+            handleFetch(pin);
+        } else {
+            setOpenPin(true);
         }
     }, []);
 
