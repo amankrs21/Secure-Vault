@@ -31,10 +31,17 @@ app.use((req, res, next) => {
 })
 
 
+// Middleware to handle errors
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
+
 // setting up cors
 const allowedOrigins = [
     "http://localhost:5173",
-    "http://192.168.1.36:5173",
+    "http://192.168.1.38:5173",
     "https://securevault.pages.dev"
 ]
 const corsOptions = {
@@ -52,9 +59,3 @@ app.use("/api", router);
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server running at => http://localhost:${port}/`);
 });
-
-
-// // setting up the server for production
-// app.listen(port, () => {
-//     console.log(`Server running at => http://localhost:${port}/`);
-// });

@@ -55,7 +55,7 @@ To get this project up and running on your local machine, follow the steps below
 4. **Start the server:**
     
     ```bash
-    npm run server
+    npm run dev
     ```
 
 ### Frontend Setup
