@@ -1,9 +1,9 @@
 ## Security Vault Deployment Checks
 
 ### Backend-Express Check
-1. In the index.js file comment out the "Middleware to log all the requests"
+1. In the indexProd.js file comment out the "Middleware to log all the requests"
 
-2. In the index.js file comment out the "setting up the server locally run" and enable the "setting up the server for production"
+2. In the indexProd.js file comment out the "setting up the server locally run" and enable the "setting up the server for production"
 
 3. Setup the CORS access for the frontend to access the backend.
 

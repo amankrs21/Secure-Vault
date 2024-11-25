@@ -4,10 +4,16 @@ import { toast } from 'react-toastify';
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+// Use environment variables for base URL
+const baseURL = window.location.origin.includes("localhost") || window.location.origin.includes("192.168")
+    ? "http://192.168.1.38:3000/api/"
+    : "https://security-vault.onrender.com/api/";
+
+
 // Axios instance with default configurations
 const http = axios.create({
-    // baseURL: "http://192.168.1.38:3000/api/",
-    baseURL: "https://security-vault.onrender.com/api/",
+    baseURL,
     headers: {
         "Content-Type": "application/json",
     },
@@ -20,13 +26,12 @@ const http = axios.create({
 http.interceptors.response.use(
     (response) => response,
     (error) => {
-        const navigate = useNavigate();
         if (!error.response && error.message === "Network Error") {
             toast.error("Network error. Please check your connection.");
-            navigate("/503");
+            window.location.href = "/503";
         } else if (error.response.status === 403 || error.response.status === 401) {
+            window.location.href = "/";
             localStorage.clear();
-            navigate("/");
         }
         return Promise.reject(error);
     }

@@ -24,16 +24,18 @@ if (!process.env.MONGO_URI || !process.env.SECRET_KEY || !process.env.PASSWORD_K
 mongoConnect();
 
 
-// // Middleware to log all the requests
-// app.use((req, res, next) => {
-//     console.log(`${Date().slice(0, 24)} => (${req.method}) http://${req.ip.slice(7)}${req.url}`);
-//     next()
-// })
+// Middleware to handle errors
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 
 
 // setting up cors
 const allowedOrigins = [
-    "https://securevault.pages.dev"
+    "https://securevault.pages.dev",
+    "https://dev.securevault.pages.dev",
+    "https://test.securevault.pages.dev",
 ]
 const corsOptions = {
     origin: allowedOrigins,
@@ -44,12 +46,6 @@ app.use(cors(corsOptions))
 
 // setting up router
 app.use("/api", router);
-
-
-// // setting up the server locally run
-// app.listen(port, '0.0.0.0', () => {
-//     console.log(`Server running at => http://localhost:${port}/`);
-// });
 
 
 // setting up the server for production
