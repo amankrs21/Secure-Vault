@@ -8,6 +8,9 @@ const router = require("./Router/Router.js");
 const app = express();
 const port = 3000;
 
+// Disable x-powered-by header to prevent version disclosure
+app.disable("x-powered-by");
+
 // command to parse the incoming request
 app.use(express.json());
 
