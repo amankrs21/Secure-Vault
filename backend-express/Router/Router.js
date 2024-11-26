@@ -3,6 +3,7 @@ const { verifyUser, verifyAdmin } = require("../Middleware/AuthUser.js");
 const { userLogin, userRegister, forgetPassword, getAllUsers, resetPassword, changeActiveState } = require("../Controller/UserController.js")
 const { getTodos, getTodoById, addTodo, markComplete, updateTodo, deleteTodo } = require("../Controller/TodoController.js");
 const { getPasswords, addPassword, updatePassword, deletePassword } = require("../Controller/PasswordController.js");
+const { getNotes, addNote, updateNote, deleteNote } = require("../Controller/NotesController.js");
 const router = express.Router();
 
 //  Auth User Routes
@@ -25,6 +26,12 @@ router.post('/passwords', verifyUser, getPasswords);
 router.post('/password/add', verifyUser, addPassword);
 router.patch('/password/update', verifyUser, updatePassword);
 router.delete('/password/delete', verifyUser, deletePassword);
+
+// Notes Routes
+router.post('/notes', verifyUser, getNotes);
+router.post('/note/add', verifyUser, addNote);
+router.patch('/note/update', verifyUser, updateNote);
+router.delete('/note/delete', verifyUser, deleteNote);
 
 // test route
 router.get('/test', (req, res) => {
