@@ -22,3 +22,35 @@ const getNotes = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong!" });
     }
 };
+
+
+// function to add a new note
+const addNote = async (req, res) => {
+    try {
+        const { title, note, key } = req.body;
+        if (!title || !note || !key) {
+            return res.status(400).json({ message: "Please provide all required fields!" });
+        }
+        const userID = await currentUserID(req, res);
+        const previousNote = await Notes.findOne({ createdBy: userID });
+        if (previousNote) {
+            try {
+                decrypt(previousNote.note, key);
+            } catch (error) {
+                console.error(error);
+                return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
+            }
+        }
+        const encryptedNote = encrypt(note, key);
+        const newNote = new Notes({
+            title,
+            note: encryptedNote,
+            createdBy: userID
+        });
+        await newNote.save();
+        return res.status(201).json({ message: "Note Added Successfully!", newNote });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Something went wrong!" });
+    }
+};
