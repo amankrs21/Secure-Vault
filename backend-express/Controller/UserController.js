@@ -45,7 +45,7 @@ const asyncHandler = (fn) => (req, res, next) => {
 };
 
 
-// code to login user
+// function to login user
 const userLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const fieldValidation = validateFields({ email, password });
@@ -75,7 +75,7 @@ const userLogin = asyncHandler(async (req, res) => {
 });
 
 
-// code to register user
+// function to register user
 const userRegister = asyncHandler(async (req, res) => {
     const { name, email, dob, answer, password } = req.body;
     const fieldValidation = validateFields({ name, email, dob, answer, password });
@@ -99,7 +99,7 @@ const userRegister = asyncHandler(async (req, res) => {
 });
 
 
-// code to forget password
+// function to forget password
 const forgetPassword = asyncHandler(async (req, res) => {
     const { email, dob, answer, password } = req.body;
     const fieldValidation = validateFields({ email, dob, answer, password });
@@ -141,6 +141,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 
 
+// exporting functions
 module.exports = {
     userLogin,
     userRegister,
