@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const UserVault = require('../Models/Password.js');
 const { currentUserID } = require("../Middleware/AuthUser.js");
 
-const passwordKey = process.env.PASSWORD_KEY
+const passwordKey = process.env.PASSWORD_KEY;
 
 
 // function to encrypt the password
@@ -131,7 +131,8 @@ const deletePassword = async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: "Please provide the password id!" });
         }
-        const password = await UserVault.findById(id);
+        const userID = await currentUserID(req, res);
+        const password = await UserVault.findOne({ _id: id, createdBy: userID });
         if (!password) {
             return res.status(404).json({ message: "Password not found!" });
         }
@@ -144,7 +145,7 @@ const deletePassword = async (req, res) => {
 }
 
 
-// Export the functions
+// exporting functions
 module.exports = {
     encrypt,
     decrypt,
