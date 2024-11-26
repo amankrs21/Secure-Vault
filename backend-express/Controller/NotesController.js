@@ -1,6 +1,6 @@
-import UserNotes from "../Models/Notes";
-import { currentUserID } from "../Middleware/AuthUser";
-import { encrypt, decrypt } from "./PasswordController";
+const UserNotes = require('../Models/Notes');
+const { currentUserID } = require("../Middleware/AuthUser.js");
+const { encrypt, decrypt } = require("./PasswordController.js");
 
 
 // function to get all the notes of the user
@@ -105,4 +105,4 @@ const deleteNote = async (req, res) => {
 
 
 // exporting functions
-export { getNotes, addNote, updateNote, deleteNote };
+module.exports = { getNotes, addNote, updateNote, deleteNote };
