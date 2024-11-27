@@ -11,7 +11,7 @@ const getNotes = async (req, res) => {
         const userID = await currentUserID(req, res);
         const notes = await UserNotes.find({ createdBy: userID });
         try {
-            notes.forEach(note => { note.note = decrypt(note.note, key); });
+            notes.forEach(note => { note.content = decrypt(note.content, key); });
         } catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid Key!" });
@@ -35,16 +35,16 @@ const addNote = async (req, res) => {
         const previousNote = await UserNotes.findOne({ createdBy: userID });
         if (previousNote) {
             try {
-                decrypt(previousNote.note, key);
+                decrypt(previousNote.content, key);
             } catch (error) {
                 console.error(error);
                 return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
             }
         }
         const encryptedNote = encrypt(note, key);
-        const newNote = new Notes({
+        const newNote = new UserNotes({
             title,
-            note: encryptedNote,
+            content: encryptedNote,
             createdBy: userID
         });
         await newNote.save();
@@ -67,14 +67,14 @@ const updateNote = async (req, res) => {
         const previousNote = await UserNotes.findOne({ createdBy: userID });
         if (previousNote) {
             try {
-                decrypt(previousNote.note, key);
+                decrypt(previousNote.content, key);
             } catch (error) {
                 console.error(error);
                 return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
             }
         }
         const encryptedNote = encrypt(note, key);
-        const updatedNote = await UserNotes.findByIdAndUpdate(id, { title, note: encryptedNote }, { new: true });
+        const updatedNote = await UserNotes.findByIdAndUpdate(id, { title, content: encryptedNote }, { new: true });
         return res.status(200).json({ message: "Note Updated Successfully!", updatedNote });
     } catch (error) {
         console.error(error);
