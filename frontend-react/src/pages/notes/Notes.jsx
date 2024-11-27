@@ -1,14 +1,20 @@
+import './Notes.css';
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid2";
 import {
-    Accordion, AccordionDetails, AccordionSummary, Button, Container, Divider, TextField, Typography
+    Accordion, AccordionDetails, AccordionSummary, Button, Container, Divider, TextField, Tooltip, Typography
 } from "@mui/material";
 import { toast } from 'react-toastify';
+import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from "@mui/icons-material/Search";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+
+import PopupPin from "../vault/PopupPin";
 import AuthUser from "../../components/AuthUser";
 import { useLoading } from "../../components/loading/useLoading";
-import PopupPin from "../vault/PopupPin";
+
 
 export default function Notes() {
     const { http } = AuthUser();
@@ -95,6 +101,27 @@ export default function Notes() {
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>{data.title}</AccordionSummary>
                             <AccordionDetails>
                                 {data.content}
+                                <Divider sx={{ marginTop: 1 }} />
+                                <div className="note-update-section">
+                                    <div className='note-update-time'>
+                                        <Tooltip title="Last Updated" placement="top">
+                                            <AccessAlarmsIcon color='warning' />
+                                        </Tooltip>&nbsp;
+                                        {new Date(data.updatedAt).toLocaleString()}
+                                    </div>
+                                    <div className="note-update-buttons">
+                                        <Button size='small' variant="outlined">
+                                            <Tooltip title="Edit this Note" placement="top">
+                                                <EditIcon color='primary' />
+                                            </Tooltip>
+                                        </Button>
+                                        <Button size='small' variant="contained" color='error'>
+                                            <Tooltip title="Delete this Note" placement="top">
+                                                <DeleteForeverIcon />
+                                            </Tooltip>
+                                        </Button>
+                                    </div>
+                                </div>
                             </AccordionDetails>
                         </Accordion>
                     ))}
