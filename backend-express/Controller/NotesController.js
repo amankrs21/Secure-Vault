@@ -64,7 +64,7 @@ const addNote = async (req, res) => {
             return res.status(400).json({ message: fieldValidation.message });
         }
         const userID = await currentUserID(req, res);
-        const validateExistNote = validatePreviousNote(userID, key);
+        const validateExistNote = await validatePreviousNote(userID, key);
         if (!validateExistNote) {
             return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
         }
@@ -92,7 +92,7 @@ const updateNote = async (req, res) => {
             return res.status(400).json({ message: fieldValidation.message });
         }
         const userID = await currentUserID(req, res);
-        const validateExistNote = validatePreviousNote(userID, key);
+        const validateExistNote = await validatePreviousNote(userID, key);
         if (!validateExistNote) {
             return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
         }
