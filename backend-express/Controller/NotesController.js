@@ -16,8 +16,8 @@ const validateFields = (fields) => {
 };
 
 
-// validate previous note with key
-const validatePreviousNote = async (userID, key) => {
+// validating key with previous note
+const validateKey = async (userID, key) => {
     const previousNote = await UserNotes.findOne({ createdBy: userID });
     if (previousNote) {
         try {
@@ -64,9 +64,9 @@ const addNote = async (req, res) => {
             return res.status(400).json({ message: fieldValidation.message });
         }
         const userID = await currentUserID(req, res);
-        const validateExistNote = await validatePreviousNote(userID, key);
-        if (!validateExistNote) {
-            return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
+        const validKey = await validateKey(userID, key);
+        if (!validKey) {
+            return res.status(400).json({ message: "Key is not valid!" });
         }
         const encryptedNote = encrypt(note, key);
         const newNote = new UserNotes({
@@ -92,13 +92,19 @@ const updateNote = async (req, res) => {
             return res.status(400).json({ message: fieldValidation.message });
         }
         const userID = await currentUserID(req, res);
-        const validateExistNote = await validatePreviousNote(userID, key);
-        if (!validateExistNote) {
-            return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
+        const validKey = await validateKey(userID, key);
+        if (!validKey) {
+            return res.status(400).json({ message: "Key is not valid!" });
         }
-        const encryptedNote = encrypt(note, key);
-        const updatedNote = await UserNotes.findByIdAndUpdate(id, { title, content: encryptedNote }, { new: true });
-        return res.status(200).json({ message: "Note Updated Successfully!", updatedNote });
+        if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
+        const prevNote = await UserNotes.findOne({ _id: id, createdBy: userID });
+        if (!prevNote) {
+            return res.status(404).json({ message: "Note not found!" });
+        }
+        prevNote.title = title;
+        prevNote.content = encrypt(note, key);
+        await prevNote.save();
+        return res.status(200).json({ message: "Note Updated Successfully!" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });
@@ -109,18 +115,17 @@ const updateNote = async (req, res) => {
 // function to delete a note by id
 const deleteNote = async (req, res) => {
     try {
-        const { id, key } = req.body;
-        const fieldValidation = validateFields({ id, key });
+        const { id } = req.body;
+        const fieldValidation = validateFields({ id });
         if (!fieldValidation.isValid) {
-            return res.status(400).json({ message: "Key is not able to decrypt the previous note!" });
+            return res.status(400).json({ message: fieldValidation.message });
         }
+        if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
         const userID = await currentUserID(req, res);
-        const sanitizedId = validator.escape(id);
-        const note = await UserNotes.findOne({ _id: sanitizedId, createdBy: userID });
-        if (!note) {
+        const deletedNote = await UserNotes.findOneAndDelete({ _id: id, createdBy: userID });
+        if (!deletedNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
-        await UserNotes.findByIdAndDelete(sanitizedId);
         return res.status(200).json({ message: "Note Deleted Successfully!" });
     } catch (error) {
         console.error(error);
