@@ -2,7 +2,8 @@ const crypto = require('crypto');
 const UserVault = require('../Models/Password.js');
 const { currentUserID } = require("../Middleware/AuthUser.js");
 
-const passwordKey = process.env.PASSWORD_KEY
+const passwordKey = process.env.PASSWORD_KEY;
+
 
 // function to encrypt the password
 const encrypt = (text, key) => {
@@ -10,55 +11,38 @@ const encrypt = (text, key) => {
     let finalKey = Buffer.from(key + passwordKey.slice(key.length), 'utf-8').slice(0, 32);
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv('aes-256-gcm', finalKey, iv);
-
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-
-    // Get the authentication tag
     const authTag = cipher.getAuthTag().toString('hex');
-
-    // Return the iv, encrypted text, and authTag
     return iv.toString('hex') + ':' + encrypted + ':' + authTag;
 };
-
 
 
 // function to decrypt the password
 const decrypt = (text, key) => {
     key = decodeURIComponent(encodeURIComponent(atob(key)));
     let finalKey = Buffer.from(key + passwordKey.slice(key.length), 'utf-8').slice(0, 32);
-
     const textParts = text.split(':');
     const iv = Buffer.from(textParts[0], 'hex');
     const encryptedText = Buffer.from(textParts[1], 'hex');
     const authTag = Buffer.from(textParts[2], 'hex');
-
     const decipher = crypto.createDecipheriv('aes-256-gcm', finalKey, iv);
-
-    // Set the authentication tag
     decipher.setAuthTag(authTag);
-
     let decrypted = decipher.update(encryptedText);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
-
     return decrypted.toString();
 };
-
 
 
 // function to get all the passwords of the user
 const getPasswords = async (req, res) => {
     try {
         const { key } = req.body;
-        if (!key) {
-            return res.status(400).json({ message: "Please provide the key!" });
-        }
+        if (!key) { return res.status(400).json({ message: "Please provide the key!" }); }
         const userID = await currentUserID(req, res);
         const passwords = await UserVault.find({ createdBy: userID });
         try {
-            passwords.forEach(password => {
-                password.password = decrypt(password.password, key);
-            });
+            passwords.forEach(password => { password.password = decrypt(password.password, key); });
         } catch (error) {
             console.error(error);
             return res.status(400).json({ message: "Invalid Key!" });
@@ -79,7 +63,6 @@ const addPassword = async (req, res) => {
         if (!key || !title || !username || !rawPassword) {
             return res.status(400).json({ message: "Please provide all required fields!" });
         }
-
         const userID = await currentUserID(req, res);
         const previousPassword = await UserVault.findOne({ createdBy: userID });
         if (previousPassword) {
@@ -102,10 +85,8 @@ const addPassword = async (req, res) => {
             password: encryptedPassword,
             createdBy: userID
         });
-
         await password.save();
         return res.status(201).json({ message: "Password Added Successfully!", password });
-
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });
@@ -150,7 +131,8 @@ const deletePassword = async (req, res) => {
         if (!id) {
             return res.status(400).json({ message: "Please provide the password id!" });
         }
-        const password = await UserVault.findById(id);
+        const userID = await currentUserID(req, res);
+        const password = await UserVault.findOne({ _id: id, createdBy: userID });
         if (!password) {
             return res.status(404).json({ message: "Password not found!" });
         }
@@ -162,4 +144,13 @@ const deletePassword = async (req, res) => {
     }
 }
 
-module.exports = { getPasswords, addPassword, updatePassword, deletePassword };
+
+// exporting functions
+module.exports = {
+    encrypt,
+    decrypt,
+    getPasswords,
+    addPassword,
+    updatePassword,
+    deletePassword,
+};
