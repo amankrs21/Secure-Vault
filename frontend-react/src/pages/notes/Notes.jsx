@@ -97,7 +97,7 @@ export default function Notes() {
             ) : (
                 <Container maxWidth="md" sx={{ backgroundColor: '#f2f2f2', paddingY: 2, borderRadius: 2 }}>
                     {notesData.map((data, index) => (
-                        <Accordion key={index} sx={{ marginY: 1 }} expanded={expanded === `panel${index + 1}`} onChange={handleChange(`panel${index + 1}`)}>
+                        <Accordion key={data._id} sx={{ marginY: 1 }} expanded={expanded === `panel${index + 1}`} onChange={handleChange(`panel${index + 1}`)}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>{data.title}</AccordionSummary>
                             <AccordionDetails>
                                 {data.content}
