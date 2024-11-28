@@ -1,44 +1,44 @@
-const crypto = require('crypto');
+const validator = require("validator");
+
 const UserVault = require('../Models/Password.js');
+const { encrypt, decrypt } = require("../Service/Cipher.js");
 const { currentUserID } = require("../Middleware/AuthUser.js");
 
-const passwordKey = process.env.PASSWORD_KEY;
 
-
-// function to encrypt the password
-const encrypt = (text, key) => {
-    key = decodeURIComponent(encodeURIComponent(atob(key)));
-    let finalKey = Buffer.from(key + passwordKey.slice(key.length), 'utf-8').slice(0, 32);
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-gcm', finalKey, iv);
-    let encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
-    const authTag = cipher.getAuthTag().toString('hex');
-    return iv.toString('hex') + ':' + encrypted + ':' + authTag;
+// Validate if required fields are provided
+const validateFields = (fields) => {
+    for (const [key, value] of Object.entries(fields)) {
+        if (!value) {
+            return { isValid: false, message: `${key} is required!` };
+        }
+    }
+    return { isValid: true };
 };
 
 
-// function to decrypt the password
-const decrypt = (text, key) => {
-    key = decodeURIComponent(encodeURIComponent(atob(key)));
-    let finalKey = Buffer.from(key + passwordKey.slice(key.length), 'utf-8').slice(0, 32);
-    const textParts = text.split(':');
-    const iv = Buffer.from(textParts[0], 'hex');
-    const encryptedText = Buffer.from(textParts[1], 'hex');
-    const authTag = Buffer.from(textParts[2], 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-gcm', finalKey, iv);
-    decipher.setAuthTag(authTag);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-};
+// validating key with previous password
+const validateKey = async (userID, key) => {
+    const previousPass = await UserVault.findOne({ createdBy: userID });
+    if (previousPass) {
+        try {
+            decrypt(previousPass.password, key);
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
+    }
+    return true;
+}
 
 
 // function to get all the passwords of the user
 const getPasswords = async (req, res) => {
     try {
         const { key } = req.body;
-        if (!key) { return res.status(400).json({ message: "Please provide the key!" }); }
+        const fieldValidation = validateFields({ key });
+        if (!fieldValidation.isValid) {
+            return res.status(400).json({ message: fieldValidation.message });
+        }
         const userID = await currentUserID(req, res);
         const passwords = await UserVault.find({ createdBy: userID });
         try {
@@ -58,31 +58,20 @@ const getPasswords = async (req, res) => {
 // function to add a new password
 const addPassword = async (req, res) => {
     try {
-        let encryptedPassword = "";
         const { key, title, username, password: rawPassword } = req.body;
-        if (!key || !title || !username || !rawPassword) {
-            return res.status(400).json({ message: "Please provide all required fields!" });
+        const fieldValidation = validateFields({ key, title, username, password: rawPassword });
+        if (!fieldValidation.isValid) {
+            return res.status(400).json({ message: fieldValidation.message });
         }
         const userID = await currentUserID(req, res);
-        const previousPassword = await UserVault.findOne({ createdBy: userID });
-        if (previousPassword) {
-            try {
-                decrypt(previousPassword.password, key);
-            } catch (error) {
-                console.error(error);
-                return res.status(400).json({ message: "Key is not able to decrypt the previous password!" });
-            }
-        }
-        try {
-            encryptedPassword = encrypt(rawPassword, key);
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: "Invalid Key!" });
+        const validKey = await validateKey(userID, key);
+        if (!validKey) {
+            return res.status(400).json({ message: "Key is not valid!" });
         }
         const password = new UserVault({
             title,
             username,
-            password: encryptedPassword,
+            password: encrypt(rawPassword, key),
             createdBy: userID
         });
         await password.save();
@@ -97,24 +86,24 @@ const addPassword = async (req, res) => {
 // function to update a password
 const updatePassword = async (req, res) => {
     try {
-        let encryptedPassword = "";
         const { id, key, title, username, password: rawPassword } = req.body;
-        if (!id || !key || !title || !username || !rawPassword) {
-            return res.status(400).json({ message: "Please provide all required fields!" });
+        const fieldValidation = validateFields({ id, key, title, username, password: rawPassword });
+        if (!fieldValidation.isValid) {
+            return res.status(400).json({ message: fieldValidation.message });
         }
-        const password = await UserVault.findById(id);
+        const userID = await currentUserID(req, res);
+        const validKey = await validateKey(userID, key);
+        if (!validKey) {
+            return res.status(400).json({ message: "Key is not valid!" });
+        }
+        if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
+        const password = await UserVault.findOne({ _id: id, createdBy: userID });
         if (!password) {
             return res.status(404).json({ message: "Password not found!" });
         }
-        try {
-            encryptedPassword = encrypt(rawPassword, key);
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: "Invalid Key!" });
-        }
         password.title = title;
         password.username = username;
-        password.password = encryptedPassword;
+        password.password = encrypt(rawPassword, key);
         await password.save();
         return res.status(200).json({ message: "Password Updated Successfully!" });
     } catch (error) {
@@ -124,19 +113,20 @@ const updatePassword = async (req, res) => {
 }
 
 
-// function to delete a password
+// function to delete a password by id
 const deletePassword = async (req, res) => {
     try {
         const { id } = req.body;
-        if (!id) {
-            return res.status(400).json({ message: "Please provide the password id!" });
+        const fieldValidation = validateFields({ id });
+        if (!fieldValidation.isValid) {
+            return res.status(400).json({ message: fieldValidation.message });
         }
+        if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
         const userID = await currentUserID(req, res);
-        const password = await UserVault.findOne({ _id: id, createdBy: userID });
-        if (!password) {
+        const deletedPassword = await UserVault.findOneAndDelete({ _id: id, createdBy: userID });
+        if (!deletedPassword) {
             return res.status(404).json({ message: "Password not found!" });
         }
-        await UserVault.findByIdAndDelete(id);
         return res.status(200).json({ message: "Password Deleted Successfully!" });
     } catch (error) {
         console.error(error);
@@ -146,11 +136,4 @@ const deletePassword = async (req, res) => {
 
 
 // exporting functions
-module.exports = {
-    encrypt,
-    decrypt,
-    getPasswords,
-    addPassword,
-    updatePassword,
-    deletePassword,
-};
+module.exports = { getPasswords, addPassword, updatePassword, deletePassword };
