@@ -1,8 +1,8 @@
 const validator = require("validator");
 
 const UserNotes = require('../Models/Notes');
+const { encrypt, decrypt } = require("../Service/Cipher.js");
 const { currentUserID } = require("../Middleware/AuthUser.js");
-const { encrypt, decrypt } = require("./PasswordController.js");
 
 
 // Validate if required fields are provided
@@ -68,10 +68,9 @@ const addNote = async (req, res) => {
         if (!validKey) {
             return res.status(400).json({ message: "Key is not valid!" });
         }
-        const encryptedNote = encrypt(note, key);
         const newNote = new UserNotes({
             title,
-            content: encryptedNote,
+            content: encrypt(note, key),
             createdBy: userID
         });
         await newNote.save();
