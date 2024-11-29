@@ -96,7 +96,8 @@ const updateNote = async (req, res) => {
             return res.status(400).json({ message: "Key is not valid!" });
         }
         if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
-        const prevNote = await UserNotes.findOne({ _id: id, createdBy: userID });
+        const santizeId = validator.escape(id);
+        const prevNote = await UserNotes.findOne({ _id: santizeId, createdBy: userID });
         if (!prevNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
@@ -120,8 +121,9 @@ const deleteNote = async (req, res) => {
             return res.status(400).json({ message: fieldValidation.message });
         }
         if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
+        const santizeId = validator.escape(id);
         const userID = await currentUserID(req, res);
-        const deletedNote = await UserNotes.findOneAndDelete({ _id: id, createdBy: userID });
+        const deletedNote = await UserNotes.findOneAndDelete({ _id: santizeId, createdBy: userID });
         if (!deletedNote) {
             return res.status(404).json({ message: "Note not found!" });
         }

@@ -97,7 +97,8 @@ const updatePassword = async (req, res) => {
             return res.status(400).json({ message: "Key is not valid!" });
         }
         if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
-        const password = await UserVault.findOne({ _id: id, createdBy: userID });
+        const santizeId = validator.escape(id);
+        const password = await UserVault.findOne({ _id: santizeId, createdBy: userID });
         if (!password) {
             return res.status(404).json({ message: "Password not found!" });
         }
@@ -122,8 +123,9 @@ const deletePassword = async (req, res) => {
             return res.status(400).json({ message: fieldValidation.message });
         }
         if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
+        const santizeId = validator.escape(id);
         const userID = await currentUserID(req, res);
-        const deletedPassword = await UserVault.findOneAndDelete({ _id: id, createdBy: userID });
+        const deletedPassword = await UserVault.findOneAndDelete({ _id: santizeId, createdBy: userID });
         if (!deletedPassword) {
             return res.status(404).json({ message: "Password not found!" });
         }
