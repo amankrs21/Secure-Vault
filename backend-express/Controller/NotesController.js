@@ -31,6 +31,12 @@ const validateKey = async (userID, key) => {
 }
 
 
+// santize the id
+const santizeId = (id) => {
+    return validator.escape(id);
+}
+
+
 // function to get all the notes of the user
 const getNotes = async (req, res) => {
     try {
@@ -96,7 +102,7 @@ const updateNote = async (req, res) => {
             return res.status(400).json({ message: "Key is not valid!" });
         }
         if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
-        const prevNote = await UserNotes.findOne({ _id: id, createdBy: userID });
+        const prevNote = await UserNotes.findOne({ _id: santizeId(id), createdBy: userID });
         if (!prevNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
@@ -121,7 +127,7 @@ const deleteNote = async (req, res) => {
         }
         if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
         const userID = await currentUserID(req, res);
-        const deletedNote = await UserNotes.findOneAndDelete({ _id: id, createdBy: userID });
+        const deletedNote = await UserNotes.findOneAndDelete({ _id: santizeId(id), createdBy: userID });
         if (!deletedNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
