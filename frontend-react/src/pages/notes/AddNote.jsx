@@ -27,8 +27,8 @@ export default function AddNote({ openAdd, setOpenAdd, data }) {
                 </DialogContentText>
                 <TextField autoFocus fullWidth required variant="outlined" name="title"
                     label="Note Title" />
-                <TextField fullWidth multiline variant="outlined" minRows={3} maxRows={4} sx={{ marginY: 2 }}
-                    name="content" label="Note Content" />
+                <TextField fullWidth required multiline variant="outlined" name="note" label="Note Content"
+                    minRows={3} maxRows={4} sx={{ marginY: 2 }} />
             </DialogContent>
             <DialogActions>
                 <Button variant='outlined' onClick={() => setOpenAdd(!openAdd)}>Cancel</Button>
