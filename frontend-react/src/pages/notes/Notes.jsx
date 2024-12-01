@@ -37,10 +37,6 @@ export default function Notes() {
         try {
             setLoading(true);
             const response = await http.post('/notes', { key });
-            if (response.data.length == 0) {
-                localStorage.removeItem('SecurityPin');
-                return
-            }
             setNotesData(response.data);
         } catch (error) {
             console.error(error);
@@ -138,12 +134,12 @@ export default function Notes() {
             {(notesData.length == 0) ? (
                 <div style={{ textAlign: "center", marginTop: "50px" }}>
                     <Typography variant="h6">
-                        No secure passwords available. Please add new records.
+                        No notes available. Please add new records.
                     </Typography>
                     <Button variant='contained' color='primary' onClick={() => setOpenAdd(true)}
                         sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2', marginTop: 2 }}
                     >
-                        Add New Password
+                        Add New Note
                     </Button>
                 </div>
             ) : (

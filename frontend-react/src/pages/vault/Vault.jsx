@@ -34,10 +34,6 @@ export default function Vault() {
         try {
             setLoading(true);
             const response = await http.post('/passwords', { key });
-            if (response.data.length == 0) {
-                localStorage.removeItem('SecurityPin');
-                return
-            }
             setVaultData(response.data);
         } catch (error) {
             console.error(error);

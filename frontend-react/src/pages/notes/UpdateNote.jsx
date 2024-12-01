@@ -1,17 +1,12 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button
 } from '@mui/material';
-import { useState } from 'react';
 
 
-export default function UpdateNote({ updateData, setUpdateData, data }) {
-
-    const [formValues, setFormValues] = useState({
-        id: updateData?._id || '',
-        title: updateData?.title || '',
-        content: updateData?.content || '',
-    });
+const useForm = (initialValues) => {
+    const [formValues, setFormValues] = useState(initialValues);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,6 +15,17 @@ export default function UpdateNote({ updateData, setUpdateData, data }) {
             [name]: value,
         }));
     };
+
+    return [formValues, handleChange];
+};
+
+
+export default function UpdateNote({ updateData, setUpdateData, data }) {
+    const [formValues, handleChange] = useForm({
+        id: updateData?._id || '',
+        title: updateData?.title || '',
+        content: updateData?.content || '',
+    });
 
     return (
         <Dialog
@@ -41,23 +47,45 @@ export default function UpdateNote({ updateData, setUpdateData, data }) {
                     Please update the form to modify the note.
                 </DialogContentText>
 
-                <TextField fullWidth required name="title" variant="outlined" label="Note Title"
-                    value={formValues.title} onChange={handleChange} />
-                <TextField fullWidth required multiline name="content" variant="outlined" label="Note Content"
-                    minRows={3} maxRows={4} sx={{ marginY: 2 }} value={formValues.content} onChange={handleChange} />
+                <TextField
+                    fullWidth
+                    required
+                    name="title"
+                    variant="outlined"
+                    label="Note Title"
+                    value={formValues.title}
+                    onChange={handleChange}
+                />
+
+                <TextField
+                    required
+                    fullWidth
+                    multiline
+                    minRows={3}
+                    maxRows={4}
+                    name="content"
+                    variant="outlined"
+                    label="Note Content"
+                    sx={{ marginY: 2 }}
+                    value={formValues.content}
+                    onChange={handleChange}
+                />
             </DialogContent>
 
             <DialogActions>
-                <Button variant="outlined" onClick={() => setUpdateData(null)}>Cancel</Button>
-                <Button type="submit" variant="contained">Update</Button>
+                <Button variant="outlined" onClick={() => setUpdateData(null)}>
+                    Cancel
+                </Button>
+                <Button type="submit" variant="contained">
+                    Update
+                </Button>
             </DialogActions>
         </Dialog>
-    )
+    );
 }
-
 
 UpdateNote.propTypes = {
     updateData: PropTypes.object,
     setUpdateData: PropTypes.func.isRequired,
-    data: PropTypes.func.isRequired
+    data: PropTypes.func.isRequired,
 };
