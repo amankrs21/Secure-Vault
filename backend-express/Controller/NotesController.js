@@ -91,8 +91,8 @@ const addNote = async (req, res) => {
 // function to update a note by id
 const updateNote = async (req, res) => {
     try {
-        const { id, title, note, key } = req.body;
-        const fieldValidation = validateFields({ id, title, note, key });
+        const { id, title, content, key } = req.body;
+        const fieldValidation = validateFields({ id, title, content, key });
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
@@ -107,7 +107,7 @@ const updateNote = async (req, res) => {
             return res.status(404).json({ message: "Note not found!" });
         }
         prevNote.title = title;
-        prevNote.content = encrypt(note, key);
+        prevNote.content = encrypt(content, key);
         await prevNote.save();
         return res.status(200).json({ message: "Note Updated Successfully!" });
     } catch (error) {
