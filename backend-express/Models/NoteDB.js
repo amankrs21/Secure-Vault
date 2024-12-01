@@ -1,17 +1,12 @@
-const mongoose = require('mongoose');
+const mongo = require('mongoose');
 
-const PasswordSchema = new mongoose.Schema({
+const NoteDB = new mongo.Schema({
     title: {
         type: String,
         required: true,
         trim: true,
     },
-    username: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    password: {
+    content: {
         type: String,
         required: true,
     },
@@ -21,9 +16,9 @@ const PasswordSchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'UserDB',
         required: true
     }
 });
 
-module.exports = mongoose.model('UserVault', PasswordSchema);
+module.exports = mongo.model('NoteDB', NoteDB);
