@@ -1,38 +1,14 @@
 const validator = require("validator");
 
-const UserNotes = require('../Models/Notes');
+const NoteDB = require("../Models/NoteDB.js");
+const CurrentUser = require("../Middleware/CurrentUser.js");
 const { encrypt, decrypt } = require("../Service/Cipher.js");
-const { currentUserID } = require("../Middleware/AuthUser.js");
-
-
-// Validate if required fields are provided
-const validateFields = (fields) => {
-    for (const [key, value] of Object.entries(fields)) {
-        if (!value) {
-            return { isValid: false, message: `${key} is required!` };
-        }
-    }
-    return { isValid: true };
-};
-
-
-// validating key with previous note
-const validateKey = async (userID, key) => {
-    const previousNote = await UserNotes.findOne({ createdBy: userID });
-    if (previousNote) {
-        try {
-            decrypt(previousNote.content, key);
-        } catch (error) {
-            console.error(error);
-            return false;
-        }
-    }
-    return true;
-}
+const { validateFields, validateKey } = require("../Service/Validation.js");
 
 
 // santize the id
 const santizeId = (id) => {
+    if (!validator.isMongoId(id)) { return null; }
     return validator.escape(id);
 }
 
@@ -40,20 +16,18 @@ const santizeId = (id) => {
 // function to get all the notes of the user
 const getNotes = async (req, res) => {
     try {
-        const { key } = req.body;
-        const fieldValidation = validateFields({ key });
+        const { key, pageSize, offSet } = req.body;
+        const fieldValidation = validateFields({ key, pageSize, offSet });
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await currentUserID(req, res);
-        const notes = await UserNotes.find({ createdBy: userID });
-        try {
-            notes.forEach(note => { note.content = decrypt(note.content, key); });
-        } catch (error) {
-            console.error(error);
-            return res.status(400).json({ message: "Invalid Key!" });
+        const userID = await CurrentUser(req, res);
+        if (!await validateKey(userID, key)) {
+            return res.status(400).json({ message: "Key is not valid!" });
         }
-        return res.status(200).json(notes);
+        const notes = await NoteDB.find({ createdBy: userID }).skip(offSet).limit(pageSize);
+        notes.forEach(note => { note.content = decrypt(note.content, key); });
+        return res.status(200).json({ notes });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });
@@ -64,23 +38,22 @@ const getNotes = async (req, res) => {
 // function to add a new note
 const addNote = async (req, res) => {
     try {
-        const { title, note, key } = req.body;
+        const { title, content, key } = req.body;
         const fieldValidation = validateFields({ title, note, key });
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await currentUserID(req, res);
-        const validKey = await validateKey(userID, key);
-        if (!validKey) {
+        const userID = await CurrentUser(req, res);
+        if (!await validateKey(userID, key)) {
             return res.status(400).json({ message: "Key is not valid!" });
         }
-        const newNote = new UserNotes({
+        const newNote = new NoteDB({
             title,
-            content: encrypt(note, key),
+            content: encrypt(content, key),
             createdBy: userID
         });
         await newNote.save();
-        return res.status(201).json({ message: "Note Added Successfully!", newNote });
+        return res.status(201).json({ message: "Note Added Successfully!" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });
@@ -96,13 +69,12 @@ const updateNote = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await currentUserID(req, res);
-        const validKey = await validateKey(userID, key);
-        if (!validKey) {
+        const userID = await CurrentUser(req, res);
+        if (!await validateKey(userID, key)) {
             return res.status(400).json({ message: "Key is not valid!" });
         }
-        if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
-        const prevNote = await UserNotes.findOne({ _id: santizeId(id), createdBy: userID });
+
+        const prevNote = await NoteDB.findOne({ _id: santizeId(id), createdBy: userID });
         if (!prevNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
@@ -125,9 +97,8 @@ const deleteNote = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        if (!validator.isMongoId(id)) { return res.status(400).json({ message: "Invalid ID!" }); }
-        const userID = await currentUserID(req, res);
-        const deletedNote = await UserNotes.findOneAndDelete({ _id: santizeId(id), createdBy: userID });
+        const userID = await CurrentUser(req, res);
+        const deletedNote = await NoteDB.findOneAndDelete({ _id: santizeId(id), createdBy: userID });
         if (!deletedNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
