@@ -1,43 +1,37 @@
 const express = require("express");
-const { verifyUser, verifyAdmin } = require("../Middleware/AuthUser.js");
-const { userLogin, userRegister, forgetPassword, getAllUsers, resetPassword, changeActiveState } = require("../Controller/UserController.js")
-const { getTodos, getTodoById, addTodo, markComplete, updateTodo, deleteTodo } = require("../Controller/TodoController.js");
-const { getPasswords, addPassword, updatePassword, deletePassword } = require("../Controller/PasswordController.js");
+
+const VerifyUser = require("../Middleware/VerifyUser.js");
+const ValidateKey = require("../Middleware/ValidateKey.js");
+const { userLogin, userRegister, forgetPassword } = require("../Controller/UserController.js")
 const { getNotes, addNote, updateNote, deleteNote } = require("../Controller/NotesController.js");
+const { getVault, addVault, updateVault, deleteVault, soloVault } = require("../Controller/VaultController.js");
+
+
 const router = express.Router();
 
-//  Auth User Routes
-router.post('/auth/login', userLogin)
-router.post('/auth/register', userRegister)
-router.patch('/auth/forget', forgetPassword)
-router.patch('/auth/reset', verifyUser, resetPassword)
-router.patch('/auth/active', verifyUser, verifyAdmin, changeActiveState)
 
-router.get('/admin/users', verifyUser, verifyAdmin, getAllUsers)
-router.get('/todo', verifyUser, getTodos);
-router.get('/todo/:id', verifyUser, getTodoById);
-router.post('/todo/add', verifyUser, addTodo);
-router.patch('/todo/update', verifyUser, updateTodo)
-router.patch('/todo/complete/:id', verifyUser, markComplete);
-router.delete('/todo/delete/:id', verifyUser, deleteTodo)
+// User Routes
+router.post('/auth/login', userLogin);
+router.post('/auth/register', userRegister);
+router.patch('/auth/forget', forgetPassword);
 
-// Password Routes
-router.post('/passwords', verifyUser, getPasswords);
-router.post('/password/add', verifyUser, addPassword);
-router.patch('/password/update', verifyUser, updatePassword);
-router.delete('/password/delete', verifyUser, deletePassword);
+
+// Vaults Routes
+router.post('/vaults', VerifyUser, getVault);
+router.delete('/vault/delete', VerifyUser, deleteVault);
+router.post('/vault/add', VerifyUser, ValidateKey, addVault);
+router.post('/vault/solo', VerifyUser, ValidateKey, soloVault);
+router.patch('/vault/update', VerifyUser, ValidateKey, updateVault);
+
 
 // Notes Routes
-router.post('/notes', verifyUser, getNotes);
-router.post('/note/add', verifyUser, addNote);
-router.patch('/note/update', verifyUser, updateNote);
-router.delete('/note/delete', verifyUser, deleteNote);
+router.delete('/note/delete', VerifyUser, deleteNote);
+router.post('/notes', VerifyUser, ValidateKey, getNotes);
+router.post('/note/add', VerifyUser, ValidateKey, addNote);
+router.patch('/note/update', VerifyUser, ValidateKey, updateNote);
+
 
 // test route
-router.get('/test', (req, res) => {
-    res.send({
-        message: "API is working fine"
-    });
-})
+router.get('/test', (req, res) => { res.send({ message: "API is working fine" }); });
 
 module.exports = router;
