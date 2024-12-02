@@ -27,7 +27,7 @@ const getNotes = async (req, res) => {
         }
         const notes = await NoteDB.find({ createdBy: userID }).skip(offSet).limit(pageSize);
         notes.forEach(note => { note.content = decrypt(note.content, key); });
-        return res.status(200).json({ notes });
+        return res.status(200).json(notes);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });
@@ -39,7 +39,7 @@ const getNotes = async (req, res) => {
 const addNote = async (req, res) => {
     try {
         const { title, content, key } = req.body;
-        const fieldValidation = validateFields({ title, note, key });
+        const fieldValidation = validateFields({ title, content, key });
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
@@ -92,7 +92,7 @@ const updateNote = async (req, res) => {
 // function to delete a note by id
 const deleteNote = async (req, res) => {
     try {
-        const { id } = req.body;
+        const id = req.query.id;
         const fieldValidation = validateFields({ id });
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });

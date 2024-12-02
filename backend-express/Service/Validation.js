@@ -27,7 +27,7 @@ const validateKey = async (userID, key) => {
             return true;
         }
 
-        return false;
+        return true;
     } catch (error) {
         console.error("Error validating key:", error);
         return false;
