@@ -19,7 +19,7 @@ const VaultDB = new mongo.Schema({
         default: Date.now
     },
     createdBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongo.Schema.Types.ObjectId,
         ref: 'UserDB',
         required: true
     }
