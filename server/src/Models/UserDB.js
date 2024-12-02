@@ -13,12 +13,7 @@ const UserDB = new mongo.Schema({
     name: {
         type: String,
     },
-    role: {
-        type: Number,
-        enum: [0, 1], // 0: user, 1: admin
-        required: true,
-    },
-    isFirstLogin: {
+    isUserNew: {
         type: Boolean,
         default: true,
     },

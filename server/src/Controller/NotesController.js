@@ -1,5 +1,4 @@
 const NoteDB = require("../Models/NoteDB.js");
-const CurrentUser = require("../Middleware/CurrentUser.js");
 const { encrypt, decrypt } = require("../Service/Cipher.js");
 const { santizeId, validateFields } = require("../Service/Validation.js");
 
@@ -12,8 +11,7 @@ const getNotes = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await CurrentUser(req, res);
-        const notes = await NoteDB.find({ createdBy: userID }).skip(offSet).limit(pageSize);
+        const notes = await NoteDB.find({ createdBy: req.currentUser }).skip(offSet).limit(pageSize);
         notes.forEach(note => { note.content = decrypt(note.content, key); });
         return res.status(200).json(notes);
     } catch (error) {
@@ -31,11 +29,10 @@ const addNote = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await CurrentUser(req, res);
         const newNote = new NoteDB({
             title,
             content: encrypt(content, key),
-            createdBy: userID
+            createdBy: req.currentUser
         });
         await newNote.save();
         return res.status(201).json({ message: "Note Added Successfully!" });
@@ -54,8 +51,7 @@ const updateNote = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await CurrentUser(req, res);
-        const prevNote = await NoteDB.findOne({ _id: santizeId(id), createdBy: userID });
+        const prevNote = await NoteDB.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!prevNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
@@ -78,7 +74,6 @@ const deleteNote = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await CurrentUser(req, res);
         const deletedNote = await NoteDB.findOneAndDelete({ _id: santizeId(id), createdBy: userID });
         if (!deletedNote) {
             return res.status(404).json({ message: "Note not found!" });

@@ -1,5 +1,4 @@
 const VaultDB = require("../Models/VaultDB.js");
-const CurrentUser = require("../Middleware/CurrentUser.js");
 const { encrypt, decrypt } = require("../Service/Cipher.js");
 const { santizeId, validateFields } = require("../Service/Validation.js");
 
@@ -10,8 +9,7 @@ const soloVault = async (req, res) => {
         const id = req.query.id;
         const key = req.body.key;
         if (!id) { return res.status(400).json({ message: "Id is required!" }); }
-        const userID = await CurrentUser(req, res);
-        const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: userID });
+        const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!vault) {
             return res.status(404).json({ message: "Vault not found!" });
         }
@@ -28,12 +26,11 @@ const soloVault = async (req, res) => {
 const getVault = async (req, res) => {
     try {
         const { pageSize, offSet } = req.body;
-        const userID = await CurrentUser(req, res);
         const fieldValidation = validateFields({ pageSize, offSet });
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const vaults = await VaultDB.find({ createdBy: userID }).skip(offSet).limit(pageSize);
+        const vaults = await VaultDB.find({ createdBy: req.currentUser }).skip(offSet).limit(pageSize);
         return res.status(200).json(vaults);
     } catch (error) {
         console.error(error);
@@ -50,12 +47,11 @@ const addVault = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await CurrentUser(req, res);
         const vault = new VaultDB({
             title,
             username,
             password: encrypt(password, key),
-            createdBy: userID
+            createdBy: req.currentUser
         });
         await vault.save();
         return res.status(201).json({ message: "Vault Added Successfully!", password });
@@ -74,8 +70,7 @@ const updateVault = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await CurrentUser(req, res);
-        const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: userID });
+        const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!vault) {
             return res.status(404).json({ message: "Vault not found!" });
         }
@@ -99,8 +94,7 @@ const deleteVault = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const userID = await CurrentUser(req, res);
-        const deletedPassword = await VaultDB.findOneAndDelete({ _id: santizeId(id), createdBy: userID });
+        const deletedPassword = await VaultDB.findOneAndDelete({ _id: santizeId(id), createdBy: req.currentUser });
         if (!deletedPassword) {
             return res.status(404).json({ message: "Vault not found!" });
         }
