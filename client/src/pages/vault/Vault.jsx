@@ -6,19 +6,20 @@ import {
     TableContainer, TableHead, TableRow, Paper, Tooltip
 } from '@mui/material';
 import { toast } from 'react-toastify';
-import SearchIcon from '@mui/icons-material/Search';
 import EditIcon from '@mui/icons-material/Edit';
+import SearchIcon from '@mui/icons-material/Search';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import PopupPin from './PopupPin';
 import AddVault from './AddVault';
-import AuthUser from '../../components/AuthUser';
-import { useLoading } from '../../components/loading/useLoading';
 import UpdateVault from './UpdateVault';
 import DeleteVault from './DeleteVault';
+import AuthUser from '../../components/auth/AuthUser';
+import { useLoading } from '../../components/loading/useLoading';
 
 export default function Vault() {
+    const firstLogin = false;
     const { http } = AuthUser();
     const { setLoading } = useLoading();
     const [openPin, setOpenPin] = useState(false);
@@ -28,31 +29,25 @@ export default function Vault() {
     const [updateData, setUpdateData] = useState(null);
     const [deleteData, setDeleteData] = useState(null);
 
-    const firstLogin = localStorage.getItem('authData') ? JSON.parse(localStorage.getItem('authData')).user.firstLogin : false;
-
-    const handleFetch = async (key) => {
+    const handleFetch = async (offSet, pageSize) => {
         try {
             setLoading(true);
-            const response = await http.post('/passwords', { key });
+            const response = await http.post('/vaults', { offSet, pageSize });
             setVaultData(response.data);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
             else { toast.error('Something went wrong!'); }
-            localStorage.removeItem('SecurityPin');
-            setOpenPin(true);
         } finally { setLoading(false); }
     }
 
     const handleAdd = async (data) => {
         try {
             setLoading(true);
-            const response = await http.post('/password/add', data);
-            const authData = JSON.parse(localStorage.getItem('authData'));
-            authData.user.firstLogin = false;
-            localStorage.setItem('authData', JSON.stringify(authData));
+            data.key = localStorage.getItem('svPin');
+            const response = await http.post('/vault/add', data);
             toast.success(response.data.message);
-            handleFetch(data.key);
+            localStorage.removeItem("localVault");
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -63,10 +58,10 @@ export default function Vault() {
     const handleUpdate = async (data) => {
         try {
             setLoading(true);
-            data.key = localStorage.getItem('SecurityPin');
-            const response = await http.patch(`/password/update`, data);
+            data.key = localStorage.getItem('svPin');
+            const response = await http.patch(`/vault/update`, data);
             toast.success(response.data.message);
-            handleFetch(data.key);
+            localStorage.removeItem("localVault");
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -74,12 +69,12 @@ export default function Vault() {
         } finally { setLoading(false); }
     }
 
-    const handleDelete = async (data) => {
+    const handleDelete = async (id) => {
         try {
             setLoading(true);
-            const response = await http.delete(`/password/delete`, { data: { id: data } });
+            const response = await http.delete(`/vault/delete?id=${id}`);
             toast.success(response.data.message);
-            handleFetch(localStorage.getItem('SecurityPin'));
+            localStorage.removeItem("localVault");
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -88,13 +83,9 @@ export default function Vault() {
     }
 
     useEffect(() => {
-        if (firstLogin) { return; }
-        const pin = localStorage.getItem('SecurityPin') || null;
-        if (pin) {
-            handleFetch(pin);
-        } else {
-            setOpenPin(true);
-        }
+        const localVault = JSON.parse(localStorage.getItem('localVault'));
+        if (localVault) { setVaultData(localVault); }
+        else { handleFetch(0, 10); }
     }, []);
 
     return (

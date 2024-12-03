@@ -6,13 +6,14 @@ import { Avatar, Typography, TextField, Button } from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Visibility from '@mui/icons-material/Visibility';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import AuthUser from '../../components/AuthUser';
-import { useLoading } from '../../components/loading/useLoading';
+import AuthUser from '../../components/auth/AuthUser';
 import { ERROR_MESSAGES } from '../../components/constants';
+import { useLoading } from '../../components/loading/useLoading';
+
 
 export default function Register() {
     const { http } = AuthUser();

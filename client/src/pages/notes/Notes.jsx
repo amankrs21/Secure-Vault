@@ -11,12 +11,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import PopupPin from "../vault/PopupPin";
-import AuthUser from "../../components/AuthUser";
-import { useLoading } from "../../components/loading/useLoading";
 import AddNote from './AddNote';
 import UpdateNote from './UpdateNote';
 import DeleteNote from './DeleteNote';
+import PopupPin from "../vault/PopupPin";
+import AuthUser from '../../components/auth/AuthUser';
+import { useLoading } from "../../components/loading/useLoading";
 
 
 export default function Notes() {

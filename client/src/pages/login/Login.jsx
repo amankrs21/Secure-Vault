@@ -11,7 +11,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import ForgetPass from './ForgetPass';
-import AuthUser from '../../components/AuthUser';
+import AuthUser from '../../components/auth/AuthUser';
 import { ERROR_MESSAGES } from '../../components/constants';
 import { useLoading } from '../../components/loading/useLoading';
 

@@ -1,18 +1,21 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter, Routes, Route, Navigate
+} from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import Login from "./pages/login/Login";
-import PrivateRoutes from "./components/PrivateRoutes";
-import PageNotFound from "./components/PageNotFound";
-import ServerUnavl from "./components/ServerUnavl";
 import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
 import Vault from "./pages/vault/Vault";
 import Notes from "./pages/notes/Notes";
 import Connect from "./pages/connect/Connect";
-import { LoadingProvider } from "./components/loading/LoadingContext";
-import Loading from "./components/loading/Loading";
 import Register from "./pages/register/Register";
+import ServerUnavl from "./pages/503/ServerUnavl";
+import Loading from "./components/loading/Loading";
+import PageNotFound from "./pages/404/PageNotFound";
+import PrivateRoutes from "./components/PrivateRoutes";
+import { LoadingProvider } from "./components/loading/LoadingContext";
+
 
 export default function App() {
   return (

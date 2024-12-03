@@ -11,7 +11,7 @@ const santizeId = (id) => {
 // Validate if required fields are provided
 const validateFields = (fields) => {
     for (const [key, value] of Object.entries(fields)) {
-        if (!value) {
+        if (value === null || value === undefined) {
             return { isValid: false, message: `${key} is required!` };
         }
     }
