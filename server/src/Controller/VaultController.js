@@ -54,7 +54,7 @@ const addVault = async (req, res) => {
             createdBy: req.currentUser
         });
         await vault.save();
-        return res.status(201).json({ message: "Vault Added Successfully!", password });
+        return res.status(201).json({ message: "Vault Added Successfully!" });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });
@@ -98,7 +98,7 @@ const deleteVault = async (req, res) => {
         if (!deletedPassword) {
             return res.status(404).json({ message: "Vault not found!" });
         }
-        return res.status(204).json({ message: "Vault Deleted Successfully!" });
+        return res.status(204);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });

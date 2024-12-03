@@ -32,13 +32,12 @@ const AuthSession = async (req, res, next) => {
         req.currentUser = user._id;
 
         const key = req.body.key;
-        if (key) {
+        if (key && !user.isUserNew) {
             const isValidKey = await validateKey(req.currentUser, key);
             if (!isValidKey) {
                 return res.status(400).json({ message: "Invalid Key!" });
             }
         }
-
         next();
     } catch (error) {
         console.error(error);
@@ -56,7 +55,8 @@ const validateKey = async (userID, key) => {
 
     return (
         (prevVault && decryptSafely(prevVault.password, key)) ||
-        (previousNote && decryptSafely(previousNote.content, key))
+        (previousNote && decryptSafely(previousNote.content, key)) ||
+        changeIsUserNew(userID)
     );
 };
 
@@ -69,5 +69,11 @@ const decryptSafely = (data, key) => {
         return false;
     }
 };
+
+// Helper function to change isUserNew status
+const changeIsUserNew = async (userID) => {
+    await UserDB.findByIdAndUpdate(userID, { isUserNew: true });
+    return true;
+}
 
 module.exports = AuthSession;

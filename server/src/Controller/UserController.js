@@ -89,7 +89,7 @@ const forgetPassword = async (req, res) => {
         if (!user) {
             return res.status(401).json({ message: "Invalid Credentials!" });
         }
-        if (user.dateOfBirth !== dob || btoa(answer.toLowerCase()) !== user.answer) {
+        if (user.dateOfBirth !== dob || btoa(answer.toLowerCase()) !== user.secretAnswer) {
             return res.status(401).json({ message: "Invalid Credentials!" });
         }
         user.password = await hashPassword(password);

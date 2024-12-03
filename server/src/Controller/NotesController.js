@@ -74,11 +74,11 @@ const deleteNote = async (req, res) => {
         if (!fieldValidation.isValid) {
             return res.status(400).json({ message: fieldValidation.message });
         }
-        const deletedNote = await NoteDB.findOneAndDelete({ _id: santizeId(id), createdBy: userID });
+        const deletedNote = await NoteDB.findOneAndDelete({ _id: santizeId(id), createdBy: req.currentUser });
         if (!deletedNote) {
             return res.status(404).json({ message: "Note not found!" });
         }
-        return res.status(204).json({ message: "Note Deleted Successfully!" });
+        return res.status(204);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Something went wrong!" });
