@@ -26,7 +26,7 @@ http.interceptors.response.use(
     (response) => response,
     (error) => {
         if (!error.response && error.message === "Network Error") {
-            window.location.href = "/503";
+            // window.location.href = "/503";
         } else if (error.response.status === 403 || error.response.status === 401) {
             localStorage.clear();
         }
