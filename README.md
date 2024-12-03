@@ -18,7 +18,7 @@ The TodoMERN project leverages the power of the MERN stack (MongoDB, Express, Re
 
 - **Frontend**: React.js, React Router, Axios, Material UI, Vite.js
 - **Backend**: Express.js, MongoDB, Mongoose, JWT, Bcrypt, Cors, Dotenv
-- **Development Tools**: ESLint, Prettier, Concurrently, Nodemon, Vite, Postman
+- **Development Tools**: ESLint, Prettier, Concurrently, Nodemon, Vite, Insonmia
 
 
 ## Installation
@@ -34,7 +34,7 @@ To get this project up and running on your local machine, follow the steps below
 1. **Navigate to the backend directory:**
     
     ```bash
-    cd TodoMERN/express
+    cd Security-Vault/server
     ```
 
 2. **Install the required packages:**
@@ -43,15 +43,14 @@ To get this project up and running on your local machine, follow the steps below
     npm install
     ```
 
-3. **Create a `.env` file in the root of the `express` directory and add the following environment variables:**
+3. **Create a `.env` file in the root of the `server` directory and add the following environment variables:**
 
     ```env
-    MONGO_URI=your_mongodb_uri
-    SECRET_KEY=your_jwt_secret
+    - MONGO_URI = "mongodb+srv://username:<password>@cluster0.nbgt3.mongodb.net/?retryWrites=true&w=majority"
+    - SECRET_KEY = "i=UGrwJW8Bdp;twly82YdE=lwl!kav;lguCY/m" (EXAMPLE)
+    - PASSWORD_KEY = "7Zrdf1sxdUGrwJW8BdGrwJl!kaE=lyptF0Rfd" (EXAMPLE)
     ```
-
-    Replace `your_mongodb_uri` with your MongoDB connection string and `your_jwt_secret` with a secret key for JWT.
-
+    Note: Replace the `MONGO_URI` with your MongoDB connection string and generate a unique `SECRET_KEY` and `PASSWORD_KEY` for security purposes.
 4. **Start the server:**
     
     ```bash
@@ -63,7 +62,7 @@ To get this project up and running on your local machine, follow the steps below
 1. **Navigate to the frontend directory:**
     
     ```bash
-    cd TodoMERN/react
+    cd Security-Vault/client
     ```
 
 2. **Install the required packages:**
