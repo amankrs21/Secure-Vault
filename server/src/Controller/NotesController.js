@@ -1,6 +1,6 @@
-const NoteDB = require("../Models/NoteDB.js");
-const { encrypt, decrypt } = require("../Service/Cipher.js");
-const { santizeId, validateFields } = require("../Service/Validation.js");
+const NoteDB = require("../model/NoteDB.js");
+const { encrypt, decrypt } = require("../service/Cipher.js");
+const { santizeId, validateFields } = require("../service/Validation.js");
 
 
 // function to get all the notes of the user

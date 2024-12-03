@@ -13,10 +13,6 @@ const UserDB = new mongo.Schema({
     name: {
         type: String,
     },
-    isUserNew: {
-        type: Boolean,
-        default: true,
-    },
     dateOfBirth: {
         type: String,
         required: true,
@@ -24,6 +20,9 @@ const UserDB = new mongo.Schema({
     secretAnswer: {
         type: String,
         required: true,
+    },
+    textVerify: {
+        type: String,
     },
     createdAt: {
         type: Date,

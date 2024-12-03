@@ -1,6 +1,7 @@
 const express = require("express");
 
 const AuthSession = require("../Middleware/AuthSession.js");
+const { setVerifyText, resetPin } = require("../Controller/PinController.js");
 const { userLogin, userRegister, forgetPassword } = require("../Controller/UserController.js")
 const { getNotes, addNote, updateNote, deleteNote } = require("../Controller/NotesController.js");
 const { getVault, addVault, updateVault, deleteVault, soloVault } = require("../Controller/VaultController.js");
@@ -13,6 +14,11 @@ const router = express.Router();
 router.post('/auth/login', userLogin);
 router.post('/auth/register', userRegister);
 router.patch('/auth/forget', forgetPassword);
+
+
+// PIN Routes
+router.post('/pin/setText', AuthSession, setVerifyText);
+router.patch('/pin/reset', AuthSession, resetPin);
 
 
 // Vaults Routes

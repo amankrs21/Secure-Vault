@@ -1,6 +1,6 @@
-const VaultDB = require("../Models/VaultDB.js");
-const { encrypt, decrypt } = require("../Service/Cipher.js");
-const { santizeId, validateFields } = require("../Service/Validation.js");
+const VaultDB = require("../model/VaultDB.js");
+const { encrypt, decrypt } = require("../service/Cipher.js");
+const { santizeId, validateFields } = require("../service/Validation.js");
 
 
 // function to decrypt the vault password by id

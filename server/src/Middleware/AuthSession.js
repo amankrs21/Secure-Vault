@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
-const UserDB = require("../Models/UserDB.js");
-const NoteDB = require("../Models/NoteDB.js");
-const VaultDB = require("../Models/VaultDB.js");
-const { decrypt } = require("../Service/Cipher.js");
+const UserDB = require("../model/UserDB.js");
+const { decrypt } = require("../service/Cipher.js");
 
 const SecretKey = process.env.SECRET_KEY;
 
@@ -32,9 +30,9 @@ const AuthSession = async (req, res, next) => {
         req.currentUser = user._id;
 
         const key = req.body.key;
-        if (key && !user.isUserNew) {
-            const isValidKey = await validateKey(req.currentUser, key);
-            if (!isValidKey) {
+        console.log(key, user.textVerify);
+        if (key && user.textVerify) {
+            if (!validateKey(user.textVerify, key)) {
                 return res.status(400).json({ message: "Invalid Key!" });
             }
         }
@@ -45,35 +43,13 @@ const AuthSession = async (req, res, next) => {
     }
 };
 
-
 // Helper function to validate the key
-const validateKey = async (userID, key) => {
-    const [prevVault, previousNote] = await Promise.all([
-        VaultDB.findOne({ createdBy: userID }),
-        NoteDB.findOne({ createdBy: userID }),
-    ]);
-
-    return (
-        (prevVault && decryptSafely(prevVault.password, key)) ||
-        (previousNote && decryptSafely(previousNote.content, key)) ||
-        changeIsUserNew(userID)
-    );
-};
-
-// Helper function to safely attempt decryption
-const decryptSafely = (data, key) => {
+const validateKey = (textVerify, key) => {
     try {
-        decrypt(data, key);
+        decrypt(textVerify, key);
         return true;
-    } catch {
-        return false;
-    }
+    } catch { return false; }
 };
 
-// Helper function to change isUserNew status
-const changeIsUserNew = async (userID) => {
-    await UserDB.findByIdAndUpdate(userID, { isUserNew: true });
-    return true;
-}
 
 module.exports = AuthSession;

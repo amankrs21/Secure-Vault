@@ -2,8 +2,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 
-const UserDB = require("../Models/UserDB.js");
-const { validateFields } = require("../Service/Validation.js");
+const UserDB = require("../model/UserDB.js");
+const { validateFields } = require("../service/Validation.js");
 
 const SecretKey = process.env.SECRET_KEY;
 

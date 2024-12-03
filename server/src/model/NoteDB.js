@@ -1,18 +1,13 @@
 const mongo = require('mongoose');
 
-const VaultDB = new mongo.Schema({
+const NoteDB = new mongo.Schema({
     title: {
         type: String,
         required: true,
         trim: true,
     },
-    username: {
+    content: {
         type: String,
-        required: true,
-    },
-    password: {
-        type: String,
-        required: true,
     },
     updatedAt: {
         type: Date,
@@ -25,4 +20,4 @@ const VaultDB = new mongo.Schema({
     }
 });
 
-module.exports = mongo.model('VaultDB', VaultDB);
+module.exports = mongo.model('NoteDB', NoteDB);
