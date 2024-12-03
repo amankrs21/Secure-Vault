@@ -1,14 +1,20 @@
-# MERN Vault: Your Secure Organizer
+# Secure-Vault: Your Secure Organizer
 
-The TodoMERN project leverages the power of the MERN stack (MongoDB, Express, React, Node.js) to provide a robust and secure platform for managing todo lists. It features JWT authentication for secure access and protected routes to ensure that only authenticated users can access certain functionalities.
+The Security-Vault project leverages the power of the MERN stack (MongoDB, Express, React, Node.js) to provide a robust and secure platform for managing todo lists. It features JWT authentication for secure access and protected routes to ensure that only authenticated users can access certain functionalities.
+
+Explore Our SecureVault🔒 – a powerful password manager and note storage app built with MERN, designed for ultimate privacy and top-notch security!🛡️ Your passwords and notes are encrypted 🔐 using advanced cipher text and Base64 encryption🚀, accessible only with your personal PIN🔑. Even we can’t decrypt your data!
+If you lose your PIN,⚠️ all your encrypted information is gone forever!🗝️ This ensures maximum protection.
+Secure✅ your digital life with confidence💪 and peace of mind!🧠
 
 ## Features
 
+- **Password Encryption**: Encrypts user passwords using bcrypt to ensure secure storage in the database.
+- **Note Encryption**: Encrypts user notes using AES encryption to ensure secure storage in the database.
+- **Base64 Encryption**: Encrypts user notes using Base64 encryption to ensure secure storage in the database.
+- **PIN Protection**: Requires users to set a PIN for accessing their encrypted passwords and notes, adding an extra layer of security.
 - **MERN Stack**: Leverages MongoDB, Express.js, React.js, and Node.js for a robust full-stack JavaScript solution.
 - **JWT Authentication**: Implements JSON Web Tokens to manage user sessions securely.
 - **Protected Routes**: Restricts access to certain functionalities to authenticated users only.
-- **Admin Capabilities**: Admin users can manage user accounts and reset passwords, providing an extra layer of management and security.
-- **Dark and Light Mode**: Users can toggle between dark and light themes for a personalized UI experience.
 - **Material UI (MUI)**: Utilizes MUI for an attractive and responsive user interface, enhancing usability and accessibility.
 - **Responsive Design**: The UI adapts to various screen sizes, ensuring a seamless experience on desktops, tablets, and smartphones.
 - **Toaster Notifications**: Incorporates toast notifications for real-time feedback on user actions, such as creating, updating, or deleting todos.
@@ -17,7 +23,7 @@ The TodoMERN project leverages the power of the MERN stack (MongoDB, Express, Re
 ## Technologies Used
 
 - **Frontend**: React.js, React Router, Axios, Material UI, Vite.js
-- **Backend**: Express.js, MongoDB, Mongoose, JWT, Bcrypt, Cors, Dotenv
+- **Backend**: Express.js, MongoDB, Mongoose, JWT, Bcrypt, Cors, Dotenv, cypher-js
 - **Development Tools**: ESLint, Prettier, Concurrently, Nodemon, Vite, Insonmia
 
 
