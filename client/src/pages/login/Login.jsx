@@ -38,7 +38,6 @@ export default function Login() {
     const handleForget = async (data) => {
         try {
             setLoading(true);
-            console.log(data);
             const response = await http.patch('/auth/forget', data);
             toast.success(response.data.message);
         } catch (error) {
@@ -56,7 +55,8 @@ export default function Login() {
             setLoading(true);
             const response = await http.post('/auth/login', formData);
             if (response.data.token) {
-                setToken(response.data.token, response.data.user);
+                localStorage.setItem("_svInfo", JSON.stringify(response.data.user));
+                setToken(response.data.token);
                 toast.success(response.data.message);
                 setTimeout(() => { toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`); }, 3000);
                 navigate('/home');

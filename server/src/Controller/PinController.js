@@ -11,9 +11,11 @@ const setVerifyText = async (req, res) => {
         const User = await UserDB.findById(req.currentUser);
         User.verifyText = encrypt(TextToVerify, req.body.key);
         await User.save();
-        res.status(200).send("Instead of PIN, a text has been set for verification");
+        return res.status(200).json({
+            message: "Your PIN has been used to encrypt a sample text, which will be stored for future verification."
+        });
     } catch (error) {
-        res.status(500).send("Internal Server Error");
+        return res.status(500).json({ message: "Something went wrong!" });
     }
 };
 
@@ -33,9 +35,9 @@ const resetPin = async (req, res) => {
             vault.password = null;
             await vault.save();
         });
-        res.status(200).send("All of your encrypted data has been set to null");
+        return res.status(200).json({ message: "All your encrypted data has been set to null" });
     } catch (error) {
-        res.status(500).send("Internal Server Error");
+        return res.status(500).json({ message: "Something went wrong!" });
     }
 };
 

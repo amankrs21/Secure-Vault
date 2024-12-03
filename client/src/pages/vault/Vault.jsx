@@ -11,7 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import PopupPin from './PopupPin';
+// import PopupPin from './PopupPin';
 import AddVault from './AddVault';
 import UpdateVault from './UpdateVault';
 import DeleteVault from './DeleteVault';
@@ -90,7 +90,7 @@ export default function Vault() {
 
     return (
         <Container maxWidth="lg">
-            {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} data={handleFetch} />}
+            {/* {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} data={handleFetch} />} */}
             {openAdd && <AddVault openAdd={openAdd} setOpenAdd={setOpenAdd} data={handleAdd} />}
             {(updateData !== null) && <UpdateVault updateData={updateData} setUpdateData={setUpdateData} data={handleUpdate} />}
             {(deleteData !== null) && <DeleteVault deleteData={deleteData} setDeleteData={setDeleteData} data={handleDelete} />}

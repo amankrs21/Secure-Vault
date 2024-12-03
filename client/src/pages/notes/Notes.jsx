@@ -14,7 +14,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddNote from './AddNote';
 import UpdateNote from './UpdateNote';
 import DeleteNote from './DeleteNote';
-import PopupPin from "../vault/PopupPin";
+// import PopupPin from "../vault/PopupPin";
 import AuthUser from '../../components/auth/AuthUser';
 import { useLoading } from "../../components/loading/useLoading";
 
@@ -100,7 +100,7 @@ export default function Notes() {
 
     return (
         <Container maxWidth="lg">
-            {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} data={handleFetch} />}
+            {/* {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} data={handleFetch} />} */}
             {openAdd && <AddNote openAdd={openAdd} setOpenAdd={setOpenAdd} data={handleAdd} />}
             {(updateData !== null) && <UpdateNote updateData={updateData} setUpdateData={setUpdateData} data={handleUpdate} />}
             {(deleteData !== null) && <DeleteNote deleteData={deleteData} setDeleteData={setDeleteData} data={handleDelete} />}

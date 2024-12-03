@@ -30,7 +30,6 @@ const AuthSession = async (req, res, next) => {
         req.currentUser = user._id;
 
         const key = req.body.key;
-        console.log(key, user.textVerify);
         if (key && user.textVerify) {
             if (!validateKey(user.textVerify, key)) {
                 return res.status(400).json({ message: "Invalid Key!" });

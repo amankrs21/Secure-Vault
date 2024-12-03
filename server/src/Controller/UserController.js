@@ -39,7 +39,7 @@ const userLogin = async (req, res) => {
             return res.status(401).json({ message: "Invalid Credentials!" });
         }
         const token = jwt.sign({ id: user._id }, SecretKey, { expiresIn: "30m" });
-        let userData = { name: user.name, isFirstLogin: user.isFirstLogin };
+        let userData = { name: user.name, isFirstLogin: user.textVerify ? false : true };
         return res.status(200).json({ message: "Login Successful!", token, user: userData });
     } catch (error) {
         console.error(error);

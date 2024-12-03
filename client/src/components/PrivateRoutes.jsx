@@ -10,8 +10,8 @@ export default function PrivateRoutes() {
     const { isValidToken } = AuthUser();
 
     useEffect(() => {
-        const authData = JSON.parse(localStorage.getItem("authData"));
-        if (!authData || !isValidToken(authData.token)) {
+        const token = localStorage.getItem("token");
+        if (!token || !isValidToken(token)) {
             navigate('/login');
         }
     }, [navigate, isValidToken]);

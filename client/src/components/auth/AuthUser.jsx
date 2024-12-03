@@ -26,9 +26,8 @@ http.interceptors.response.use(
     (response) => response,
     (error) => {
         if (!error.response && error.message === "Network Error") {
-            // window.location.href = "/503";
-        } else if (error.response.status === 403 || error.response.status === 401) {
             localStorage.clear();
+            window.location.href = "/503";
         }
         return Promise.reject(error);
     }
@@ -38,24 +37,18 @@ export default function AuthUser() {
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     useEffect(() => {
-        const authData = localStorage.getItem("authData");
-        if (authData) {
-            const parsedData = JSON.parse(authData);
-            if (isValidToken(parsedData.token)) {
-                setToken(parsedData.token);
-                http.defaults.headers.common.Authorization = `Bearer ${parsedData.token}`;
-            } else {
-                localStorage.clear();
-            }
-        }
+        const token = localStorage.getItem("token");
+        if (token && isValidToken(token)) {
+            setToken(token);
+            http.defaults.headers.common.Authorization = `Bearer ${token}`;
+        } else { localStorage.clear(); }
     }, []);
 
-    // Save the token and user data in localStorage and set headers
-    const saveToken = (token, user) => {
+    // Save the token in localStorage and set headers
+    const saveToken = (token) => {
         if (isValidToken(token)) {
             setToken(token);
-            const authData = { token, user };
-            localStorage.setItem("authData", JSON.stringify(authData));
+            localStorage.setItem("token", token);
             http.defaults.headers.common.Authorization = `Bearer ${token}`;
         }
     };
@@ -81,20 +74,9 @@ export default function AuthUser() {
         return false;
     };
 
-    // Check if the logged-in user is an admin
-    const isAdmin = () => {
-        const authData = localStorage.getItem("authData");
-        if (authData) {
-            const { token, user } = JSON.parse(authData);
-            return isValidToken(token) && user.role === "admin";
-        }
-        return false;
-    };
-
     return {
         setToken: saveToken,
         isValidToken,
-        isAdmin,
         token,
         http,
     };
