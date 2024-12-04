@@ -9,7 +9,7 @@ const setVerifyText = async (req, res) => {
     try {
         if (!req.body.key) { return res.status(400).send("Key is required"); }
         const User = await UserDB.findById(req.currentUser);
-        User.verifyText = encrypt(TextToVerify, req.body.key);
+        User.textVerify = encrypt(TextToVerify, req.body.key);
         await User.save();
         return res.status(200).json({
             message: "Your PIN has been used to encrypt a sample text, which will be stored for future verification."
