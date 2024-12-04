@@ -54,8 +54,9 @@ export default function SetupPin({ openSetPin, setOpenSetPin }) {
             <DialogTitle>Security PIN</DialogTitle>
             <DialogContent>
                 <DialogContentText mb={2}>
-                    Your PIN will not be stored. If forgotten, all encrypted data will be inaccessible.
-                    Enter and confirm your PIN carefully. Keep it safe!
+                    <b style={{ color: 'red' }}>
+                        Please note that your PIN will not be stored and used every where to encrypt and decrypt the password. Keep it safe!
+                    </b>
                 </DialogContentText>
                 <TextField
                     autoFocus

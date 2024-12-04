@@ -29,6 +29,10 @@ http.interceptors.response.use(
             localStorage.clear();
             window.location.href = "/503";
         }
+        if (error.response.status === 401 && error.response.data.message === "Unauthorized") {
+            localStorage.clear();
+            window.location.href = "/";
+        }
         return Promise.reject(error);
     }
 );
