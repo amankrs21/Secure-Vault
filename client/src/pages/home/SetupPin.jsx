@@ -11,11 +11,8 @@ import AuthUser from '../../components/auth/AuthUser';
 
 export default function SetupPin({ openSetPin, setOpenSetPin }) {
     const { http } = AuthUser();
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    const handleTogglePasswordVisibility = () => setShowPassword(!showPassword);
-    const handleToggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+    const [showPass, setShowPass] = useState(false);
+    const [showCPass, setShowCPass] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -65,18 +62,17 @@ export default function SetupPin({ openSetPin, setOpenSetPin }) {
                     name="key"
                     variant="outlined"
                     label="Security PIN"
-                    type={showPassword ? "text" : "password"}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    onClick={handleTogglePasswordVisibility}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                    type={showPass ? "text" : "password"}
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton edge="end" onClick={() => setShowPass(!showPass)}>
+                                        {showPass ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        },
                     }}
                 />
                 <TextField
@@ -85,19 +81,16 @@ export default function SetupPin({ openSetPin, setOpenSetPin }) {
                     name="cKey"
                     variant="outlined"
                     label="Confirm PIN"
-                    type={showConfirmPassword ? "text" : "password"}
-                    sx={{ mt: 2 }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton
-                                    onClick={handleToggleConfirmPasswordVisibility}
-                                    edge="end"
-                                >
-                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton edge="end" onClick={() => setShowCPass(!showCPass)}>
+                                        {showCPass ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        },
                     }}
                 />
             </DialogContent>
