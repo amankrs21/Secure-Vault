@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-import AuthUser from './auth/AuthUser';
-import Header from '../pages/header/Header';
+import AuthUser from './AuthUser';
+import Header from '../../pages/header/Header';
 
 
 export default function PrivateRoutes() {
