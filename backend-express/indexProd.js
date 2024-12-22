@@ -1,12 +1,13 @@
 require("dotenv").config();
 const cors = require("cors");
+const http = require("http");
 const express = require("express");
 
 const mongoConnect = require("./mongoConfig.js");
 const router = require("./Router/Router.js");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT ?? 3000;
 
 // Disable x-powered-by header to prevent version disclosure
 app.disable("x-powered-by");
@@ -49,9 +50,16 @@ app.use(cors(corsOptions))
 
 // setting up router
 app.use("/api", router);
+app.get("/", (req, res) => {
+    res.set('Content-Type', 'text/plain');
+    res.send('Hello World!');
+});
+app.get('/health', (req, res) => { res.json({ message: 'Health of SecureVault is good!' }) });
 
+// Create server with Express app
+const server = http.createServer(app);
 
-// setting up the server for production
-app.listen(port, () => {
-    console.log(`Server started on the PORT - ${port}/`);
+// Start the server
+server.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });
