@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 // Use environment variables for base URL
 const baseURL = window.location.origin.includes("localhost") || window.location.origin.includes("192.168")
     ? "http://192.168.1.38:3000/api/"
-    : "https://security-vault.onrender.com/api/";
+    : "https://secure-vault.azurewebsites.net/api/";
 
 
 // Axios instance with default configurations
