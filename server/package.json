@@ -17,7 +17,6 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.0",
     "nodemon": "^3.0.1",
-    "serverless-http": "^3.2.0",
     "validator": "^13.12.0"
   }
 }
