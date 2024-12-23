@@ -3,7 +3,7 @@ const cors = require("cors");
 const express = require("express");
 
 const router = require("./src/app.router.js");
-const mongoConnect = require("./src/app.db.js");
+const mongoConnect = require("./src/db.config.js");
 
 const app = express();
 const port = process.env.PORT;
