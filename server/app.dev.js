@@ -56,8 +56,8 @@ app.get('/health', (req, res) => { res.json({ message: 'Health of Secure-Vault S
 
 // error-handling middleware
 app.use((err, req, res, next) => {
-    console.log(err.stack);
-    res.status(500).send("Something broke!");
+    console.error(err.stack);
+    res.status(500).send({ error: `Something went wrong!` });
 });
 
 

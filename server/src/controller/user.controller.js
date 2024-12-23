@@ -23,7 +23,7 @@ const findUserByEmail = async (email) => {
 
 
 // function to login user
-const userLogin = async (req, res) => {
+const userLogin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const fieldValidation = validateFields({ email, password });
@@ -34,7 +34,7 @@ const userLogin = async (req, res) => {
         if (!user) {
             return res.status(401).json({ message: "Invalid Credentials!" });
         }
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcryp.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid Credentials!" });
         }
@@ -42,14 +42,13 @@ const userLogin = async (req, res) => {
         let userData = { name: user.name, isFirstLogin: user.textVerify ? false : true };
         return res.status(200).json({ message: "Login Successful!", token, user: userData });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
 
 // function to register user
-const userRegister = async (req, res) => {
+const userRegister = async (req, res, next) => {
     try {
         const { name, email, dob, answer, password } = req.body;
         const fieldValidation = validateFields({ name, email, dob, answer, password });
@@ -71,14 +70,13 @@ const userRegister = async (req, res) => {
         await user.save();
         return res.status(201).json({ message: "User Registered Successfully!!" });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
 
 // function to forget password
-const forgetPassword = async (req, res) => {
+const forgetPassword = async (req, res, next) => {
     try {
         const { email, dob, answer, password } = req.body;
         const fieldValidation = validateFields({ email, dob, answer, password });
@@ -96,8 +94,7 @@ const forgetPassword = async (req, res) => {
         await user.save();
         return res.status(200).json({ message: "Password Changed Successfully!!" });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
