@@ -4,7 +4,7 @@ const { santizeId, validateFields } = require("../service/validation.service.js"
 
 
 // function to get all the notes of the user
-const getNotes = async (req, res) => {
+const getNotes = async (req, res, next) => {
     try {
         const { key, pageSize, offSet } = req.body;
         const fieldValidation = validateFields({ pageSize, offSet });
@@ -15,14 +15,13 @@ const getNotes = async (req, res) => {
         notes.forEach(note => { note.content = decrypt(note.content, key); });
         return res.status(200).json(notes);
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
 
 // function to add a new note
-const addNote = async (req, res) => {
+const addNote = async (req, res, next) => {
     try {
         const { key, title, content } = req.body;
         const fieldValidation = validateFields({ title, content });
@@ -37,14 +36,13 @@ const addNote = async (req, res) => {
         await newNote.save();
         return res.status(201).json({ message: "Note Added Successfully!" });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
 
 // function to update a note by id
-const updateNote = async (req, res) => {
+const updateNote = async (req, res, next) => {
     try {
         const { id, key, title, content } = req.body;
         const fieldValidation = validateFields({ id, title, content });
@@ -60,14 +58,13 @@ const updateNote = async (req, res) => {
         await prevNote.save();
         return res.status(200).json({ message: "Note Updated Successfully!" });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
 
 // function to delete a note by id
-const deleteNote = async (req, res) => {
+const deleteNote = async (req, res, next) => {
     try {
         const id = req.query.id;
         const fieldValidation = validateFields({ id });
@@ -80,8 +77,7 @@ const deleteNote = async (req, res) => {
         }
         return res.status(204);
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 

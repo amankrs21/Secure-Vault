@@ -5,22 +5,27 @@ const { encrypt } = require("../service/cipher.service.js");
 
 const TextToVerify = "Hey SV, Verify me!";
 
-const setVerifyText = async (req, res) => {
+const setVerifyText = async (req, res, next) => {
     try {
         if (!req.body.key) { return res.status(400).send("Key is required"); }
         const User = await UserDB.findById(req.currentUser);
+        if (User.textVerify) {
+            return res.status(400).send({
+                message: "You have already set a sample text for verification. Please reset your PIN to set a new one."
+            });
+        }
         User.textVerify = encrypt(TextToVerify, req.body.key);
         await User.save();
         return res.status(200).json({
             message: "Your PIN has been used to encrypt a sample text, which will be stored for future verification."
         });
     } catch (error) {
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
 
-const resetPin = async (req, res) => {
+const resetPin = async (req, res, next) => {
     try {
         const User = await UserDB.findById(req.currentUser);
         User.verifyText = null;
@@ -37,7 +42,7 @@ const resetPin = async (req, res) => {
         });
         return res.status(200).json({ message: "All your encrypted data has been set to null" });
     } catch (error) {
-        return res.status(500).json({ message: "Something went wrong!" });
+        next(error);
     }
 };
 
