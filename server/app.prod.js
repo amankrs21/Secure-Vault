@@ -1,9 +1,11 @@
 require("dotenv").config();
 const cors = require("cors");
+const http = require("http");
 const express = require("express");
 
 const router = require("./src/app.router.js");
 const mongoConnect = require("./src/db.config.js");
+
 
 const app = express();
 const port = process.env.PORT;
@@ -27,13 +29,6 @@ if (!process.env.MONGO_URL || !process.env.SECRET_KEY || !process.env.PASSWORD_K
 mongoConnect();
 
 
-// Middleware to handle errors
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
-
 // setting up cors
 const allowedOrigins = [
     "https://securevault.pages.dev",
@@ -49,10 +44,18 @@ app.use(cors(corsOptions))
 
 // setting up router
 app.use("/api", router);
-app.get("/", (req, res) => { res.send("Secure-Vault Server is up and running!!"); });
+app.get('/health', (req, res) => { res.json({ message: 'Health of Secure-Vault Server is up and running!!' }) });
 
 
-// setting up the server for production
-app.listen(port, () => {
-    console.log(`Server started on the PORT - ${port}/`);
+// error-handling middleware
+app.use((err, req, res, next) => {
+    console.log(err.stack);
+    res.status(500).send("Something broke!");
+});
+
+
+// creating server with Express app and http
+const server = http.createServer(app);
+server.listen(port, () => {
+    console.log(`Prod Server started on the PORT ${port}`);
 });

@@ -1,12 +1,14 @@
 require("dotenv").config();
 const cors = require("cors");
+const http = require("http");
 const express = require("express");
 
 const router = require("./src/app.router.js");
 const mongoConnect = require("./src/db.config.js");
 
+
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT ?? 3000;
 
 // Disable x-powered-by header to prevent version disclosure
 app.disable("x-powered-by");
@@ -34,17 +36,10 @@ app.use((req, res, next) => {
 })
 
 
-// Middleware to handle errors
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
-
 // setting up cors
 const allowedOrigins = [
     "http://localhost:5173",
-    "http://192.168.1.38:5173",
+    "http://192.168.1.33:5173",
     "https://securevault.pages.dev"
 ]
 const corsOptions = {
@@ -56,10 +51,18 @@ app.use(cors(corsOptions))
 
 // setting up router
 app.use("/api", router);
-app.get("/", (req, res) => { res.send("Secure-Vault Server is up and running!!"); });
+app.get('/health', (req, res) => { res.json({ message: 'Health of Secure-Vault Server is up and running!!' }) });
 
 
-// setting up the server locally run
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server running at => http://localhost:${port}/`);
+// error-handling middleware
+app.use((err, req, res, next) => {
+    console.log(err.stack);
+    res.status(500).send("Something broke!");
+});
+
+
+// creating server with Express app and http
+const server = http.createServer(app);
+server.listen(port, '0.0.0.0', () => {
+    console.log(`Dev Server running at http://localhost:${port}`);
 });
