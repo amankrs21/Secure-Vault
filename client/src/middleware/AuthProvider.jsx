@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 // Use environment variables for base URL
 const baseURL = window.location.origin.includes("localhost") || window.location.origin.includes("192.168")
-    ? "http://192.168.1.38:3000/api/"
+    ? "http://192.168.1.33:3000/api/"
     : "https://security-vault.onrender.com/api/";
 
 
@@ -37,7 +37,7 @@ http.interceptors.response.use(
     }
 );
 
-export default function AuthUser() {
+export default function useAuth() {
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
     useEffect(() => {

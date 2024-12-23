@@ -13,7 +13,7 @@ import Register from "./pages/register/Register";
 import Loading from "./components/loading/Loading";
 import ServerUnavl from "./pages/error/ServerUnavl";
 import PageNotFound from "./pages/error/PageNotFound";
-import PrivateRoutes from "./components/auth/PrivateRoutes";
+import PrivateRoutes from "./middleware/PrivateRoutes";
 import { LoadingProvider } from "./components/loading/LoadingContext";
 
 
