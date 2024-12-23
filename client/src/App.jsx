@@ -10,10 +10,10 @@ import Vault from "./pages/vault/Vault";
 import Notes from "./pages/notes/Notes";
 import Connect from "./pages/connect/Connect";
 import Register from "./pages/register/Register";
-import ServerUnavl from "./pages/503/ServerUnavl";
 import Loading from "./components/loading/Loading";
-import PageNotFound from "./pages/404/PageNotFound";
-import PrivateRoutes from "./components/PrivateRoutes";
+import ServerUnavl from "./pages/error/ServerUnavl";
+import PageNotFound from "./pages/error/PageNotFound";
+import PrivateRoutes from "./components/auth/PrivateRoutes";
 import { LoadingProvider } from "./components/loading/LoadingContext";
 
 
