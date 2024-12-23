@@ -14,12 +14,13 @@ export default function PrivateRoutes() {
     const [openAccess, setOpenAccess] = useState(false);
 
     useEffect(() => {
+        const ekey = localStorage.getItem("ekey");
         const token = localStorage.getItem("token");
         const svInfo = JSON.parse(localStorage.getItem("_svInfo")) ?? {};
         if (!token || !isValidToken(token)) {
             navigate('/login');
         }
-        if (!svInfo.key) {
+        if (!ekey) {
             if (svInfo.isFirstLogin) setOpenSetup(true);
             else setOpenAccess(true);
         }

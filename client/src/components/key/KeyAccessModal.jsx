@@ -14,9 +14,7 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         const formJson = Object.fromEntries(formData.entries());
-        let svInfo = JSON.parse(localStorage.getItem("_svInfo")) || {};
-        svInfo.key = btoa(formJson.key);
-        localStorage.setItem("_svInfo", JSON.stringify(svInfo));
+        localStorage.setItem("ekey", btoa(formJson.key));
         setOpenAccess(!openAccess);
     }
 

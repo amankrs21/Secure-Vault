@@ -26,12 +26,10 @@ export default function KeySetupModal({ openSetup, setOpenSetup }) {
         try {
             const response = await http.post('/pin/setText', { key });
             toast.info(response.data.message);
-
             const svInfo = JSON.parse(localStorage.getItem("_svInfo")) || {};
             svInfo.isFirstLogin = false;
-            svInfo.key = btoa(key);
             localStorage.setItem("_svInfo", JSON.stringify(svInfo));
-
+            localStorage.setItem("ekey", btoa(key));
             setOpenSetup(false);
         } catch (error) {
             console.error(error);
