@@ -1,7 +1,7 @@
 const express = require("express");
 
 const AuthSession = require("./app.middleware.js");
-const { setVerifyText, resetPin } = require("./controller/pin.controller.js");
+const { setVerifyText, resetPin, verifyText } = require("./controller/pin.controller.js");
 const { userLogin, userRegister, forgetPassword } = require("./controller/user.controller.js");
 const { getNotes, addNote, updateNote, deleteNote } = require("./controller/notes.controller.js");
 const { getVault, addVault, updateVault, deleteVault, soloVault } = require("./controller/vault.controller.js");
@@ -17,6 +17,7 @@ router.patch('/auth/forget', forgetPassword);
 
 
 // PIN Routes
+router.post('/pin/verify', AuthSession, verifyText);
 router.post('/pin/setText', AuthSession, setVerifyText);
 router.patch('/pin/reset', AuthSession, resetPin);
 

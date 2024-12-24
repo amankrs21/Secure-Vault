@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const UserDB = require("./model/user.model.js");
-const { decrypt } = require("./service/cipher.service.js");
 
 const SecretKey = process.env.SECRET_KEY;
 
@@ -28,26 +27,12 @@ const AuthSession = async (req, res, next) => {
 
         // req.user = user;
         req.currentUser = user._id;
-
-        const key = req.body.key;
-        if (key && user.textVerify) {
-            if (!validateKey(user.textVerify, key)) {
-                return res.status(400).json({ message: "Invalid Key!" });
-            }
-        }
         next();
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Internal Server Error" });
     }
-};
-
-// Helper function to validate the key
-const validateKey = (textVerify, key) => {
-    try {
-        decrypt(textVerify, key);
-        return true;
-    } catch { return false; }
 };
 
 

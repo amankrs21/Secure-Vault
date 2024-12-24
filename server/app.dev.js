@@ -5,6 +5,7 @@ const express = require("express");
 
 const router = require("./src/app.router.js");
 const mongoConnect = require("./src/db.config.js");
+const errorHandler = require("./src/error.handler.js");
 
 
 const app = express();
@@ -55,10 +56,7 @@ app.get('/health', (req, res) => { res.json({ message: 'Health of Secure-Vault S
 
 
 // error-handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send({ error: `Something went wrong!` });
-});
+app.use(errorHandler);
 
 
 // creating server with Express app and http
