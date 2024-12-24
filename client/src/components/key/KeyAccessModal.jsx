@@ -5,17 +5,35 @@ import {
     Button, TextField, IconButton, InputAdornment,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { toast } from 'react-toastify';
+
+import useAuth from '../../middleware/AuthProvider';
 
 export default function KeyAccessModal({ openAccess, setOpenAccess }) {
+    const { http } = useAuth();
     const [forget, setForget] = useState(false);
     const [showPass, setShowPass] = useState(false);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const formData = new FormData(event.currentTarget);
-        const formJson = Object.fromEntries(formData.entries());
-        localStorage.setItem("ekey", btoa(formJson.key));
-        setOpenAccess(!openAccess);
+    const handleSubmit = async (event) => {
+        try {
+            if (forget) {
+                const response = await http.patch('/pin/reset');
+                toast.info(response.data.message);
+                toast.info("Please login again to continue.");
+                setTimeout(() => { localStorage.clear() }, 2000);
+                return;
+            }
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const formJson = Object.fromEntries(formData.entries());
+            const response = await http.post('/pin/verify', formJson);
+            localStorage.setItem("ekey", btoa(formJson.key));
+            toast.info(response.data.message);
+            setOpenAccess(!openAccess);
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response.data.message);
+        }
     }
 
     return (
@@ -32,9 +50,11 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
             {forget ? (
                 <DialogContent>
                     <DialogContentText mb={2}>
-                        If you forget your Encryption Key, you will lose your all encrypted data.
-                        <br />
-                        Do you want to continue?
+                        <b style={{ color: 'red' }}>
+                            If you forget your Encryption Key, you will lose your all encrypted data. Encrypted data will be replaced with NULL.
+                            <br />
+                            Do you still want to continue?
+                        </b>
                     </DialogContentText>
                     <Button variant="text" mt={1} onClick={() => setForget(!forget)}>
                         Still remember your KEY?
@@ -65,7 +85,9 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
             )}
             <DialogActions>
                 <Button variant='outlined' onClick={() => setOpenAccess(!openAccess)}>Cancel</Button>
-                <Button type="submit" variant='contained'>Decrypt</Button>
+                <Button type="submit" variant='contained'>
+                    {forget ? 'Yes, I understand' : 'Access'}
+                </Button>
             </DialogActions>
         </Dialog>
     )
