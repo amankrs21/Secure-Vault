@@ -19,7 +19,7 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
             event.preventDefault();
             if (forget) {
                 const response = await http.get('/pin/reset');
-                toast.info(`${response.data.message}. Please login again to continue.`);
+                toast.warning(`${response.data.message}. Please login again to continue.`);
                 localStorage.clear();
                 setTimeout(() => { setOpenAccess(!openAccess); }, 3000);
             } else {
@@ -28,7 +28,7 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
                 formJson.key = btoa(formJson.key);
                 const response = await http.post('/pin/verify', formJson);
                 localStorage.setItem("ekey", btoa(formJson.key));
-                toast.info(response.data.message);
+                toast.success(response.data.message);
                 setOpenAccess(!openAccess);
             }
         } catch (error) {

@@ -43,14 +43,11 @@ export default function AuthProvider() {
     const [userName, setUserName] = useState(null);
 
     useEffect(() => {
-        const initializeAuth = async () => {
-            const token = localStorage.getItem("token");
-            if (token && await isValidToken(token)) {
-                setToken(token);
-                http.defaults.headers.common.Authorization = `Bearer ${token}`;
-            } else { localStorage.clear(); }
-        };
-        initializeAuth();
+        const token = localStorage.getItem("token");
+        if (token && isValidToken(token)) {
+            setToken(token);
+            http.defaults.headers.common.Authorization = `Bearer ${token}`;
+        } else { localStorage.clear(); }
     }, []);
 
     // Save the token in localStorage and set headers

@@ -19,17 +19,12 @@ export default function KeySetupModal({ openSetup, setOpenSetup }) {
         const formData = new FormData(event.currentTarget);
         const { key, cKey } = Object.fromEntries(formData.entries());
 
-        if (key !== cKey) {
-            return alert("Key's are not matching.");
-        }
+        if (key !== cKey) return alert("Key's are not matching.");
 
         try {
             let ekey = btoa(key);
             const response = await http.post('/pin/setText', { key: ekey });
-            toast.info(response.data.message);
-            const svInfo = JSON.parse(localStorage.getItem("_svInfo")) || {};
-            svInfo.isFirstLogin = false;
-            localStorage.setItem("_svInfo", JSON.stringify(svInfo));
+            toast.success(response.data.message);
             localStorage.setItem("ekey", ekey);
             setOpenSetup(false);
         } catch (error) {
