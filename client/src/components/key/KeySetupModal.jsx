@@ -22,10 +22,11 @@ export default function KeySetupModal({ openSetup, setOpenSetup }) {
         if (key !== cKey) return alert("Key's are not matching.");
 
         try {
-            let ekey = btoa(key);
-            const response = await http.post('/pin/setText', { key: ekey });
+            let eKey = btoa(key);
+            const response = await http.post('/pin/setText', { key: eKey });
             toast.success(response.data.message);
-            localStorage.setItem("ekey", ekey);
+            localStorage.setItem("eKey", eKey);
+            localStorage.removeItem("isKeySet");
             setOpenSetup(false);
         } catch (error) {
             console.error(error);
