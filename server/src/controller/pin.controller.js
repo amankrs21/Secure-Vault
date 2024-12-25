@@ -46,7 +46,7 @@ const setVerifyText = async (req, res, next) => {
 const resetPin = async (req, res, next) => {
     try {
         const User = await UserDB.findById(req.currentUser);
-        User.verifyText = null;
+        User.textVerify = null;
         await User.save();
         const Note = await NoteDB.find({ user: User._id });
         Note.forEach(async (note) => {

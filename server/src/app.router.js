@@ -17,9 +17,9 @@ router.patch('/auth/forget', forgetPassword);
 
 
 // PIN Routes
+router.get('/pin/reset', AuthSession, resetPin);
 router.post('/pin/verify', AuthSession, verifyText);
 router.post('/pin/setText', AuthSession, setVerifyText);
-router.patch('/pin/reset', AuthSession, resetPin);
 
 
 // Vaults Routes
