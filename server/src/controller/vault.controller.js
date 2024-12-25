@@ -8,11 +8,13 @@ const soloVault = async (req, res, next) => {
     try {
         const id = req.query.id;
         const key = req.body.key;
-        if (!id) { return res.status(400).json({ message: "Id is required!" }); }
+        const fieldValidation = validateFields({ id, key });
+        if (!fieldValidation.isValid)
+            return res.status(400).json({ message: fieldValidation.message });
+
         const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: req.currentUser });
-        if (!vault) {
+        if (!vault)
             return res.status(404).json({ message: "Vault not found!" });
-        }
         vault.password = decrypt(vault.password, key);
         return res.status(200).json(vault);
     } catch (error) {
@@ -26,10 +28,11 @@ const getVault = async (req, res, next) => {
     try {
         const { pageSize, offSet } = req.body;
         const fieldValidation = validateFields({ pageSize, offSet });
-        if (!fieldValidation.isValid) {
+        if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
-        }
+
         const vaults = await VaultDB.find({ createdBy: req.currentUser }).skip(offSet).limit(pageSize);
+        vaults.forEach(vault => vault.password = null);
         return res.status(200).json(vaults);
     } catch (error) {
         next(error);
@@ -42,9 +45,9 @@ const addVault = async (req, res, next) => {
     try {
         const { key, title, username, password } = req.body;
         const fieldValidation = validateFields({ title, username, password });
-        if (!fieldValidation.isValid) {
+        if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
-        }
+
         const vault = new VaultDB({
             title,
             username,
@@ -64,13 +67,13 @@ const updateVault = async (req, res, next) => {
     try {
         const { id, key, title, username, password } = req.body;
         const fieldValidation = validateFields({ id, title, username, password });
-        if (!fieldValidation.isValid) {
+        if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
-        }
+
         const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: req.currentUser });
-        if (!vault) {
+        if (!vault)
             return res.status(404).json({ message: "Vault not found!" });
-        }
+
         vault.title = title;
         vault.username = username;
         vault.password = encrypt(password, key);
@@ -85,20 +88,16 @@ const updateVault = async (req, res, next) => {
 // function to delete a vault by id
 const deleteVault = async (req, res, next) => {
     try {
-        const id = req.query.id;
-        const fieldValidation = validateFields({ id });
-        if (!fieldValidation.isValid) {
-            return res.status(400).json({ message: fieldValidation.message });
-        }
+        const { id } = req.params;
         const deletedPassword = await VaultDB.findOneAndDelete({ _id: santizeId(id), createdBy: req.currentUser });
         if (!deletedPassword) {
             return res.status(404).json({ message: "Vault not found!" });
         }
-        return res.status(204);
+        return res.status(204).send();
     } catch (error) {
         next(error);
     }
-}
+};
 
 
 // exporting functions

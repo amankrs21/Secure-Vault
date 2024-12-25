@@ -27,7 +27,7 @@ router.post('/vaults', AuthSession, getVault);
 router.post('/vault/add', AuthSession, addVault);
 router.post('/vault/solo', AuthSession, soloVault);
 router.patch('/vault/update', AuthSession, updateVault);
-router.delete('/vault/delete', AuthSession, deleteVault);
+router.delete('/vault/delete/:id', AuthSession, deleteVault);
 
 
 // Notes Routes
