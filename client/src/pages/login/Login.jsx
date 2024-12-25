@@ -11,14 +11,14 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import ForgetPass from './ForgetPass';
-import AuthUser from '../../components/auth/AuthUser';
+import AuthProvider from '../../middleware/AuthProvider';
 import { ERROR_MESSAGES } from '../../components/constants';
 import { useLoading } from '../../components/loading/useLoading';
 
 export default function Login() {
     const navigate = useNavigate();
     const { setLoading } = useLoading();
-    const { http, setToken } = AuthUser();
+    const { http, setToken } = AuthProvider();
     const [show, setShow] = useState(false);
     const [openFP, setOpenFP] = useState(false);
     const [formData, setFormData] = useState({ email: '', password: '' });
@@ -55,10 +55,9 @@ export default function Login() {
             setLoading(true);
             const response = await http.post('/auth/login', formData);
             if (response.data.token) {
-                localStorage.setItem("_svInfo", JSON.stringify(response.data.user));
                 setToken(response.data.token);
                 toast.success(response.data.message);
-                setTimeout(() => { toast.info(`Welcome ${response.data.user.name} to the Secure Vault!`); }, 3000);
+                if (!response.data.isKeySet) localStorage.setItem("isKeySet", false);
                 navigate('/home');
             }
         } catch (error) {
@@ -72,7 +71,7 @@ export default function Login() {
         <Grid container component="main" sx={{ height: '100vh' }}>
             {openFP && <ForgetPass openFP={openFP} setOpenFP={setOpenFP} data={handleForget} />}
             <Grid
-                size={{ xs: false, sm: 4, md: 7 }}
+                size={{ xs: false, sm: false, md: 7 }}
                 sx={{
                     backgroundImage: 'url(./login2.jpg)',
                     backgroundRepeat: 'no-repeat',
@@ -82,7 +81,7 @@ export default function Login() {
                     backgroundPosition: 'center',
                 }}
             />
-            <Grid size={{ xs: 12, sm: 8, md: 5 }} elevation={6} className="login-container">
+            <Grid size={{ xs: 12, sm: 12, md: 5 }} elevation={6} className="login-container">
                 <Box className="login-box">
                     <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
                         <LockOutlinedIcon />
