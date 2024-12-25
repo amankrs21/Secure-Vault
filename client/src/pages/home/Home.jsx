@@ -1,36 +1,21 @@
 import './Home.css';
-import { useState, useEffect } from 'react';
 import Grid from '@mui/material/Grid2';
 import { Container, Typography, Divider } from '@mui/material';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
-import PopupPin from './PopupPin';
-import SetupPin from './SetupPin';
+import AuthProvider from '../../middleware/AuthProvider';
+
 
 export default function Home() {
 
-    const [openPin, setOpenPin] = useState(false);
-    const [openSetPin, setOpenSetPin] = useState(false);
-    let svInfo = JSON.parse(localStorage.getItem("_svInfo"));
-
-    useEffect(() => {
-        if (svInfo && svInfo.isFirstLogin) {
-            setOpenSetPin(true);
-            return;
-        }
-        if (svInfo && !svInfo.isFirstLogin && !svInfo.key) {
-            setOpenPin(true);
-            return;
-        }
-    }, []);
+    const { userName } = AuthProvider();
+    document.title = "SecureVault | Home";
 
     return (
         <div className="home-main">
-            {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} />}
-            {openSetPin && <SetupPin openSetPin={openSetPin} setOpenSetPin={setOpenSetPin} />}
             <Container maxWidth="lg">
                 <Typography pt={2} variant="h4" align="center" gutterBottom >
-                    Hi  {svInfo ? svInfo.name.split(' ')[0] : "User"}👋<br />
+                    Hi  {userName ? userName.split(' ')[0] : "User"}👋<br />
                     Welcome to <b className='custom-home-text'>Secure Vault </b> 🔐 Application!
                 </Typography>
                 <Divider />
