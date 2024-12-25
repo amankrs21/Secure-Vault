@@ -7,29 +7,30 @@ import {
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
-import useAuth from '../../middleware/AuthProvider';
+import AuthProvider from '../../middleware/AuthProvider';
 
 export default function KeyAccessModal({ openAccess, setOpenAccess }) {
-    const { http } = useAuth();
+    const { http } = AuthProvider();
     const [forget, setForget] = useState(false);
     const [showPass, setShowPass] = useState(false);
 
     const handleSubmit = async (event) => {
         try {
-            if (forget) {
-                const response = await http.patch('/pin/reset');
-                toast.info(response.data.message);
-                toast.info("Please login again to continue.");
-                setTimeout(() => { localStorage.clear() }, 2000);
-                return;
-            }
             event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const formJson = Object.fromEntries(formData.entries());
-            const response = await http.post('/pin/verify', formJson);
-            localStorage.setItem("ekey", btoa(formJson.key));
-            toast.info(response.data.message);
-            setOpenAccess(!openAccess);
+            if (forget) {
+                const response = await http.get('/pin/reset');
+                toast.info(`${response.data.message}. Please login again to continue.`);
+                localStorage.clear();
+                setTimeout(() => { setOpenAccess(!openAccess); }, 3000);
+            } else {
+                const formData = new FormData(event.currentTarget);
+                const formJson = Object.fromEntries(formData.entries());
+                formJson.key = btoa(formJson.key);
+                const response = await http.post('/pin/verify', formJson);
+                localStorage.setItem("ekey", btoa(formJson.key));
+                toast.info(response.data.message);
+                setOpenAccess(!openAccess);
+            }
         } catch (error) {
             console.error(error);
             toast.error(error.response.data.message);

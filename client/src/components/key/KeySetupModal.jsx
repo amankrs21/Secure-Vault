@@ -24,12 +24,13 @@ export default function KeySetupModal({ openSetup, setOpenSetup }) {
         }
 
         try {
-            const response = await http.post('/pin/setText', { key });
+            let ekey = btoa(key);
+            const response = await http.post('/pin/setText', { key: ekey });
             toast.info(response.data.message);
             const svInfo = JSON.parse(localStorage.getItem("_svInfo")) || {};
             svInfo.isFirstLogin = false;
             localStorage.setItem("_svInfo", JSON.stringify(svInfo));
-            localStorage.setItem("ekey", btoa(key));
+            localStorage.setItem("ekey", ekey);
             setOpenSetup(false);
         } catch (error) {
             console.error(error);
