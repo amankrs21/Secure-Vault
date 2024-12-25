@@ -16,12 +16,10 @@ export default function PrivateRoutes() {
     useEffect(() => {
         const ekey = localStorage.getItem("ekey");
         const token = localStorage.getItem("token");
-        const svInfo = JSON.parse(localStorage.getItem("_svInfo")) ?? {};
-        if (!token || !isValidToken(token)) {
-            navigate('/login');
-        }
+        const isKeySet = localStorage.getItem("isKeySet") === 'true';
+        if (!token || !isValidToken(token)) navigate('/login');
         if (!ekey) {
-            if (svInfo.isFirstLogin) setOpenSetup(true);
+            if (!isKeySet) setOpenSetup(true);
             else setOpenAccess(true);
         }
     }, [navigate, isValidToken]);
