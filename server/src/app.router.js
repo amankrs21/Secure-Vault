@@ -3,8 +3,8 @@ const express = require("express");
 const AuthSession = require("./app.middleware.js");
 const { setVerifyText, resetPin, verifyText } = require("./controller/pin.controller.js");
 const { userLogin, userRegister, forgetPassword } = require("./controller/user.controller.js");
-const { getNotes, addNote, updateNote, deleteNote } = require("./controller/notes.controller.js");
 const { getVault, addVault, updateVault, deleteVault, soloVault } = require("./controller/vault.controller.js");
+const { getJournal, addJournal, updateJournal, deleteJournal, decryptJournal } = require("./controller/journal.controller.js");
 
 
 const router = express.Router();
@@ -30,11 +30,12 @@ router.patch('/vault/update', AuthSession, updateVault);
 router.delete('/vault/delete/:id', AuthSession, deleteVault);
 
 
-// Notes Routes
-router.post('/notes', AuthSession, getNotes);
-router.post('/note/add', AuthSession, addNote);
-router.patch('/note/update', AuthSession, updateNote);
-router.delete('/note/delete', AuthSession, deleteNote);
+// Journal Routes
+router.get('/journals', AuthSession, getJournal);
+router.post('/journal/add', AuthSession, addJournal);
+router.post('/journal/:id', AuthSession, decryptJournal);
+router.patch('/journal/update', AuthSession, updateJournal);
+router.delete('/journal/delete/:id', AuthSession, deleteJournal);
 
 
 module.exports = router;

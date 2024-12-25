@@ -1,6 +1,6 @@
 const mongo = require('mongoose');
 
-const NoteDB = new mongo.Schema({
+const JournalModel = new mongo.Schema({
     title: {
         type: String,
         required: true,
@@ -20,4 +20,4 @@ const NoteDB = new mongo.Schema({
     }
 });
 
-module.exports = mongo.model('NoteDB', NoteDB);
+module.exports = mongo.model('JournalModel', JournalModel);
