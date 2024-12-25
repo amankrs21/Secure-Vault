@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 // Use environment variables for base URL
 const baseURL = window.location.origin.includes("localhost") || window.location.origin.includes("192.168")
-    ? window.location.origin.replace(":3000", ":8000") + "/api/"
+    ? window.location.origin.replace(":5173", ":3000") + "/api/"
     : "https://security-vault.onrender.com/api/";
 
 
@@ -40,12 +40,17 @@ http.interceptors.response.use(
 export default function AuthProvider() {
     const navigate = useNavigate();
     const [token, setToken] = useState(null);
+    const [userName, setUserName] = useState(null);
+
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token && isValidToken(token)) {
-            setToken(token);
-            http.defaults.headers.common.Authorization = `Bearer ${token}`;
-        } else { localStorage.clear(); }
+        const initializeAuth = async () => {
+            const token = localStorage.getItem("token");
+            if (token && await isValidToken(token)) {
+                setToken(token);
+                http.defaults.headers.common.Authorization = `Bearer ${token}`;
+            } else { localStorage.clear(); }
+        };
+        initializeAuth();
     }, []);
 
     // Save the token in localStorage and set headers
@@ -58,7 +63,7 @@ export default function AuthProvider() {
     };
 
     // Validate if the token is not expired
-    const isValidToken = (token) => {
+    const isValidToken = async (token) => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
@@ -69,6 +74,7 @@ export default function AuthProvider() {
                     navigate("/");
                     return false;
                 }
+                setUserName(decodedToken.name);
                 return true;
             } catch (error) {
                 console.error("Error decoding token:", error);
@@ -81,6 +87,7 @@ export default function AuthProvider() {
     return {
         setToken: saveToken,
         isValidToken,
+        userName,
         token,
         http,
     };
