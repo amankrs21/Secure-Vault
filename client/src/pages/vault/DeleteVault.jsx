@@ -16,9 +16,7 @@ export default function DeleteVault({ deleteData, setDeleteData, data }) {
             open={deleteData !== null}
             onClose={() => setDeleteData(null)}
         >
-            <DialogTitle>
-                {"Confirm Delete?"}
-            </DialogTitle>
+            <DialogTitle>Confirm Delete?</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     Are you sure you want to delete this vault? This action cannot be undone.
@@ -32,7 +30,7 @@ export default function DeleteVault({ deleteData, setDeleteData, data }) {
     )
 }
 DeleteVault.propTypes = {
-    deleteData: PropTypes.bool.isRequired,
+    deleteData: PropTypes.object,
     setDeleteData: PropTypes.func.isRequired,
     data: PropTypes.func.isRequired
 }

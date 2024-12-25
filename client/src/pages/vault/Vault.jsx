@@ -11,7 +11,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-// import PopupPin from './PopupPin';
 import AddVault from './AddVault';
 import UpdateVault from './UpdateVault';
 import DeleteVault from './DeleteVault';
@@ -19,20 +18,25 @@ import AuthProvider from '../../middleware/AuthProvider';
 import { useLoading } from '../../components/loading/useLoading';
 
 export default function Vault() {
-    const firstLogin = false;
     const { http } = AuthProvider();
     const { setLoading } = useLoading();
-    const [openPin, setOpenPin] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);
     const [vaultData, setVaultData] = useState([]);
     const [currentId, setCurrentId] = useState(null);
     const [updateData, setUpdateData] = useState(null);
     const [deleteData, setDeleteData] = useState(null);
 
+    useEffect(() => {
+        const localVault = JSON.parse(localStorage.getItem('localVault'));
+        if (localVault) { setVaultData(localVault); }
+        else { handleFetch(0, 100); }
+    }, []);
+
     const handleFetch = async (offSet, pageSize) => {
         try {
             setLoading(true);
             const response = await http.post('/vaults', { offSet, pageSize });
+            localStorage.setItem('localVault', JSON.stringify(response.data));
             setVaultData(response.data);
         } catch (error) {
             console.error(error);
@@ -44,10 +48,10 @@ export default function Vault() {
     const handleAdd = async (data) => {
         try {
             setLoading(true);
-            data.key = localStorage.getItem('svPin');
+            data.key = localStorage.getItem('eKey');
             const response = await http.post('/vault/add', data);
             toast.success(response.data.message);
-            localStorage.removeItem("localVault");
+            handleFetch(0, 100);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -58,10 +62,10 @@ export default function Vault() {
     const handleUpdate = async (data) => {
         try {
             setLoading(true);
-            data.key = localStorage.getItem('svPin');
+            data.key = localStorage.getItem('eKey');
             const response = await http.patch(`/vault/update`, data);
             toast.success(response.data.message);
-            localStorage.removeItem("localVault");
+            handleFetch(0, 100);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -72,9 +76,9 @@ export default function Vault() {
     const handleDelete = async (id) => {
         try {
             setLoading(true);
-            const response = await http.delete(`/vault/delete?id=${id}`);
+            const response = await http.delete(`/vault/delete/${id}`);
             toast.success(response.data.message);
-            localStorage.removeItem("localVault");
+            handleFetch(0, 100);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -82,15 +86,18 @@ export default function Vault() {
         } finally { setLoading(false); }
     }
 
-    useEffect(() => {
-        const localVault = JSON.parse(localStorage.getItem('localVault'));
-        if (localVault) { setVaultData(localVault); }
-        else { handleFetch(0, 10); }
-    }, []);
+    const handleSearch = (value) => {
+        setTimeout(() => {
+            const localVault = JSON.parse(localStorage.getItem('localVault'));
+            if (value !== '') {
+                const searchResult = localVault.filter(item => item.title.toLowerCase().includes(value.toLowerCase()));
+                setVaultData(searchResult);
+            } else setVaultData(localVault);
+        }, 900);
+    }
 
     return (
         <Container maxWidth="lg">
-            {/* {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} data={handleFetch} />} */}
             {openAdd && <AddVault openAdd={openAdd} setOpenAdd={setOpenAdd} data={handleAdd} />}
             {(updateData !== null) && <UpdateVault updateData={updateData} setUpdateData={setUpdateData} data={handleUpdate} />}
             {(deleteData !== null) && <DeleteVault deleteData={deleteData} setDeleteData={setDeleteData} data={handleDelete} />}
@@ -113,6 +120,7 @@ export default function Vault() {
                                     endAdornment: <SearchIcon color='primary' />
                                 }
                             }}
+                            onChange={(e) => handleSearch(e.target.value)}
                         />
                         <Button variant='contained' color='primary' onClick={() => setOpenAdd(true)}
                             sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2' }}
@@ -125,7 +133,7 @@ export default function Vault() {
 
             <Divider sx={{ marginY: 2 }} />
 
-            {firstLogin || (vaultData.length == 0) ? (
+            {(vaultData.length == 0) ? (
                 <div style={{ textAlign: "center", marginTop: "50px" }}>
                     <Typography variant="h6">
                         No secure passwords available. Please add new records.
