@@ -15,12 +15,12 @@ import AddNote from './AddNote';
 import UpdateNote from './UpdateNote';
 import DeleteNote from './DeleteNote';
 // import PopupPin from "../vault/PopupPin";
-import AuthUser from '../../components/auth/AuthUser';
+import AuthProvider from '../../middleware/AuthProvider';
 import { useLoading } from "../../components/loading/useLoading";
 
 
 export default function Notes() {
-    const { http } = AuthUser();
+    const { http } = AuthProvider();
     const { setLoading } = useLoading();
     const [openPin, setOpenPin] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);

@@ -15,12 +15,12 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddVault from './AddVault';
 import UpdateVault from './UpdateVault';
 import DeleteVault from './DeleteVault';
-import AuthUser from '../../components/auth/AuthUser';
+import AuthProvider from '../../middleware/AuthProvider';
 import { useLoading } from '../../components/loading/useLoading';
 
 export default function Vault() {
     const firstLogin = false;
-    const { http } = AuthUser();
+    const { http } = AuthProvider();
     const { setLoading } = useLoading();
     const [openPin, setOpenPin] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);

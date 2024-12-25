@@ -10,13 +10,13 @@ import Visibility from '@mui/icons-material/Visibility';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import AuthUser from '../../components/auth/AuthUser';
+import AuthProvider from '../../middleware/AuthProvider';
 import { ERROR_MESSAGES } from '../../components/constants';
 import { useLoading } from '../../components/loading/useLoading';
 
 
 export default function Register() {
-    const { http } = AuthUser();
+    const { http } = AuthProvider();
     const navigate = useNavigate();
     const { setLoading } = useLoading();
     const [show, setShow] = useState(false);
