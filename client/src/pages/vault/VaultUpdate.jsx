@@ -1,10 +1,11 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button
 } from '@mui/material';
-import { useState } from 'react';
 
-export default function UpdateVault({ updateData, setUpdateData, data }) {
+
+export default function VaultUpdate({ updateData, setUpdateData, data }) {
 
     const [formValues, setFormValues] = useState({
         id: updateData?._id || '',
@@ -35,7 +36,9 @@ export default function UpdateVault({ updateData, setUpdateData, data }) {
                 },
             }}
         >
-            <DialogTitle>Update Password</DialogTitle>
+            <DialogTitle>
+                Update Password
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText mb={2}>
                     Please update the form to modify the password.
@@ -74,14 +77,18 @@ export default function UpdateVault({ updateData, setUpdateData, data }) {
             </DialogContent>
 
             <DialogActions>
-                <Button variant="outlined" onClick={() => setUpdateData(null)}>Cancel</Button>
-                <Button type="submit" variant="contained">Update</Button>
+                <Button variant="outlined" onClick={() => setUpdateData(null)}>
+                    Cancel
+                </Button>
+                <Button type="submit" variant="contained">
+                    Update
+                </Button>
             </DialogActions>
         </Dialog>
     );
 }
 
-UpdateVault.propTypes = {
+VaultUpdate.propTypes = {
     updateData: PropTypes.object,
     setUpdateData: PropTypes.func.isRequired,
     data: PropTypes.func.isRequired

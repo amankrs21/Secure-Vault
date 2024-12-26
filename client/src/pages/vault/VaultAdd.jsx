@@ -3,7 +3,7 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button
 } from '@mui/material';
 
-export default function AddVault({ openAdd, setOpenAdd, data }) {
+export default function VaultAdd({ openAdd, setOpenAdd, data }) {
 
     return (
         <Dialog
@@ -21,17 +21,35 @@ export default function AddVault({ openAdd, setOpenAdd, data }) {
                 },
             }}
         >
-            <DialogTitle>Add a new Password</DialogTitle>
+            <DialogTitle>
+                Add a new Password
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText mb={2}>
                     Please fill the form to add a new password.
                 </DialogContentText>
-                <TextField autoFocus fullWidth required variant="outlined" name="title"
-                    label="Title (Website Name)" />
-                <TextField fullWidth variant="outlined" sx={{ marginY: 2 }}
-                    name="username" label="Username (optional)" />
-                <TextField fullWidth required variant="outlined"
-                    name="password" label="Password" />
+                <TextField
+                    autoFocus
+                    fullWidth
+                    required
+                    name="title"
+                    variant="outlined"
+                    label="Title (Website Name)"
+                />
+                <TextField
+                    fullWidth
+                    name="username"
+                    variant="outlined"
+                    label="Username (optional)"
+                    sx={{ marginY: 2 }}
+                />
+                <TextField
+                    fullWidth
+                    required
+                    name="password"
+                    label="Password"
+                    variant="outlined"
+                />
             </DialogContent>
             <DialogActions>
                 <Button variant='outlined' onClick={() => setOpenAdd(!openAdd)}>Cancel</Button>
@@ -41,7 +59,7 @@ export default function AddVault({ openAdd, setOpenAdd, data }) {
     )
 }
 
-AddVault.propTypes = {
+VaultAdd.propTypes = {
     openAdd: PropTypes.bool.isRequired,
     setOpenAdd: PropTypes.func.isRequired,
     data: PropTypes.func.isRequired
