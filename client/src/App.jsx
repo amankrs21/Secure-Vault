@@ -5,9 +5,9 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Home from "./pages/home/Home";
-import Login from "./pages/login/Login";
 import Vault from "./pages/vault/Vault";
-import Notes from "./pages/notes/Notes";
+import Login from "./pages/login/Login";
+import Journal from "./pages/journal/Journal";
 import Connect from "./pages/connect/Connect";
 import Register from "./pages/register/Register";
 import Loading from "./components/loading/Loading";
@@ -33,7 +33,7 @@ export default function App() {
           <Route path="/" element={<PrivateRoutes />}>
             <Route path='/home' element={<Home />} />
             <Route path='/vault' element={<Vault />} />
-            <Route path='/notes' element={<Notes />} />
+            <Route path='/journal' element={<Journal />} />
             <Route path='/connect' element={<Connect />} />
           </Route>
         </Routes>

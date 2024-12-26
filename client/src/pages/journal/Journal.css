@@ -1,4 +1,4 @@
-.note-update-section {
+.journal-update-section {
     width: 100%;
     display: flex;
     padding: 0.5rem 0;
@@ -6,7 +6,7 @@
     justify-content: space-between;
 }
 
-.note-update-time {
+.journal-update-time {
     margin: 0;
     color: blue;
     display: flex;
@@ -15,7 +15,7 @@
     align-items: center;
 }
 
-.note-update-buttons {
+.journal-update-buttons {
     gap: 0.3rem;
     display: flex;
 }

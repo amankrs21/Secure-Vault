@@ -5,8 +5,13 @@ import {
 } from '@mui/material';
 
 
-const useForm = (initialValues) => {
-    const [formValues, setFormValues] = useState(initialValues);
+export default function JournalUpdate({ updateData, setUpdateData, data }) {
+
+    const [formValues, setFormValues] = useState({
+        id: updateData?._id || '',
+        title: updateData?.title || '',
+        content: updateData?.content || '',
+    });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -15,17 +20,6 @@ const useForm = (initialValues) => {
             [name]: value,
         }));
     };
-
-    return [formValues, handleChange];
-};
-
-
-export default function UpdateNote({ updateData, setUpdateData, data }) {
-    const [formValues, handleChange] = useForm({
-        id: updateData?._id || '',
-        title: updateData?.title || '',
-        content: updateData?.content || '',
-    });
 
     return (
         <Dialog
@@ -41,10 +35,10 @@ export default function UpdateNote({ updateData, setUpdateData, data }) {
                 },
             }}
         >
-            <DialogTitle>Update Password</DialogTitle>
+            <DialogTitle>Update Journal</DialogTitle>
             <DialogContent>
                 <DialogContentText mb={2}>
-                    Please update the form to modify the note.
+                    Please update the form to modify the journal.
                 </DialogContentText>
 
                 <TextField
@@ -52,7 +46,7 @@ export default function UpdateNote({ updateData, setUpdateData, data }) {
                     required
                     name="title"
                     variant="outlined"
-                    label="Note Title"
+                    label="Journal Title"
                     value={formValues.title}
                     onChange={handleChange}
                 />
@@ -65,7 +59,7 @@ export default function UpdateNote({ updateData, setUpdateData, data }) {
                     maxRows={4}
                     name="content"
                     variant="outlined"
-                    label="Note Content"
+                    label="Journal Content"
                     sx={{ marginY: 2 }}
                     value={formValues.content}
                     onChange={handleChange}
@@ -84,7 +78,7 @@ export default function UpdateNote({ updateData, setUpdateData, data }) {
     );
 }
 
-UpdateNote.propTypes = {
+JournalUpdate.propTypes = {
     updateData: PropTypes.object,
     setUpdateData: PropTypes.func.isRequired,
     data: PropTypes.func.isRequired,

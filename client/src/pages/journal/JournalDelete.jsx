@@ -3,7 +3,7 @@ import {
     Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
 
-export default function DeleteNote({ deleteData, setDeleteData, data }) {
+export default function JournalDelete({ deleteData, setDeleteData, data }) {
 
     const handleCancel = () => {
         setDeleteData(null);
@@ -17,22 +17,26 @@ export default function DeleteNote({ deleteData, setDeleteData, data }) {
     return (
         <Dialog fullWidth maxWidth="xs" open={deleteData !== null} onClose={handleCancel}>
             <DialogTitle>
-                {"Confirm Delete?"}
+                Confirm Delete?
             </DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Are you sure you want to delete this note? This action cannot be undone.
+                    Are you sure you want to delete this journal? This action cannot be undone.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button variant='outlined' onClick={handleCancel}>No</Button>
-                <Button variant='contained' onClick={handleDelete}>Delete</Button>
+                <Button variant='outlined' onClick={handleCancel}>
+                    No
+                </Button>
+                <Button color='error' variant='contained' onClick={handleDelete}>
+                    Delete
+                </Button>
             </DialogActions>
         </Dialog>
     )
 }
 
-DeleteNote.propTypes = {
+JournalDelete.propTypes = {
     deleteData: PropTypes.string.isRequired,
     setDeleteData: PropTypes.func.isRequired,
     data: PropTypes.func.isRequired

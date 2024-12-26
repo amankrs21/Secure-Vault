@@ -1,86 +1,124 @@
-import './Notes.css';
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid2";
 import {
     Accordion, AccordionDetails, AccordionSummary, Button, Container, Divider, TextField, Tooltip, Typography
 } from "@mui/material";
 import { toast } from 'react-toastify';
+import debounce from 'lodash.debounce';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchIcon from "@mui/icons-material/Search";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
-import AddNote from './AddNote';
-import UpdateNote from './UpdateNote';
-import DeleteNote from './DeleteNote';
-// import PopupPin from "../vault/PopupPin";
+import './Journal.css';
+import JournalAdd from './JournalAdd';
+import JournalUpdate from './JournalUpdate';
+import JournalDelete from './JournalDelete';
 import AuthProvider from '../../middleware/AuthProvider';
 import { useLoading } from "../../components/loading/useLoading";
 
 
-export default function Notes() {
+export default function Journal() {
+    document.title = 'SecureVault | Journal';
+
     const { http } = AuthProvider();
     const { setLoading } = useLoading();
-    const [openPin, setOpenPin] = useState(false);
     const [openAdd, setOpenAdd] = useState(false);
-    const [notesData, setNotesData] = useState([]);
+    const [decrypted, setDecrypted] = useState('');
+    const [expanded, setExpanded] = useState(null);
+    const [jornalData, setJournalData] = useState([]);
     const [updateData, setUpdateData] = useState(null);
     const [deleteData, setDeleteData] = useState(null);
-    const [expanded, setExpanded] = useState('panel1');
+
+    useEffect(() => {
+        const localJournal = JSON.parse(localStorage.getItem('localJournal'));
+        if (localJournal) {
+            setJournalData(localJournal);
+            if (localJournal.length > 0)
+                handleDecrypt(localJournal[0]._id);
+        }
+        else { handleFetch(); }
+    }, []);
 
     const handleChange = (panel) => (event, newExpanded) => {
         setExpanded(newExpanded ? panel : false);
+        if (newExpanded) handleDecrypt(panel);
     };
 
-    const handleFetch = async (key) => {
+    const handleFetch = async () => {
         try {
             setLoading(true);
-            const response = await http.post('/notes', { key });
-            setNotesData(response.data);
+            const response = await http.get('/journals');
+            localStorage.setItem('localJournal', JSON.stringify(response.data));
+            setJournalData(response.data);
+            console.log(" == ", expanded);
+            if (expanded) { handleDecrypt(expanded); }
+            else if (response.data.length > 0) { handleDecrypt(response.data[0]._id); }
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
             else { toast.error('Something went wrong!'); }
-            localStorage.removeItem('SecurityPin');
-            setOpenPin(true);
+        } finally { setLoading(false); }
+    }
+
+    const handleDecrypt = async (id) => {
+        try {
+            setExpanded(id);
+            setLoading(true);
+            const response = await http.post(`/journal/${id}`, { key: localStorage.getItem('eKey') });
+            setDecrypted(response.data);
+        } catch (error) {
+            console.error(error);
+            if (error.response) { toast.error(error.response.data.message); }
+            else { toast.error('Something went wrong!'); }
         } finally { setLoading(false); }
     }
 
     const handleAdd = async (data) => {
-        setLoading(true);
         try {
-            data.key = localStorage.getItem('SecurityPin');
-            const response = await http.post('/note/add', data);
+            setLoading(true);
+            data.key = localStorage.getItem('eKey');
+            const response = await http.post('/journal/add', data);
             toast.success(response.data.message);
-            handleFetch(data.key);
+            await handleFetch();
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
             else { toast.error('Something went wrong!'); }
         } finally { setLoading(false); }
+    }
+
+    const preHandleUpdate = (data) => {
+        data.content = decrypted;
+        setUpdateData(data);
     }
 
     const handleUpdate = async (data) => {
-        setLoading(true);
         try {
-            data.key = localStorage.getItem('SecurityPin');
-            const response = await http.patch('/note/update', data);
+            setLoading(true);
+            data.key = localStorage.getItem('eKey');
+            const response = await http.patch('/journal/update', data);
             toast.success(response.data.message);
-            handleFetch(data.key);
+            await handleFetch();
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
             else { toast.error('Something went wrong!'); }
         } finally { setLoading(false); }
+    }
+
+    const preHandleDelete = (data) => {
+        setExpanded(null);
+        setDeleteData(data._id);
     }
 
     const handleDelete = async (id) => {
-        setLoading(true);
         try {
-            const response = await http.delete(`/note/delete`, { data: { id } });
-            toast.success(response.data.message);
-            handleFetch(localStorage.getItem('SecurityPin'));
+            setLoading(true);
+            await http.delete(`/journal/delete/${id}`);
+            toast.success("Journal deleted successfully!");
+            await handleFetch();
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -88,38 +126,41 @@ export default function Notes() {
         } finally { setLoading(false); }
     }
 
-    useEffect(() => {
-        // if (firstLogin) { return; }
-        const pin = localStorage.getItem('SecurityPin') || null;
-        if (pin) {
-            handleFetch(pin);
-        } else {
-            setOpenPin(true);
+    const handleSearch = (value) => {
+        const localJournal = JSON.parse(localStorage.getItem('localJournal'));
+        if (value === '') { setJournalData(localJournal); handleDecrypt(localJournal[0]._id); }
+        else {
+            const search = jornalData.filter((data) => data.title.toLowerCase().includes(value.toLowerCase()));
+            setJournalData(search);
+            handleDecrypt(search[0]._id);
         }
-    }, []);
+    }
 
     return (
         <Container maxWidth="lg">
-            {/* {openPin && <PopupPin openPin={openPin} setOpenPin={setOpenPin} data={handleFetch} />} */}
-            {openAdd && <AddNote openAdd={openAdd} setOpenAdd={setOpenAdd} data={handleAdd} />}
-            {(updateData !== null) && <UpdateNote updateData={updateData} setUpdateData={setUpdateData} data={handleUpdate} />}
-            {(deleteData !== null) && <DeleteNote deleteData={deleteData} setDeleteData={setDeleteData} data={handleDelete} />}
+            {openAdd && <JournalAdd openAdd={openAdd} setOpenAdd={setOpenAdd} data={handleAdd} />}
+            {(updateData !== null) && <JournalUpdate updateData={updateData} setUpdateData={setUpdateData} data={handleUpdate} />}
+            {(deleteData !== null) && <JournalDelete deleteData={deleteData} setDeleteData={setDeleteData} data={handleDelete} />}
 
             <Grid container justifyContent="space-between" alignItems="center" mt={3} spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }} textAlign={{ xs: 'center', md: 'left' }}>
                     <Typography pt={2} variant="h4" gutterBottom>
-                        Your Secure Notes📝
+                        Your Secure Journals📝
                     </Typography>
                 </Grid>
 
                 <Grid size={{ xs: 12, md: 6 }} container justifyContent="flex-end" alignItems="center">
                     <div style={{ display: 'flex', width: '100%', gap: '10px' }}>
-                        <TextField fullWidth variant="outlined" label="Search with Title"
+                        <TextField
+                            fullWidth
+                            variant="outlined"
+                            label="Search with Title"
                             slotProps={{
                                 input: {
                                     endAdornment: <SearchIcon color='primary' />
                                 }
                             }}
+                            onChange={debounce((e) => handleSearch(e.target.value), 1000)}
                         />
                         <Button variant='contained' color='primary' onClick={() => setOpenAdd(true)}
                             sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2' }}>
@@ -131,40 +172,43 @@ export default function Notes() {
 
             <Divider sx={{ marginY: 3 }} />
 
-            {(notesData.length == 0) ? (
+            {(jornalData.length == 0) ? (
                 <div style={{ textAlign: "center", marginTop: "50px" }}>
                     <Typography variant="h6">
-                        No notes available. Please add new records.
+                        No journal available. Please add new records.
                     </Typography>
-                    <Button variant='contained' color='primary' onClick={() => setOpenAdd(true)}
+                    <Button
+                        color='primary'
+                        variant='contained'
+                        onClick={() => setOpenAdd(true)}
                         sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2', marginTop: 2 }}
                     >
-                        Add New Note
+                        Add New Journal
                     </Button>
                 </div>
             ) : (
                 <Container maxWidth="md" sx={{ backgroundColor: '#f2f2f2', paddingY: 2, borderRadius: 2 }}>
-                    {notesData.map((data, index) => (
-                        <Accordion key={data._id} sx={{ marginY: 1 }} expanded={expanded === `panel${index + 1}`} onChange={handleChange(`panel${index + 1}`)}>
+                    {jornalData.map((data) => (
+                        <Accordion key={data._id} sx={{ marginY: 1 }} expanded={expanded === data._id} onChange={handleChange(data._id)}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>{data.title}</AccordionSummary>
                             <AccordionDetails sx={{ whiteSpace: 'pre-wrap' }}>
-                                {data.content}
+                                {decrypted}
                                 <Divider sx={{ marginTop: 1 }} />
-                                <div className="note-update-section">
-                                    <div className='note-update-time'>
+                                <div className="journal-update-section">
+                                    <div className='journal-update-time'>
                                         <Tooltip title="Last Updated" placement="top">
                                             <AccessAlarmsIcon color='warning' />
                                         </Tooltip>&nbsp;
                                         {new Date(data.updatedAt).toLocaleString()}
                                     </div>
-                                    <div className="note-update-buttons">
-                                        <Button size='small' variant="outlined" onClick={() => setUpdateData(data)}>
-                                            <Tooltip title="Edit this Note" placement="top">
+                                    <div className="journal-update-buttons">
+                                        <Button size='small' variant="outlined" onClick={() => preHandleUpdate(data)}>
+                                            <Tooltip title="Edit this Journal" placement="top">
                                                 <EditIcon color='primary' />
                                             </Tooltip>
                                         </Button>
-                                        <Button size='small' variant="contained" color='error' onClick={() => setDeleteData(data._id)}>
-                                            <Tooltip title="Delete this Note" placement="top">
+                                        <Button size='small' variant="contained" color='error' onClick={() => preHandleDelete(data)}>
+                                            <Tooltip title="Delete this Journal" placement="top">
                                                 <DeleteForeverIcon />
                                             </Tooltip>
                                         </Button>
