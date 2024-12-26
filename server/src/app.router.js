@@ -3,7 +3,7 @@ const express = require("express");
 const AuthSession = require("./app.middleware.js");
 const { setVerifyText, resetPin, verifyText } = require("./controller/pin.controller.js");
 const { userLogin, userRegister, forgetPassword } = require("./controller/user.controller.js");
-const { getVault, addVault, updateVault, deleteVault, soloVault } = require("./controller/vault.controller.js");
+const { getVault, addVault, updateVault, deleteVault, decryptVault } = require("./controller/vault.controller.js");
 const { getJournal, addJournal, updateJournal, deleteJournal, decryptJournal } = require("./controller/journal.controller.js");
 
 
@@ -23,9 +23,9 @@ router.post('/pin/setText', AuthSession, setVerifyText);
 
 
 // Vaults Routes
-router.post('/vaults', AuthSession, getVault);
+router.get('/vaults', AuthSession, getVault);
 router.post('/vault/add', AuthSession, addVault);
-router.post('/vault/solo', AuthSession, soloVault);
+router.post('/vault/:id', AuthSession, decryptVault);
 router.patch('/vault/update', AuthSession, updateVault);
 router.delete('/vault/delete/:id', AuthSession, deleteVault);
 

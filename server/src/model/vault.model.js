@@ -1,6 +1,6 @@
 const mongo = require('mongoose');
 
-const VaultDB = new mongo.Schema({
+const VaultModel = new mongo.Schema({
     title: {
         type: String,
         required: true,
@@ -24,4 +24,4 @@ const VaultDB = new mongo.Schema({
     }
 });
 
-module.exports = mongo.model('VaultDB', VaultDB);
+module.exports = mongo.model('VaultModel', VaultModel);

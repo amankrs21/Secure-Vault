@@ -1,26 +1,6 @@
-const VaultDB = require("../model/vault.model.js");
+const VaultModel = require("../model/vault.model.js");
 const { encrypt, decrypt } = require("../service/cipher.service.js");
 const { santizeId, validateFields } = require("../service/validation.service.js");
-
-
-// function to decrypt the vault password by id
-const soloVault = async (req, res, next) => {
-    try {
-        const id = req.query.id;
-        const key = req.body.key;
-        const fieldValidation = validateFields({ id, key });
-        if (!fieldValidation.isValid)
-            return res.status(400).json({ message: fieldValidation.message });
-
-        const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: req.currentUser });
-        if (!vault)
-            return res.status(404).json({ message: "Vault not found!" });
-        vault.password = decrypt(vault.password, key);
-        return res.status(200).json(vault);
-    } catch (error) {
-        next(error);
-    }
-};
 
 
 // function to get all the vault password of the user
@@ -31,7 +11,7 @@ const getVault = async (req, res, next) => {
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
-        const vaults = await VaultDB.find({ createdBy: req.currentUser }).skip(offSet).limit(pageSize);
+        const vaults = await VaultModel.find({ createdBy: req.currentUser }).skip(offSet).limit(pageSize);
         vaults.forEach(vault => vault.password = null);
         return res.status(200).json(vaults);
     } catch (error) {
@@ -48,7 +28,7 @@ const addVault = async (req, res, next) => {
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
-        const vault = new VaultDB({
+        const vault = new VaultModel({
             title,
             username,
             password: encrypt(password, key),
@@ -70,10 +50,9 @@ const updateVault = async (req, res, next) => {
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
-        const vault = await VaultDB.findOne({ _id: santizeId(id), createdBy: req.currentUser });
+        const vault = await VaultModel.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!vault)
             return res.status(404).json({ message: "Vault not found!" });
-
         vault.title = title;
         vault.username = username;
         vault.password = encrypt(password, key);
@@ -89,10 +68,9 @@ const updateVault = async (req, res, next) => {
 const deleteVault = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const deletedPassword = await VaultDB.findOneAndDelete({ _id: santizeId(id), createdBy: req.currentUser });
-        if (!deletedPassword) {
+        const vault = await VaultModel.findOneAndDelete({ _id: santizeId(id), createdBy: req.currentUser });
+        if (!vault)
             return res.status(404).json({ message: "Vault not found!" });
-        }
         return res.status(204).send();
     } catch (error) {
         next(error);
@@ -100,5 +78,25 @@ const deleteVault = async (req, res, next) => {
 };
 
 
+// function to decrypt the vault password by id
+const decryptVault = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const key = req.body.key;
+        const fieldValidation = validateFields({ id, key });
+        if (!fieldValidation.isValid)
+            return res.status(400).json({ message: fieldValidation.message });
+
+        const vault = await VaultModel.findOne({ _id: santizeId(id), createdBy: req.currentUser });
+        if (!vault)
+            return res.status(404).json({ message: "Vault not found!" });
+        vault.password = decrypt(vault.password, key);
+        return res.status(200).json(vault.password);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 // exporting functions
-module.exports = { soloVault, getVault, addVault, updateVault, deleteVault };
+module.exports = { getVault, addVault, updateVault, deleteVault, decryptVault };
