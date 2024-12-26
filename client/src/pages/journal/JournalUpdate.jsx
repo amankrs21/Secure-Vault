@@ -35,7 +35,9 @@ export default function JournalUpdate({ updateData, setUpdateData, data }) {
                 },
             }}
         >
-            <DialogTitle>Update Journal</DialogTitle>
+            <DialogTitle>
+                Update Journal
+            </DialogTitle>
             <DialogContent>
                 <DialogContentText mb={2}>
                     Please update the form to modify the journal.

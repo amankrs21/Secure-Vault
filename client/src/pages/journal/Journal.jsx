@@ -52,22 +52,8 @@ export default function Journal() {
             const response = await http.get('/journals');
             localStorage.setItem('localJournal', JSON.stringify(response.data));
             setJournalData(response.data);
-            console.log(" == ", expanded);
             if (expanded) { handleDecrypt(expanded); }
             else if (response.data.length > 0) { handleDecrypt(response.data[0]._id); }
-        } catch (error) {
-            console.error(error);
-            if (error.response) { toast.error(error.response.data.message); }
-            else { toast.error('Something went wrong!'); }
-        } finally { setLoading(false); }
-    }
-
-    const handleDecrypt = async (id) => {
-        try {
-            setExpanded(id);
-            setLoading(true);
-            const response = await http.post(`/journal/${id}`, { key: localStorage.getItem('eKey') });
-            setDecrypted(response.data);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -119,6 +105,19 @@ export default function Journal() {
             await http.delete(`/journal/delete/${id}`);
             toast.success("Journal deleted successfully!");
             await handleFetch();
+        } catch (error) {
+            console.error(error);
+            if (error.response) { toast.error(error.response.data.message); }
+            else { toast.error('Something went wrong!'); }
+        } finally { setLoading(false); }
+    }
+
+    const handleDecrypt = async (id) => {
+        try {
+            setExpanded(id);
+            setLoading(true);
+            const response = await http.post(`/journal/${id}`, { key: localStorage.getItem('eKey') });
+            setDecrypted(response.data);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
