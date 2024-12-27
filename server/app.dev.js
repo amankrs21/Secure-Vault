@@ -44,10 +44,13 @@ const allowedOrigins = [
     "https://securevault.pages.dev"
 ]
 const corsOptions = {
-    origin: allowedOrigins,
     credentials: true,
+    origin: allowedOrigins,
+    exposedHeaders: "Authorization",
+    methods: "GET,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
 };
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 
 
 // setting up router
