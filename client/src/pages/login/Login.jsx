@@ -16,6 +16,8 @@ import { ERROR_MESSAGES } from '../../components/constants';
 import { useLoading } from '../../components/loading/useLoading';
 
 export default function Login() {
+    document.title = 'SecureVault | Login';
+
     const navigate = useNavigate();
     const { setLoading } = useLoading();
     const [show, setShow] = useState(false);
@@ -24,8 +26,8 @@ export default function Login() {
     const [formData, setFormData] = useState({ email: '', password: '' });
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if (isValidToken(token)) { navigate('/home'); }
+        const token = localStorage.getItem('token') || null;
+        if (token && isValidToken(token)) { navigate('/home'); }
     }, [isValidToken, navigate]);
 
     const handleChange = (e) => {

@@ -16,6 +16,8 @@ import { useLoading } from '../../components/loading/useLoading';
 
 
 export default function Register() {
+    document.title = 'SecureVault | Register';
+
     const { http } = AuthProvider();
     const navigate = useNavigate();
     const { setLoading } = useLoading();
