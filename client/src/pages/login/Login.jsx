@@ -18,15 +18,15 @@ import { useLoading } from '../../components/loading/useLoading';
 export default function Login() {
     const navigate = useNavigate();
     const { setLoading } = useLoading();
-    const { http, setToken } = AuthProvider();
     const [show, setShow] = useState(false);
     const [openFP, setOpenFP] = useState(false);
+    const { http, setToken, isValidToken } = AuthProvider();
     const [formData, setFormData] = useState({ email: '', password: '' });
 
     useEffect(() => {
-        const authData = JSON.parse(localStorage.getItem("authData")) || null;
-        if (authData && authData.token) { navigate('/home'); }
-    }, [http, navigate]);
+        const token = localStorage.getItem('token');
+        if (isValidToken(token)) { navigate('/home'); }
+    }, [isValidToken, navigate]);
 
     const handleChange = (e) => {
         setFormData({
