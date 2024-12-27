@@ -62,9 +62,8 @@ const deleteJournal = async (req, res, next) => {
     try {
         const id = req.params.id;
         const journal = await JournalModel.findOneAndDelete({ _id: santizeId(id), createdBy: req.currentUser });
-        if (!journal) {
+        if (!journal)
             return res.status(404).json({ message: "journal not found!" });
-        }
         return res.status(204).send();
     } catch (error) {
         next(error);

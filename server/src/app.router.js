@@ -23,7 +23,7 @@ router.post('/pin/setText', AuthSession, setVerifyText);
 
 
 // Vaults Routes
-router.get('/vaults', AuthSession, getVault);
+router.post('/vaults', AuthSession, getVault);
 router.post('/vault/add', AuthSession, addVault);
 router.post('/vault/:id', AuthSession, decryptVault);
 router.patch('/vault/update', AuthSession, updateVault);
