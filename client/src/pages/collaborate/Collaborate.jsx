@@ -4,7 +4,7 @@ import {
 } from '@mui/material';
 
 export default function Collaborate() {
-    // Safeguard for passwords and Journals for note Collaborate
+    document.title = "SecreVault | Collaborate";
 
     return (
         <Container maxWidth="lg">

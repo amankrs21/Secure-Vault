@@ -12,8 +12,8 @@ import Register from "./pages/register/Register";
 import Loading from "./components/loading/Loading";
 import ServerUnavl from "./pages/error/ServerUnavl";
 import PageNotFound from "./pages/error/PageNotFound";
-import Collaborate from "./pages/connect/Collaborate";
 import PrivateRoutes from "./middleware/PrivateRoutes";
+import Collaborate from "./pages/collaborate/Collaborate";
 import { LoadingProvider } from "./components/loading/LoadingContext";
 
 
