@@ -52,8 +52,8 @@ export default function Header() {
                         <MenuItem onClick={() => navigate('/journal')} className={isActive('journal') ? "active-route" : "non-active-route"}>
                             <DescriptionIcon />&nbsp;<Typography variant="body1">Journal</Typography>
                         </MenuItem>
-                        <MenuItem onClick={() => navigate('/connect')} className={isActive('connect') ? "active-route" : "non-active-route"}>
-                            <ConnectWithoutContactIcon />&nbsp;<Typography variant="body1">Connect</Typography>
+                        <MenuItem onClick={() => navigate('/collaborate')} className={isActive('collaborate') ? "active-route" : "non-active-route"}>
+                            <ConnectWithoutContactIcon />&nbsp;<Typography variant="body1">Collaborate</Typography>
                         </MenuItem>
                     </Box>
 
@@ -103,8 +103,8 @@ export default function Header() {
                         <MenuItem onClick={() => toggleDrawer('journal')} className={isActive('journal') ? "pop-active" : "pop-non-active"}>
                             <DescriptionIcon />&nbsp;<Typography variant="body1" fontWeight={800}>Journal</Typography>
                         </MenuItem>
-                        <MenuItem onClick={() => toggleDrawer('connect')} className={isActive('connect') ? "pop-active" : "pop-non-active"}>
-                            <ConnectWithoutContactIcon />&nbsp;<Typography variant="body1" fontWeight={800}>Connect</Typography>
+                        <MenuItem onClick={() => toggleDrawer('collaborate')} className={isActive('collaborate') ? "pop-active" : "pop-non-active"}>
+                            <ConnectWithoutContactIcon />&nbsp;<Typography variant="body1" fontWeight={800}>Collaborate</Typography>
                         </MenuItem>
                     </Box>
                 </Collapse>

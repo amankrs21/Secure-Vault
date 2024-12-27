@@ -3,7 +3,9 @@ import {
     Container, Typography, List, ListItem, Divider, Button, Card, CardContent
 } from '@mui/material';
 
-export default function Connect() {
+export default function Collaborate() {
+    // Safeguard for passwords and Journals for note Collaborate
+
     return (
         <Container maxWidth="lg">
             <Typography variant="h4" component="h2" textAlign="center" mt={5}>
