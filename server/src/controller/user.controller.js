@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");
 
-const UserDB = require("../model/user.model.js");
+const UserModel = require("../model/user.model.js");
 const { validateFields } = require("../service/validation.service.js");
 
 const SecretKey = process.env.SECRET_KEY;
@@ -18,7 +18,7 @@ const findUserByEmail = async (email) => {
     if (!validator.isEmail(sanitizedEmail)) {
         throw new Error("Invalid email format!");
     }
-    return await UserDB.findOne({ email: sanitizedEmail });
+    return await UserModel.findOne({ email: sanitizedEmail });
 };
 
 
@@ -58,7 +58,7 @@ const userRegister = async (req, res, next) => {
             return res.status(409).json({ message: "Email Already Exist!!" });
         }
 
-        const user = new UserDB({
+        const user = new UserModel({
             name,
             role: 0,
             dateOfBirth: dob,

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const UserDB = require("./model/user.model.js");
+const UserModel = require("./model/user.model.js");
 
 const SecretKey = process.env.SECRET_KEY;
 
@@ -22,7 +22,7 @@ const AuthSession = async (req, res, next) => {
             throw error;
         }
 
-        const user = await UserDB.findById(decoded?.id);
+        const user = await UserModel.findById(decoded?.id);
         if (!user) { return res.status(401).json({ message: "Unauthorized" }); }
 
         // req.user = user;

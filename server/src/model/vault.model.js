@@ -19,7 +19,7 @@ const VaultModel = new mongo.Schema({
     },
     createdBy: {
         type: mongo.Schema.Types.ObjectId,
-        ref: 'UserDB',
+        ref: 'UserModel',
         required: true
     }
 });
