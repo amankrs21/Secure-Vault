@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 // setting up cors
 const allowedOrigins = [
     "http://localhost:5173",
-    "http://192.168.1.33:5173",
+    "http://192.168.1.39:5173",
     "https://securevault.pages.dev"
 ]
 const corsOptions = {
