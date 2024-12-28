@@ -32,6 +32,8 @@ export default function Vault() {
     const [deleteData, setDeleteData] = useState(null);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) { return; }
         const localVault = JSON.parse(localStorage.getItem('localVault'));
         if (localVault) { setVaultData(localVault); }
         else { handleFetch(0, 100); }

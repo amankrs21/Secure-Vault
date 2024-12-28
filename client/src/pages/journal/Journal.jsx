@@ -32,6 +32,8 @@ export default function Journal() {
     const [deleteData, setDeleteData] = useState(null);
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) { return; }
         const localJournal = JSON.parse(localStorage.getItem('localJournal'));
         if (localJournal) {
             setJournalData(localJournal);

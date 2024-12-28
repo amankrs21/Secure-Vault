@@ -1,0 +1,3 @@
+
+find a middleware to prevent filker the vault page
+forget password let them stay when any error happens
