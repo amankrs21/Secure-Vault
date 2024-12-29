@@ -41,7 +41,6 @@ export default function Header() {
 
     const handleCloseUserMenu = (setting) => {
         setPopUser(null);
-        console.log("====>", setting);
         if (setting === 'Account') navigate('/account');
         else if (setting === 'Logout') setOpenLogout(true);
     };

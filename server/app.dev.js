@@ -32,7 +32,7 @@ mongoConnect();
 
 // Middleware to log all the requests
 app.use((req, res, next) => {
-    console.log(`${Date().slice(0, 24)} => (${req.method}) http://${req.ip.slice(7)}${req.url}`);
+    console.log(`${Date().slice(0, 24)} => (${req.method}) http://${req.ip}${req.url}`);
     next()
 })
 

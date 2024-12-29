@@ -28,3 +28,5 @@ dist-ssr
 
 # ignore all .env files
 .env*
+
+Scratch.txt

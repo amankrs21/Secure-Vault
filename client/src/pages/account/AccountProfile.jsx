@@ -12,7 +12,7 @@ export default function AccountProfile({ userData }) {
         id: userData?._id || '',
         name: userData?.name || '',
         dateOfBirth: userData?.dateOfBirth || '',
-        secretAnswer: atob(userData?.secretAnswer) || '',
+        secretAnswer: "",
     });
 
     const handleChange = (e) => {
@@ -71,7 +71,7 @@ export default function AccountProfile({ userData }) {
                 <TextField
                     fullWidth
                     name="secretAnswer"
-                    label="Favorite Place"
+                    label="Favorite Place (Changable can't be viewed)"
                     value={formValues.secretAnswer}
                     onChange={handleChange}
                     sx={{ marginY: 3 }}
