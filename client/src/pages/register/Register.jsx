@@ -18,11 +18,11 @@ import { useLoading } from '../../components/loading/useLoading';
 export default function Register() {
     document.title = 'SecureVault | Register';
 
-    const { http } = AuthProvider();
     const navigate = useNavigate();
     const { setLoading } = useLoading();
     const [show, setShow] = useState(false);
     const [errors, setErrors] = useState({});
+    const { http, isValidToken } = AuthProvider();
     const [formData, setFormData] = useState({
         dob: '',
         name: '',
@@ -33,9 +33,11 @@ export default function Register() {
     });
 
     useEffect(() => {
-        const authData = JSON.parse(localStorage.getItem("authData")) || null;
-        if (authData && authData.token) { navigate('/home'); }
-    }, [http, navigate]);
+        (async () => {
+            const token = localStorage.getItem('token') || null;
+            if (token && await isValidToken(token)) { navigate('/home'); }
+        })();
+    }, [isValidToken, navigate]);
 
     const handleChange = (e) => {
         setFormData({

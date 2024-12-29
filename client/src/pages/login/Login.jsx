@@ -26,8 +26,10 @@ export default function Login() {
     const [formData, setFormData] = useState({ email: '', password: '' });
 
     useEffect(() => {
-        const token = localStorage.getItem('token') || null;
-        if (token && isValidToken(token)) { navigate('/home'); }
+        (async () => {
+            const token = localStorage.getItem('token') || null;
+            if (token && await isValidToken(token)) { navigate('/home'); }
+        })();
     }, [isValidToken, navigate]);
 
     const handleChange = (e) => {
