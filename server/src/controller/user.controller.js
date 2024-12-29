@@ -98,5 +98,16 @@ const forgetPassword = async (req, res, next) => {
 };
 
 
+// function to return user data
+const getUserData = async (req, res, next) => {
+    try {
+        const user = await UserModel.findById(req.user.id).select("-password");
+        return res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+}
+
+
 // exporting functions
-module.exports = { userLogin, userRegister, forgetPassword };
+module.exports = { userLogin, userRegister, forgetPassword, getUserData };
