@@ -33,7 +33,6 @@ export default function ForgetPass({ openFP, setOpenFP, data }) {
                         return;
                     }
                     data(formJson);
-                    setOpenFP(!openFP);
                 },
             }}
         >

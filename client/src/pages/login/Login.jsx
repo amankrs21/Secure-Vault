@@ -42,6 +42,7 @@ export default function Login() {
             setLoading(true);
             const response = await http.patch('/auth/forget', data);
             toast.success(response.data.message);
+            setOpenFP(false);
         } catch (error) {
             console.error(error);
             if (error.response.data.message) {
