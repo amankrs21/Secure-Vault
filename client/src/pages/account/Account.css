@@ -1,0 +1,33 @@
+.account-profile {
+    width: 100%;
+    margin-top: 60px;
+    margin-bottom: 20px;
+}
+
+.account-profile-intro {
+    width: 100%;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.account-profile-img {
+    display: flex;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 2px solid #1976d2;
+
+    img {
+        width: 99%;
+        height: 99%;
+    }
+}
+
+.account-details-text {
+    width: 80%;
+    text-align: center;
+}

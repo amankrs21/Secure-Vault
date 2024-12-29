@@ -1,26 +1,32 @@
-import './Header.css';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import {
-    AppBar, Toolbar, Collapse, Typography, Container, Button, Tooltip, MenuItem
+    AppBar, Toolbar, Collapse, Typography, Container, Button, Tooltip, MenuItem,
+    IconButton, Menu, Avatar
 } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import LogoutIcon from '@mui/icons-material/Logout';
 import HomeIcon from '@mui/icons-material/Home';
-import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import DescriptionIcon from '@mui/icons-material/Description';
+import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
-import LogoutPop from './LogoutPop';
 
+import './Header.css';
+import LogoutPop from './LogoutPop';
+import AuthProvider from '../../middleware/AuthProvider';
 
 export default function Header() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { userName } = AuthProvider();
     const [open, setOpen] = useState(false);
+    const [popUser, setPopUser] = useState(null);
     const [openLogout, setOpenLogout] = useState(false);
+
+    const settings = ['Account', 'Logout'];
+    const isActive = (page) => location.pathname === '/' + page;
 
     const toggleDrawer = (page) => {
         setOpen(!open);
@@ -29,8 +35,16 @@ export default function Header() {
         }
     };
 
-    const isActive = (page) => location.pathname === '/' + page;
+    const handleOpenUserMenu = (event) => {
+        setPopUser(event.currentTarget);
+    };
 
+    const handleCloseUserMenu = (setting) => {
+        setPopUser(null);
+        console.log("====>", setting);
+        if (setting === 'Account') navigate('/account');
+        else if (setting === 'Logout') setOpenLogout(true);
+    };
 
     return (
         <AppBar position="fixed">
@@ -73,12 +87,33 @@ export default function Header() {
                     </Typography>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Logout User!!">
-                            <Button variant="contained" color="warning" className='logout-button' sx={{ minWidth: '40px', padding: '8px' }}
-                                onClick={() => setOpenLogout(true)}>
-                                <LogoutIcon fontSize='small' />
-                            </Button>
+                        <Tooltip title="Open settings">
+                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                <Avatar alt={userName} src={`https://robohash.org/${userName}`} className='profileAvt' />
+                            </IconButton>
                         </Tooltip>
+                        <Menu
+                            sx={{ mt: '45px' }}
+                            id="menu-appbar"
+                            anchorEl={popUser}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'right',
+                            }}
+                            open={Boolean(popUser)}
+                            onClose={handleCloseUserMenu}
+                        >
+                            {settings.map((setting) => (
+                                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
+                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                                </MenuItem>
+                            ))}
+                        </Menu>
                     </Box>
 
                 </Toolbar>

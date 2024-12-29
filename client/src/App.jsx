@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Home from "./pages/home/Home";
 import Vault from "./pages/vault/Vault";
 import Login from "./pages/login/Login";
+import Account from "./pages/account/Account";
 import Journal from "./pages/journal/Journal";
 import Register from "./pages/register/Register";
 import Loading from "./components/loading/Loading";
@@ -34,6 +35,7 @@ export default function App() {
             <Route path='/home' element={<Home />} />
             <Route path='/vault' element={<Vault />} />
             <Route path='/journal' element={<Journal />} />
+            <Route path='/account' element={<Account />} />
             <Route path='/collaborate' element={<Collaborate />} />
           </Route>
         </Routes>
