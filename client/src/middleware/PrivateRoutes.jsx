@@ -5,24 +5,42 @@ import AuthUser from './AuthProvider';
 import Header from '../pages/header/Header';
 import KeySetupModal from '../components/key/KeySetupModal';
 import KeyAccessModal from '../components/key/KeyAccessModal';
+import { useLoading } from '../components/loading/useLoading';
 
 
 export default function PrivateRoutes() {
     const navigate = useNavigate();
     const { isValidToken } = AuthUser();
+    const { setLoading } = useLoading();
     const [openSetup, setOpenSetup] = useState(false);
     const [openAccess, setOpenAccess] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const eKey = localStorage.getItem("eKey");
-        const token = localStorage.getItem("token");
-        const isKeySet = localStorage.getItem("isKeySet");
-        if (!token || !isValidToken(token)) navigate('/login');
-        if (!eKey) {
-            if (isKeySet === 'false') setOpenSetup(true);
-            else setOpenAccess(true);
-        }
-    }, [navigate, isValidToken]);
+        const checkAuth = async () => {
+            setLoading(true);
+            const eKey = localStorage.getItem("eKey");
+            const token = localStorage.getItem("token");
+            const isKeySet = localStorage.getItem("isKeySet");
+            if (!token || !(await isValidToken(token))) {
+                localStorage.clear();
+                navigate('/login');
+            } else {
+                setIsAuthenticated(true);
+                if (!eKey) {
+                    if (isKeySet === 'false') setOpenSetup(true);
+                    else setOpenAccess(true);
+                }
+            }
+            setLoading(false);
+        };
+
+        checkAuth();
+    }, [navigate, setLoading]);
+
+    if (!isAuthenticated) {
+        return null;
+    }
 
     return (
         <>
