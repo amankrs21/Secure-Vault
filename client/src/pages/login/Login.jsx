@@ -92,10 +92,25 @@ export default function Login() {
                         Sign in
                     </Typography>
                     <Box component="form" onSubmit={handleLogin}>
-                        <TextField sx={{ my: 2 }} autoFocus fullWidth required type='email' name="email"
-                            label="Email Address" value={formData.email} onChange={handleChange} />
-                        <TextField fullWidth required name="password" label="Password"
-                            type={show ? 'text' : 'password'} value={formData.password} onChange={handleChange}
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            required
+                            type='email'
+                            name="email"
+                            label="Email Address"
+                            sx={{ my: 3 }}
+                            value={formData.email}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            required
+                            fullWidth
+                            name="password"
+                            label="Password"
+                            onChange={handleChange}
+                            value={formData.password}
+                            type={show ? 'text' : 'password'}
                             slotProps={{
                                 input: {
                                     endAdornment: (

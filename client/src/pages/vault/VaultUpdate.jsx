@@ -37,11 +37,11 @@ export default function VaultUpdate({ updateData, setUpdateData, data }) {
             }}
         >
             <DialogTitle>
-                Update Password
+                Update Vault
             </DialogTitle>
             <DialogContent>
                 <DialogContentText mb={2}>
-                    Please update the form to modify the password.
+                    Please update the form to modify the vault data.
                 </DialogContentText>
 
                 <TextField
