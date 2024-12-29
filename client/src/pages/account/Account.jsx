@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid2';
-import Container from '@mui/material/Container';
+import { Container } from '@mui/material';
 import { toast } from 'react-toastify';
 
 import "./Account.css";
@@ -14,41 +14,47 @@ export default function Account() {
 
     const { http } = AuthProvider();
     const [userData, setUserData] = useState({});
-    const { loading, setLoading } = useLoading(true);
+    const { setLoading } = useLoading();
 
     useEffect(() => {
-        fetchUserData();
-    }, []);
-
-    const fetchUserData = async () => {
-        try {
-            setLoading(true);
-            const response = await http.get('/auth/user');
-            if (response.data) {
+        const fetchUserData = async () => {
+            try {
+                setLoading(true);
+                const response = await http.get('/auth/user');
                 setUserData(response.data);
+            } catch (error) {
+                console.error(error);
+                toast.error("Failed to fetch user data");
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error(error);
-            toast.error("Failed to fetch user data");
-        } finally { setLoading(false); }
-    };
+        };
+
+        fetchUserData();
+    }, [http, setLoading]);
+
 
     return (
-        <div className="account-profile">
-            {loading ? "" :
-                <Container maxWidth="lg">
-                    <Grid container mt={2} spacing={2}>
-
-                        <Grid size={{ xs: 12, md: 7 }}>
-                            <AccountProfile userData={userData} />
-                        </Grid>
-
-                        <Grid size={{ xs: 12, md: 4 }}>
-                            <AccountPass />
-                        </Grid>
-                    </Grid>
-                </Container>
-            }
-        </div>
+        <Container maxWidth="md" className='account'>
+            <div className='account-header'>
+                <div className='account-header-img'>
+                    <img src={`https://robohash.org/${userData.name}`} alt={userData.name} />
+                </div>
+                <div className='account-header-name'>
+                    <h1>Hi <b>{userData ? userData.name : "User"}</b> 👋</h1>
+                    <br />
+                    <h4>created on:&nbsp;<b>{new Date(userData?.createdAt).toDateString()}</b></h4>
+                </div>
+            </div>
+            <Grid container mt={2} spacing={2} className='account-main'>
+                <Grid size={{ xs: 12, md: 6 }} className='account-profile'>
+                    {userData && <AccountProfile userData={userData} />}
+                </Grid>
+                <hr />
+                <Grid size={{ xs: 12, md: 5 }} className='account-pass'>
+                    <AccountPass />
+                </Grid>
+            </Grid>
+        </Container>
     );
 }

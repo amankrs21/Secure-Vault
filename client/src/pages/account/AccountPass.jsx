@@ -34,11 +34,8 @@ export default function AccountPass() {
     };
 
     return (
-        <div>
-            <Typography variant="h5" color='primary' fontWeight={700} marginY={2}>
-                Change Password
-            </Typography>
-            <Typography variant="caption" color="error">
+        <div className='account-pass-main'>
+            <Typography variant="caption" color="error" sx={{ marginTop: 1, float: 'right' }}>
                 *You can update your password here.
             </Typography>
             <Box component="form" onSubmit={handleSubmit}>

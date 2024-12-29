@@ -1,33 +1,60 @@
-.account-profile {
-    width: 100%;
-    margin-top: 60px;
-    margin-bottom: 20px;
+.account {
+    margin: 20px 0;
 }
 
-.account-profile-intro {
-    width: 100%;
+.account-header {
     display: flex;
     text-align: center;
     align-items: center;
-    flex-direction: column;
     justify-content: center;
 }
 
-.account-profile-img {
-    display: flex;
+.account-header-img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    margin-bottom: 10px;
+    margin-right: 20px;
+    overflow: hidden;
     border: 2px solid #1976d2;
 
     img {
-        width: 99%;
-        height: 99%;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }
 
-.account-details-text {
-    width: 80%;
-    text-align: center;
+.account-header-name {
+    b {
+        color: #1976d2;
+    }
+}
+
+.account-main {
+    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.account-profile,
+.account-pass {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    /* Ensures full width on small screens */
+    max-width: 500px;
+    /* Restricts width on larger screens */
+}
+
+.account-profile-main,
+.account-pass-main {
+    width: 90%;
+}
+
+hr {
+    opacity: 0.7;
+    margin: 20px 0;
+    background: #1976d2;
 }
