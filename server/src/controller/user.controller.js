@@ -109,5 +109,51 @@ const getUserData = async (req, res, next) => {
 }
 
 
+// function to update user
+const updateUser = async (req, res, next) => {
+    try {
+        const { name, dob, answer } = req.body;
+        const fieldValidation = validateFields({ name, dob, answer });
+        if (!fieldValidation.isValid)
+            return res.status(400).json({ message: fieldValidation.message });
+
+        const user = await UserModel.findById(req.currentUser);
+        if (!user)
+            return res.status(401).json({ message: "Invalid Credentials!" });
+        user.name = name;
+        user.dateOfBirth = dob;
+        if (user.secretAnswer)
+            user.secretAnswer = btoa(answer.toLowerCase());
+        await user.save();
+        return res.status(200).json({ message: "User Updated Successfully!!" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+// function to change password
+const changePassword = async (req, res, next) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        const fieldValidation = validateFields({ oldPassword, newPassword });
+        if (!fieldValidation.isValid)
+            return res.status(400).json({ message: fieldValidation.message });
+
+        const user = await UserModel.findById(req.currentUser);
+        if (!user)
+            return res.status(401).json({ message: "Invalid Credentials!" });
+        const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+        if (!isPasswordValid)
+            return res.status(401).json({ message: "Invalid Credentials!" });
+        user.password = await hashPassword(newPassword);
+        await user.save();
+        return res.status(200).json({ message: "Password Changed Successfully!!" });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 // exporting functions
-module.exports = { userLogin, userRegister, forgetPassword, getUserData };
+module.exports = { userLogin, userRegister, forgetPassword, getUserData, updateUser, changePassword };
