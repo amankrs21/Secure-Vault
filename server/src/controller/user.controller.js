@@ -63,8 +63,8 @@ const userRegister = async (req, res, next) => {
             role: 0,
             dateOfBirth: dob,
             email: email.toLowerCase(),
+            secretAnswer: btoa(answer),
             password: await hashPassword(password),
-            secretAnswer: btoa(answer.toLowerCase()),
         });
         await user.save();
         return res.status(201).json({ message: "User Registered Successfully!!" });
@@ -112,8 +112,8 @@ const getUserData = async (req, res, next) => {
 // function to update user
 const updateUser = async (req, res, next) => {
     try {
-        const { name, dob, answer } = req.body;
-        const fieldValidation = validateFields({ name, dob, answer });
+        const { name, dateOfBirth, secretAnswer } = req.body;
+        const fieldValidation = validateFields({ name, dateOfBirth, secretAnswer });
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
@@ -121,9 +121,8 @@ const updateUser = async (req, res, next) => {
         if (!user)
             return res.status(401).json({ message: "Invalid Credentials!" });
         user.name = name;
-        user.dateOfBirth = dob;
-        if (user.secretAnswer)
-            user.secretAnswer = btoa(answer.toLowerCase());
+        user.dateOfBirth = dateOfBirth;
+        user.secretAnswer = btoa(secretAnswer);
         await user.save();
         return res.status(200).json({ message: "User Updated Successfully!!" });
     } catch (error) {
