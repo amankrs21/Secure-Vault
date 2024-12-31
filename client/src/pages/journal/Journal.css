@@ -1,0 +1,21 @@
+.journal-update-section {
+    width: 100%;
+    display: flex;
+    padding: 0.5rem 0;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.journal-update-time {
+    margin: 0;
+    color: blue;
+    display: flex;
+    font-size: small;
+    font-weight: bold;
+    align-items: center;
+}
+
+.journal-update-buttons {
+    gap: 0.3rem;
+    display: flex;
+}
