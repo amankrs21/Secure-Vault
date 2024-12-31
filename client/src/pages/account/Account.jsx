@@ -17,6 +17,8 @@ export default function Account() {
     const { setLoading } = useLoading();
 
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) { return; }
         const fetchUserData = async () => {
             try {
                 setLoading(true);
