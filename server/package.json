@@ -7,7 +7,7 @@
     "start": "node app.prod.js",
     "dev": "nodemon app.dev.js"
   },
-  "author": "",
+  "author": "amankrs21",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",

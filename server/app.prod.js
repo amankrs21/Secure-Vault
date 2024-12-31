@@ -1,6 +1,7 @@
 require("dotenv").config();
 const cors = require("cors");
 const http = require("http");
+const http = require("http");
 const express = require("express");
 
 const router = require("./src/app.router.js");
@@ -9,7 +10,7 @@ const errorHandler = require("./src/error.handler.js");
 
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT ?? 3000;
 
 // Disable x-powered-by header to prevent version disclosure
 app.disable("x-powered-by");
@@ -33,7 +34,7 @@ mongoConnect();
 // setting up cors
 const allowedOrigins = [
     "https://securevault.pages.dev",
-    "https://test.securevault.pages.dev",
+    "https://dev.securevault.pages.dev",
 ]
 const corsOptions = {
     credentials: true,
