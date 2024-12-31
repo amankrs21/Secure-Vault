@@ -3,12 +3,18 @@ import Box from '@mui/material/Box';
 import { TextField, Button, InputAdornment, IconButton, Typography } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
+import AuthProvider from '../../middleware/AuthProvider';
+import { useLoading } from '../../components/loading/useLoading';
+import { toast } from 'react-toastify';
+
 export default function AccountPass() {
 
+    const { http } = AuthProvider();
+    const { setLoading } = useLoading();
     const [btnDisabled, setBtnDisabled] = useState(true);
 
     const [passwords, setPasswords] = useState({
-        currentPassword: '',
+        oldPassword: '',
         newPassword: '',
         confirmPassword: '',
     });
@@ -22,15 +28,31 @@ export default function AccountPass() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setPasswords((prev) => ({ ...prev, [name]: value }));
-        btnDisabled && setBtnDisabled(false);
+        setBtnDisabled(false); // Enable the button when there's input
     };
 
     const handleTogglePassword = (field) => {
         setShowPassword((prev) => ({ ...prev, [field]: !prev[field] }));
     };
 
-    const handleSubmit = () => {
-        console.log('Password Change Request:', passwords);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const { oldPassword, newPassword, confirmPassword } = passwords;
+        if (newPassword !== confirmPassword) {
+            toast.error("New password and confirm password do not match.");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const response = await http.patch('/auth/user/changePassword', { oldPassword, newPassword });
+            setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
+            toast.success(response.data.message);
+            setBtnDisabled(true);
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.message);
+        } finally { setLoading(false); }
     };
 
     return (
@@ -42,10 +64,10 @@ export default function AccountPass() {
                 <TextField
                     required
                     fullWidth
-                    name="currentPassword"
+                    name="oldPassword"
                     label="Current Password"
                     type={showPassword.current ? 'text' : 'password'}
-                    value={passwords.currentPassword}
+                    value={passwords.oldPassword}
                     onChange={handleChange}
                     sx={{ marginY: 3 }}
                     InputProps={{
@@ -105,7 +127,6 @@ export default function AccountPass() {
                     Update Password
                 </Button>
             </Box>
-
         </div>
     );
 }

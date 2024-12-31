@@ -1,9 +1,17 @@
-import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
+import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
 import { TextField, Button } from '@mui/material';
-import { Save } from '@mui/icons-material';
+
+import AuthProvider from '../../middleware/AuthProvider';
+import { useLoading } from '../../components/loading/useLoading';
+
 
 export default function AccountProfile({ userData }) {
+
+    const { http } = AuthProvider();
+    const { setLoading } = useLoading();
     const [btnDisabled, setBtnDisabled] = useState(true);
 
     const [formValues, setFormValues] = useState({
@@ -17,9 +25,9 @@ export default function AccountProfile({ userData }) {
         if (userData) {
             setFormValues({
                 id: userData._id || '',
-                name: userData.name || '',
-                dateOfBirth: userData.dateOfBirth || '',
-                secretAnswer: '',
+                name: userData?.name || '',
+                dateOfBirth: userData?.dateOfBirth || '',
+                secretAnswer: userData?.secretAnswer ? atob(userData.secretAnswer) : '',
             });
         }
     }, [userData]);
@@ -33,56 +41,71 @@ export default function AccountProfile({ userData }) {
         }));
     };
 
-    const handleSave = () => {
-        formValues.secretAnswer = btoa(formValues.secretAnswer);
-        console.log("Saving new data:", formValues);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (formValues.secretAnswer.length < 3) {
+            toast.warning("Favorite place should be atleast 3 characters long.");
+            return;
+        }
+        try {
+            setLoading(true);
+            const response = await http.patch('/auth/user/update', formValues);
+            toast.success(response.data.message);
+            setBtnDisabled(true);
+        } catch (error) {
+            console.error(error);
+            toast.error(error.response.data.message);
+        } finally { setLoading(false); }
     };
 
     return (
         <div className='account-profile-main'>
-            <TextField
-                disabled
-                fullWidth
-                name="email"
-                label="Email"
-                value={userData.email || ''}
-                sx={{ marginY: 3 }}
-            />
-            <TextField
-                fullWidth
-                required
-                name="name"
-                label="Full Name"
-                variant="outlined"
-                value={formValues.name}
-                onChange={handleChange}
-            />
-            <TextField
-                fullWidth
-                name="dateOfBirth"
-                label="Date of Birth"
-                type="date"
-                value={formValues.dateOfBirth}
-                onChange={handleChange}
-                sx={{ marginY: 3 }}
-            />
-            <TextField
-                fullWidth
-                name="secretAnswer"
-                label="Favorite Place (Changable, can't be viewed)"
-                value={formValues.secretAnswer}
-                onChange={handleChange}
-            />
-            <Button
-                disabled={btnDisabled}
-                color="primary"
-                variant="contained"
-                onClick={handleSave}
-                sx={{ marginTop: 4, float: 'right' }}
-                startIcon={<Save />}
-            >
-                Update Changes
-            </Button>
+            <Box component="form" onSubmit={handleSubmit}>
+                <TextField
+                    disabled
+                    fullWidth
+                    name="email"
+                    label="Email"
+                    value={userData.email || ''}
+                    sx={{ marginY: 3 }}
+                />
+                <TextField
+                    required
+                    fullWidth
+                    name="name"
+                    label="Full Name"
+                    variant="outlined"
+                    value={formValues.name}
+                    onChange={handleChange}
+                />
+                <TextField
+                    required
+                    fullWidth
+                    name="dateOfBirth"
+                    label="Date of Birth"
+                    type="date"
+                    value={formValues.dateOfBirth}
+                    onChange={handleChange}
+                    sx={{ marginY: 3 }}
+                />
+                <TextField
+                    required
+                    fullWidth
+                    name="secretAnswer"
+                    label="Favorite Place (Changable, can't be viewed)"
+                    value={formValues.secretAnswer}
+                    onChange={handleChange}
+                />
+                <Button
+                    type='submit'
+                    color="primary"
+                    variant="contained"
+                    disabled={btnDisabled}
+                    sx={{ marginTop: 4, float: 'right' }}
+                >
+                    Update Changes
+                </Button>
+            </Box>
         </div>
     );
 }
