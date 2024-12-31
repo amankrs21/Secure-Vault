@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - dev-v2
+      - dev
   pull_request:
     branches:
       - main
@@ -67,6 +67,7 @@ jobs:
           name: node-app
           path: release.zip
 
+
   # 3. Deploy to Azure Web App (depends on Express app deployment success)
   deploy-to-azure:
     runs-on: ubuntu-latest
@@ -101,6 +102,7 @@ jobs:
           app-name: 'secure-vault'
           slot-name: 'Production'
           package: ./server
+
 
   # 4. React App Hosting to Cloudflare (depends on Azure Web App deployment success)
   react-deployment:
