@@ -27,7 +27,7 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
                 const formJson = Object.fromEntries(formData.entries());
                 formJson.key = btoa(formJson.key);
                 const response = await http.post('/pin/verify', formJson);
-                localStorage.setItem("eKey", btoa(formJson.key));
+                localStorage.setItem("eKey", formJson.key);
                 toast.success(response.data.message);
                 setOpenAccess(!openAccess);
             }
