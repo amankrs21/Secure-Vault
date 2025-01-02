@@ -27,11 +27,11 @@ http.interceptors.response.use(
     (error) => {
         if (!error.response && error.message === "Network Error") {
             localStorage.clear();
-            window.location.href = "/503";
+            setTimeout(() => { window.location.href = "/503"; }, 2000);
         }
-        if (error.response.status === 401 && error.response.data.message === "Unauthorized") {
+        if (error.response.status === 401) {
             localStorage.clear();
-            window.location.href = "/";
+            setTimeout(() => { window.location.href = "/"; }, 2000);
         }
         return Promise.reject(error);
     }
