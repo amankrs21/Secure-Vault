@@ -39,7 +39,11 @@ const userLogin = async (req, res, next) => {
             return res.status(400).json({ message: "Bad Credentials!" });
         }
         const token = jwt.sign({ id: user._id, name: user.name }, SecretKey, { expiresIn: "30m" });
-        return res.status(200).json({ message: "Login Successful!", token, isKeySet: user.textVerify ? true : false });
+        return res.status(200).json({
+            message: "Login Successful!",
+            token,
+            isKeySet: !!user.textVerify
+        });
     } catch (error) {
         next(error);
     }

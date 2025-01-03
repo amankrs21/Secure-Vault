@@ -70,14 +70,16 @@ export default function AccountPass() {
                     value={passwords.oldPassword}
                     onChange={handleChange}
                     sx={{ marginY: 3 }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton onClick={() => handleTogglePassword('current')}>
-                                    {showPassword.current ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => handleTogglePassword('current')}>
+                                        {showPassword.current ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }
                     }}
                 />
                 <TextField
@@ -88,14 +90,16 @@ export default function AccountPass() {
                     type={showPassword.new ? 'text' : 'password'}
                     value={passwords.newPassword}
                     onChange={handleChange}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton onClick={() => handleTogglePassword('new')}>
-                                    {showPassword.new ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => handleTogglePassword('new')}>
+                                        {showPassword.new ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }
                     }}
                 />
                 <TextField
@@ -107,14 +111,16 @@ export default function AccountPass() {
                     value={passwords.confirmPassword}
                     onChange={handleChange}
                     sx={{ marginY: 3 }}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end">
-                                <IconButton onClick={() => handleTogglePassword('confirm')}>
-                                    {showPassword.confirm ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        ),
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton onClick={() => handleTogglePassword('confirm')}>
+                                        {showPassword.confirm ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        }
                     }}
                 />
                 <Button

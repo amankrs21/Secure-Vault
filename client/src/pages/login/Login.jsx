@@ -1,8 +1,9 @@
-import './Login.css';
 import { useEffect, useState } from 'react';
-import { Box, IconButton, InputAdornment } from '@mui/material';
+import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
-import { Avatar, Typography, TextField, Button } from '@mui/material';
+import {
+    IconButton, InputAdornment, Avatar, Typography, TextField, Button
+} from '@mui/material';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import LoginIcon from '@mui/icons-material/Login';
@@ -10,6 +11,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+import './Login.css';
 import ForgetPass from './ForgetPass';
 import AuthProvider from '../../middleware/AuthProvider';
 import { ERROR_MESSAGES } from '../../components/constants';

@@ -27,9 +27,9 @@ export default function Journal() {
     const [openAdd, setOpenAdd] = useState(false);
     const [decrypted, setDecrypted] = useState('');
     const [expanded, setExpanded] = useState(null);
-    const [jornalData, setJournalData] = useState([]);
     const [updateData, setUpdateData] = useState(null);
     const [deleteData, setDeleteData] = useState(null);
+    const [journalData, setJournalData] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -135,7 +135,7 @@ export default function Journal() {
         const localJournal = JSON.parse(localStorage.getItem('localJournal'));
         if (value === '') { setJournalData(localJournal); handleDecrypt(localJournal[0]._id); }
         else {
-            const search = jornalData.filter((data) => data.title.toLowerCase().includes(value.toLowerCase()));
+            const search = journalData.filter((data) => data.title.toLowerCase().includes(value.toLowerCase()));
             setJournalData(search);
             handleDecrypt(search[0]._id);
         }
@@ -177,7 +177,7 @@ export default function Journal() {
 
             <Divider sx={{ marginY: 3 }} />
 
-            {(jornalData.length == 0) ? (
+            {(journalData.length == 0) ? (
                 <div style={{ textAlign: "center", marginTop: "50px" }}>
                     <Typography variant="h6">
                         No journal available. Please add new records.
@@ -193,7 +193,7 @@ export default function Journal() {
                 </div>
             ) : (
                 <Container maxWidth="md" sx={{ backgroundColor: '#f2f2f2', paddingY: 2, borderRadius: 2 }}>
-                    {jornalData.map((data) => (
+                    {journalData.map((data) => (
                         <Accordion key={data._id} sx={{ marginY: 1 }} expanded={expanded === data._id} onChange={handleChange(data._id)}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />}>{data.title}</AccordionSummary>
                             <AccordionDetails sx={{ whiteSpace: 'pre-wrap' }}>

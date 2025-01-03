@@ -193,7 +193,7 @@ export default function Vault() {
                         </TableHead>
                         <TableBody>
                             {vaultData.map((data, index) => (
-                                <TableRow key={index}>
+                                <TableRow key={data._id}>
                                     <TableCell className='vault-table-cell'>{index + 1}</TableCell>
                                     <TableCell className='vault-table-cell'>{data.title}</TableCell>
                                     <TableCell className='vault-table-cell'>{data.username}</TableCell>

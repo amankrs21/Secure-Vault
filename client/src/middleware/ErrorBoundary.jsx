@@ -12,7 +12,7 @@ class ErrorBoundary extends Component {
     return { hasError: true };
   }
 
-  // TODO: Implement componentDidCatch if needed
+  // // Implement componentDidCatch if needed
   // componentDidCatch(error, errorInfo) {
   //   // Log the error to an error reporting service if needed
   //   console.error("Error caught by ErrorBoundary:", error, errorInfo);

@@ -26,6 +26,7 @@ const AuthSession = async (req, res, next) => {
         const user = await UserModel.findById(decoded?.id);
         if (!user) { return res.status(401).json({ message: "Unauthorized" }); }
 
+        // pass it to the next middleware if needed
         // req.user = user;
         req.currentUser = user._id;
 

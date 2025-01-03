@@ -3,8 +3,8 @@ import "./ErrorPage.css";
 export default function ErrorPage() {
 
     const redirectToHome = () => {
-        return window.location.href = "/";
-    }
+        window.location.href = "/";
+    };
 
     return (
         <div className="error-page">
