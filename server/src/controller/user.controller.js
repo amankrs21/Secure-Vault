@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const validator = require("validator");
 
 const UserModel = require("../model/user.model.js");
+const VaultModel = require("../model/vault.model.js");
+const JournalModel = require("../model/journal.model.js");
 const { validateFields } = require("../service/validation.service.js");
 
 const SecretKey = process.env.SECRET_KEY;
@@ -158,5 +160,23 @@ const changePassword = async (req, res, next) => {
 };
 
 
+// function to delete user and all its data
+const deleteUser = async (req, res, next) => {
+    try {
+        const user = await UserModel.findById(req.currentUser);
+        if (!user) {
+            return res.status(400).json({ message: "Bad Credentials!" });
+        }
+
+        await VaultModel.deleteMany({ createdBy: req.currentUser });
+        await JournalModel.deleteMany({ createdBy: req.currentUser });
+        await user.deleteOne();
+        return res.status(204).send();
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 // exporting functions
-module.exports = { userLogin, userRegister, forgetPassword, getUserData, updateUser, changePassword };
+module.exports = { userLogin, userRegister, forgetPassword, getUserData, updateUser, changePassword, deleteUser };
