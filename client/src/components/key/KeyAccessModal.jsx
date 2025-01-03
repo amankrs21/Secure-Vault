@@ -8,8 +8,10 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { toast } from 'react-toastify';
 
 import AuthProvider from '../../middleware/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function KeyAccessModal({ openAccess, setOpenAccess }) {
+    const navigate = useNavigate();
     const { http } = AuthProvider();
     const [forget, setForget] = useState(false);
     const [showPass, setShowPass] = useState(false);
@@ -19,9 +21,11 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
             event.preventDefault();
             if (forget) {
                 const response = await http.get('/pin/reset');
-                toast.info(`${response.data.message}. Please login again to continue.`);
+                toast.success(response.data.message);
+                toast.info("Please login again to continue.");
+                setOpenAccess(!openAccess);
                 localStorage.clear();
-                setTimeout(() => { setOpenAccess(!openAccess); }, 3000);
+                setTimeout(() => { navigate("/") }, 1500);
             } else {
                 const formData = new FormData(event.currentTarget);
                 const formJson = Object.fromEntries(formData.entries());
