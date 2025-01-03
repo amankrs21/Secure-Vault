@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const UserModel = require("./model/user.model.js");
+const { decrypt } = require("./service/cipher.service.js");
 
 const SecretKey = process.env.SECRET_KEY;
 
@@ -27,6 +28,15 @@ const AuthSession = async (req, res, next) => {
 
         // req.user = user;
         req.currentUser = user._id;
+
+        let key = req.body?.key;
+        if (key && user.textVerify && user.textVerify !== "") {
+            try {
+                decrypt(user.textVerify, key);
+            } catch (error) {
+                return res.status(400).json({ message: "Invalid Encryption Key!" });
+            }
+        }
         next();
 
     } catch (error) {
