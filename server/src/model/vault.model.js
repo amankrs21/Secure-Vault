@@ -11,7 +11,6 @@ const VaultModel = new mongo.Schema({
     },
     password: {
         type: String,
-        required: true,
     },
     updatedAt: {
         type: Date,

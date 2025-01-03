@@ -24,7 +24,7 @@ const getVault = async (req, res, next) => {
 const addVault = async (req, res, next) => {
     try {
         const { key, title, username, password } = req.body;
-        const fieldValidation = validateFields({ title, username, password });
+        const fieldValidation = validateFields({ key, title, username, password });
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
@@ -46,7 +46,7 @@ const addVault = async (req, res, next) => {
 const updateVault = async (req, res, next) => {
     try {
         const { id, key, title, username, password } = req.body;
-        const fieldValidation = validateFields({ id, title, username, password });
+        const fieldValidation = validateFields({ id, key, title, username, password });
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
@@ -90,7 +90,7 @@ const decryptVault = async (req, res, next) => {
         const vault = await VaultModel.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!vault)
             return res.status(404).json({ message: "Vault not found!" });
-        vault.password = decrypt(vault.password, key);
+        vault.password ? vault.password = decrypt(vault.password, key) : null;
         return res.status(200).json(vault.password);
     } catch (error) {
         next(error);
