@@ -11,7 +11,6 @@ export default function JournalDelete({ deleteData, setDeleteData, data }) {
 
     const handleDelete = () => {
         data(deleteData);
-        setDeleteData(null);
     }
 
     return (

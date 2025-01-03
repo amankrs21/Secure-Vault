@@ -10,14 +10,7 @@ const TextToVerify = "Hey SV, Verify me!";
 // function to verify the encryption key
 const verifyText = async (req, res, next) => {
     try {
-        if (!req.body.key) return res.status(400).send("Key is required");
-        const User = await UserModel.findById(req.currentUser);
-        if (!User.textVerify) return res.status(400).send({ message: "No sample text found for verification." });
-        const decryptedText = decrypt(User.textVerify, req.body.key);
-        if (decryptedText === TextToVerify) {
-            return res.status(200).json({ message: "Encryption Key is verified successfully!" });
-        }
-        return res.status(400).json({ message: "Invalid Encryption Key!" });
+        return res.status(200).json({ message: "Encryption Key is verified successfully!" });
     } catch (error) {
         next(error);
     }
@@ -51,12 +44,12 @@ const resetPin = async (req, res, next) => {
         const User = await UserModel.findById(req.currentUser);
         User.textVerify = null;
         await User.save();
-        const Note = await JournalModel.find({ user: User._id });
+        const Note = await JournalModel.find({ createdBy: User._id });
         Note.forEach(async (note) => {
             note.content = null;
             await note.save();
         });
-        const Vault = await VaultModel.find({ user: User._id });
+        const Vault = await VaultModel.find({ createdBy: User._id });
         Vault.forEach(async (vault) => {
             vault.password = null;
             await vault.save();

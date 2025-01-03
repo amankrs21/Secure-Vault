@@ -8,7 +8,6 @@ const VaultModel = new mongo.Schema({
     },
     username: {
         type: String,
-        required: true,
     },
     password: {
         type: String,

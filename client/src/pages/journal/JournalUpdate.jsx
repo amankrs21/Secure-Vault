@@ -31,7 +31,6 @@ export default function JournalUpdate({ updateData, setUpdateData, data }) {
                 onSubmit: (event) => {
                     event.preventDefault();
                     data(formValues);
-                    setUpdateData(null);
                 },
             }}
         >

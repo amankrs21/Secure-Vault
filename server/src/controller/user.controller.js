@@ -32,14 +32,18 @@ const userLogin = async (req, res, next) => {
         }
         const user = await findUserByEmail(email);
         if (!user) {
-            return res.status(401).json({ message: "Invalid Credentials!" });
+            return res.status(400).json({ message: "Bad Credentials!" });
         }
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: "Invalid Credentials!" });
+            return res.status(400).json({ message: "Bad Credentials!" });
         }
         const token = jwt.sign({ id: user._id, name: user.name }, SecretKey, { expiresIn: "30m" });
-        return res.status(200).json({ message: "Login Successful!", token, isKeySet: user.textVerify ? true : false });
+        return res.status(200).json({
+            message: "Login Successful!",
+            token,
+            isKeySet: !!user.textVerify
+        });
     } catch (error) {
         next(error);
     }
@@ -84,14 +88,14 @@ const forgetPassword = async (req, res, next) => {
         }
         const user = await findUserByEmail(email);
         if (!user) {
-            return res.status(401).json({ message: "Invalid Credentials!" });
+            return res.status(400).json({ message: "Bad Credentials!" });
         }
         if (user.dateOfBirth !== dob || btoa(answer.toLowerCase()) !== user.secretAnswer) {
-            return res.status(401).json({ message: "Invalid Credentials!" });
+            return res.status(400).json({ message: "Bad Credentials!" });
         }
         user.password = await hashPassword(password);
         await user.save();
-        return res.status(200).json({ message: "Password Changed Successfully!!" });
+        return res.status(200).json({ message: "Password Changed Successfully!" });
     } catch (error) {
         next(error);
     }
@@ -119,7 +123,7 @@ const updateUser = async (req, res, next) => {
 
         const user = await UserModel.findById(req.currentUser);
         if (!user)
-            return res.status(401).json({ message: "Invalid Credentials!" });
+            return res.status(400).json({ message: "Bad Credentials!" });
         user.name = name;
         user.dateOfBirth = dateOfBirth;
         user.secretAnswer = btoa(secretAnswer);
@@ -141,13 +145,13 @@ const changePassword = async (req, res, next) => {
 
         const user = await UserModel.findById(req.currentUser);
         if (!user)
-            return res.status(401).json({ message: "Invalid Credentials!" });
+            return res.status(400).json({ message: "Bad Credentials!" });
         const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
         if (!isPasswordValid)
-            return res.status(401).json({ message: "Invalid Credentials!" });
+            return res.status(400).json({ message: "Bad Credentials!" });
         user.password = await hashPassword(newPassword);
         await user.save();
-        return res.status(200).json({ message: "Password Changed Successfully!!" });
+        return res.status(200).json({ message: "Password Changed Successfully!" });
     } catch (error) {
         next(error);
     }

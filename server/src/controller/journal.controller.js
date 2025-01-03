@@ -19,7 +19,7 @@ const getJournal = async (req, res, next) => {
 const addJournal = async (req, res, next) => {
     try {
         const { key, title, content } = req.body;
-        const fieldValidation = validateFields({ title, content });
+        const fieldValidation = validateFields({ key, title, content });
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
@@ -40,7 +40,7 @@ const addJournal = async (req, res, next) => {
 const updateJournal = async (req, res, next) => {
     try {
         const { id, key, title, content } = req.body;
-        const fieldValidation = validateFields({ id, title, content });
+        const fieldValidation = validateFields({ id, key, title, content });
         if (!fieldValidation.isValid)
             return res.status(400).json({ message: fieldValidation.message });
 
@@ -83,7 +83,9 @@ const decryptJournal = async (req, res, next) => {
         const journal = await JournalModel.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!journal)
             return res.status(404).json({ message: "Journal not found!" });
-        journal.content = decrypt(journal.content, key);
+        if (journal.content) {
+            journal.content = decrypt(journal.content, key);
+        }
         return res.status(200).json(journal.content);
     } catch (error) {
         next(error);

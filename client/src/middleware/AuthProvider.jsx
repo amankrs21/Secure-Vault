@@ -31,7 +31,7 @@ http.interceptors.response.use(
         }
         if (error.response.status === 401) {
             localStorage.clear();
-            setTimeout(() => { window.location.href = "/"; }, 2000);
+            setTimeout(() => { window.location.href = "/"; }, 1500);
         }
         return Promise.reject(error);
     }
@@ -43,16 +43,18 @@ export default function AuthProvider() {
     const [userName, setUserName] = useState(null);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token && isValidToken(token)) {
-            setToken(token);
-            http.defaults.headers.common.Authorization = `Bearer ${token}`;
-        } else { localStorage.clear(); }
+        (async () => {
+            const token = localStorage.getItem("token");
+            if (token && await isValidToken(token)) {
+                setToken(token);
+                http.defaults.headers.common.Authorization = `Bearer ${token}`;
+            } else { localStorage.clear(); }
+        })();
     }, []);
 
     // Save the token in localStorage and set headers
-    const saveToken = (token) => {
-        if (isValidToken(token)) {
+    const saveToken = async (token) => {
+        if (await isValidToken(token)) {
             setToken(token);
             localStorage.setItem("token", token);
             http.defaults.headers.common.Authorization = `Bearer ${token}`;

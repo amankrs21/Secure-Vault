@@ -16,7 +16,6 @@ export default function JournalAdd({ openAdd, setOpenAdd, data }) {
                     const formData = new FormData(event.currentTarget);
                     const formJson = Object.fromEntries(formData.entries());
                     data(formJson);
-                    setOpenAdd(!openAdd);
                 },
             }}
         >

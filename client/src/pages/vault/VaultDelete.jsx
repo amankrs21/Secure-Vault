@@ -11,7 +11,6 @@ export default function VaultDelete({ deleteData, setDeleteData, data }) {
 
     const handleDelete = () => {
         data(deleteData);
-        setDeleteData(null);
     }
 
     return (
