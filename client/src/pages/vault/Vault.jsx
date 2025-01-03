@@ -131,6 +131,11 @@ export default function Vault() {
         }
     }
 
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+        toast.success('Copied to clipboard!');
+    }
+
     return (
         <Container maxWidth="lg">
             {openAdd && <VaultAdd openAdd={openAdd} setOpenAdd={setOpenAdd} data={handleAdd} />}
@@ -196,10 +201,16 @@ export default function Vault() {
                                 <TableRow key={data._id}>
                                     <TableCell className='vault-table-cell'>{index + 1}</TableCell>
                                     <TableCell className='vault-table-cell'>{data.title}</TableCell>
-                                    <TableCell className='vault-table-cell'>{data.username}</TableCell>
+                                    <TableCell className='vault-table-cell'>
+                                        <i style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(data.username)}>
+                                            {data.username}
+                                        </i>
+                                    </TableCell>
                                     <TableCell className='vault-table-cell'>
                                         {currentId == data._id ? (
-                                            <>{decrypted}</>
+                                            <b style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(decrypted)}>
+                                                {decrypted}
+                                            </b>
                                         ) : (
                                             <Tooltip title="Decrypt Password" arrow sx={{ cursor: 'pointer' }}>
                                                 <VisibilityOffIcon color="primary" onClick={() => handleDecrypt(data._id)} />
