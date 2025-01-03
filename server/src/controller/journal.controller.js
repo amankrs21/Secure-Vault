@@ -83,7 +83,9 @@ const decryptJournal = async (req, res, next) => {
         const journal = await JournalModel.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!journal)
             return res.status(404).json({ message: "Journal not found!" });
-        journal.content ? journal.content = decrypt(journal.content, key) : null;
+        if (journal.content) {
+            journal.content = decrypt(journal.content, key);
+        }
         return res.status(200).json(journal.content);
     } catch (error) {
         next(error);

@@ -90,7 +90,9 @@ const decryptVault = async (req, res, next) => {
         const vault = await VaultModel.findOne({ _id: santizeId(id), createdBy: req.currentUser });
         if (!vault)
             return res.status(404).json({ message: "Vault not found!" });
-        vault.password ? vault.password = decrypt(vault.password, key) : null;
+        if (vault.password) {
+            vault.password = decrypt(vault.password, key);
+        }
         return res.status(200).json(vault.password);
     } catch (error) {
         next(error);
