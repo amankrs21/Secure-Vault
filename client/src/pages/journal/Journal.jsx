@@ -69,6 +69,7 @@ export default function Journal() {
             data.key = localStorage.getItem('eKey');
             const response = await http.post('/journal/add', data);
             toast.success(response.data.message);
+            setOpenAdd(false);
             await handleFetch();
         } catch (error) {
             console.error(error);
@@ -88,6 +89,7 @@ export default function Journal() {
             data.key = localStorage.getItem('eKey');
             const response = await http.patch('/journal/update', data);
             toast.success(response.data.message);
+            setUpdateData(null);
             await handleFetch();
         } catch (error) {
             console.error(error);
@@ -106,6 +108,7 @@ export default function Journal() {
             setLoading(true);
             await http.delete(`/journal/delete/${id}`);
             toast.success("Journal deleted successfully!");
+            setDeleteData(null);
             await handleFetch();
         } catch (error) {
             console.error(error);

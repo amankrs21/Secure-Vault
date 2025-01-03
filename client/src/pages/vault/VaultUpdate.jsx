@@ -32,7 +32,6 @@ export default function VaultUpdate({ updateData, setUpdateData, data }) {
                 onSubmit: (event) => {
                     event.preventDefault();
                     data(formValues);
-                    setUpdateData(null);
                 },
             }}
         >
