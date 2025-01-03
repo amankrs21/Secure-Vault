@@ -112,6 +112,7 @@ export default function Vault() {
             setDecrypted(response.data);
             return response.data;
         } catch (error) {
+            setDecrypted('');
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
             else { toast.error('Something went wrong!'); }
