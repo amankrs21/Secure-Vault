@@ -31,7 +31,7 @@ http.interceptors.response.use(
         }
         if (error.response.status === 401) {
             localStorage.clear();
-            setTimeout(() => { window.location.href = "/"; }, 2000);
+            setTimeout(() => { window.location.href = "/"; }, 1500);
         }
         return Promise.reject(error);
     }
