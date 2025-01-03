@@ -44,12 +44,12 @@ const resetPin = async (req, res, next) => {
         const User = await UserModel.findById(req.currentUser);
         User.textVerify = null;
         await User.save();
-        const Note = await JournalModel.find({ user: User._id });
+        const Note = await JournalModel.find({ createdBy: User._id });
         Note.forEach(async (note) => {
             note.content = null;
             await note.save();
         });
-        const Vault = await VaultModel.find({ user: User._id });
+        const Vault = await VaultModel.find({ createdBy: User._id });
         Vault.forEach(async (vault) => {
             vault.password = null;
             await vault.save();
