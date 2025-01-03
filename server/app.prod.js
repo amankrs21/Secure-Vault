@@ -57,5 +57,5 @@ app.use(errorHandler);
 // creating server with Express app and http
 const server = http.createServer(app);
 server.listen(port, () => {
-    console.log(`Prod Server started on the PORT ${port}`);
+    console.info(`Prod Server started on the PORT ${port}`);
 });

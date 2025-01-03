@@ -50,7 +50,7 @@ export default function AccountPass() {
             toast.success(response.data.message);
             setBtnDisabled(true);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             toast.error(error.response.data.message);
         } finally { setLoading(false); }
     };

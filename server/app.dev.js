@@ -32,7 +32,7 @@ mongoConnect();
 
 // Middleware to log all the requests
 app.use((req, res, next) => {
-    console.log(`${Date().slice(4, 24)} [${req.method}] http://${req.ip}${req.url}`);
+    console.info(`${Date().slice(4, 24)} [${req.method}] http://${req.ip}${req.url}`);
     next()
 })
 
@@ -65,5 +65,5 @@ app.use(errorHandler);
 // creating server with Express app and http
 const server = http.createServer(app);
 server.listen(port, '0.0.0.0', () => {
-    console.log(`Dev Server running at http://localhost:${port}`);
+    console.info(`Dev Server running at http://localhost:${port}`);
 });
