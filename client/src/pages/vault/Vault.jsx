@@ -202,10 +202,16 @@ export default function Vault() {
                                     <TableCell className='vault-table-cell'>{data.title}</TableCell>
                                     <TableCell className='vault-table-cell'>
                                         <i
+                                            tabIndex={0}
                                             role="button"
                                             style={{ cursor: 'pointer' }}
                                             aria-label="Copy to clipboard"
                                             onClick={() => copyToClipboard(data.username)}
+                                            onKeyDown={(event) => {
+                                                if (event.key === 'Enter' || event.key === ' ') {
+                                                    copyToClipboard(data.username);
+                                                }
+                                            }}
                                         >
                                             {data.username}
                                         </i>
@@ -213,10 +219,16 @@ export default function Vault() {
                                     <TableCell className='vault-table-cell'>
                                         {currentId == data._id ? (
                                             <b
+                                                tabIndex={0}
                                                 role="button"
                                                 style={{ cursor: 'pointer' }}
                                                 aria-label="Copy to clipboard"
                                                 onClick={() => copyToClipboard(decrypted)}
+                                                onKeyDown={(event) => {
+                                                    if (event.key === 'Enter' || event.key === ' ') {
+                                                        copyToClipboard(decrypted);
+                                                    }
+                                                }}
                                             >
                                                 {decrypted}
                                             </b>
