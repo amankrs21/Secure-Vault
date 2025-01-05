@@ -1,5 +1,6 @@
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { useLoading } from './useLoading';
 
 export default function Loading() {
@@ -23,7 +24,7 @@ export default function Loading() {
             backdropFilter: 'blur(1px)',
             backgroundColor: 'rgba(255, 255, 255, 0.5)',
         }}>
-            <CircularProgress color="secondary" size="3rem" />
+            <CircularProgress color="primary" size="3rem" />
         </Box>
     );
 }
