@@ -7,4 +7,9 @@
 
 .vault-table-cell {
     text-align: center !important;
+
+    button:hover {
+        font-weight: bold;
+        scale: 1.02;
+    }
 }

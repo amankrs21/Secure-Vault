@@ -201,37 +201,21 @@ export default function Vault() {
                                     <TableCell className='vault-table-cell'>{index + 1}</TableCell>
                                     <TableCell className='vault-table-cell'>{data.title}</TableCell>
                                     <TableCell className='vault-table-cell'>
-                                        <i
-                                            tabIndex={0}
-                                            role="button"
-                                            style={{ cursor: 'pointer' }}
-                                            aria-label="Copy to clipboard"
+                                        <button
+                                            style={{ cursor: 'pointer', border: 'none', background: 'none' }}
                                             onClick={() => copyToClipboard(data.username)}
-                                            onKeyDown={(event) => {
-                                                if (event.key === 'Enter' || event.key === ' ') {
-                                                    copyToClipboard(data.username);
-                                                }
-                                            }}
                                         >
                                             {data.username}
-                                        </i>
+                                        </button>
                                     </TableCell>
                                     <TableCell className='vault-table-cell'>
                                         {currentId == data._id ? (
-                                            <b
-                                                tabIndex={0}
-                                                role="button"
-                                                style={{ cursor: 'pointer' }}
-                                                aria-label="Copy to clipboard"
-                                                onClick={() => copyToClipboard(decrypted)}
-                                                onKeyDown={(event) => {
-                                                    if (event.key === 'Enter' || event.key === ' ') {
-                                                        copyToClipboard(decrypted);
-                                                    }
-                                                }}
+                                            <button
+                                                style={{ cursor: 'pointer', border: 'none', background: 'none' }}
+                                                onClick={() => copyToClipboard(data.username)}
                                             >
                                                 {decrypted}
-                                            </b>
+                                            </button>
                                         ) : (
                                             <Tooltip title="Decrypt Password" arrow sx={{ cursor: 'pointer' }}>
                                                 <VisibilityOffIcon color="primary" onClick={() => handleDecrypt(data._id)} />
