@@ -109,13 +109,12 @@ export default function Vault() {
 
     const handleDecrypt = async (id) => {
         try {
+            setDecrypted('');
             setLoading(true);
             setCurrentId(id);
             const response = await http.post(`/vault/${id}`, { key: localStorage.getItem('eKey') });
             setDecrypted(response.data);
-            return response.data;
         } catch (error) {
-            setDecrypted('');
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
             else { toast.error('Something went wrong!'); }
@@ -202,13 +201,23 @@ export default function Vault() {
                                     <TableCell className='vault-table-cell'>{index + 1}</TableCell>
                                     <TableCell className='vault-table-cell'>{data.title}</TableCell>
                                     <TableCell className='vault-table-cell'>
-                                        <i style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(data.username)}>
+                                        <i
+                                            role="button"
+                                            style={{ cursor: 'pointer' }}
+                                            aria-label="Copy to clipboard"
+                                            onClick={() => copyToClipboard(data.username)}
+                                        >
                                             {data.username}
                                         </i>
                                     </TableCell>
                                     <TableCell className='vault-table-cell'>
                                         {currentId == data._id ? (
-                                            <b style={{ cursor: 'pointer' }} onClick={() => copyToClipboard(decrypted)}>
+                                            <b
+                                                role="button"
+                                                style={{ cursor: 'pointer' }}
+                                                aria-label="Copy to clipboard"
+                                                onClick={() => copyToClipboard(decrypted)}
+                                            >
                                                 {decrypted}
                                             </b>
                                         ) : (

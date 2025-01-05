@@ -120,11 +120,11 @@ export default function Journal() {
     const handleDecrypt = async (id) => {
         try {
             setExpanded(id);
+            setDecrypted('');
             setLoading(true);
             const response = await http.post(`/journal/${id}`, { key: localStorage.getItem('eKey') });
             setDecrypted(response.data);
         } catch (error) {
-            setDecrypted('');
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
             else { toast.error('Something went wrong!'); }
