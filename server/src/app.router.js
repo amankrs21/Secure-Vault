@@ -4,7 +4,7 @@ const AuthSession = require("./app.middleware.js");
 const { setVerifyText, resetPin, verifyText } = require("./controller/pin.controller.js");
 const { getVault, addVault, updateVault, deleteVault, decryptVault } = require("./controller/vault.controller.js");
 const { getJournal, addJournal, updateJournal, deleteJournal, decryptJournal } = require("./controller/journal.controller.js");
-const { userLogin, userRegister, forgetPassword, getUserData, updateUser, changePassword } = require("./controller/user.controller.js");
+const { userLogin, userRegister, forgetPassword, getUserData, updateUser, changePassword, deleteUser } = require("./controller/user.controller.js");
 
 
 const router = express.Router();
@@ -16,6 +16,7 @@ router.post('/auth/register', userRegister);
 router.patch('/auth/forget', forgetPassword);
 router.get('/auth/user', AuthSession, getUserData);
 router.patch('/auth/user/update', AuthSession, updateUser);
+router.delete('/auth/user/delete', AuthSession, deleteUser);
 router.patch('/auth/user/changePassword', AuthSession, changePassword);
 
 

@@ -17,6 +17,7 @@ import AuthProvider from '../../middleware/AuthProvider';
 import { ERROR_MESSAGES } from '../../components/constants';
 import { useLoading } from '../../components/loading/useLoading';
 
+
 export default function Login() {
     document.title = 'SecureVault | Login';
 
@@ -26,6 +27,22 @@ export default function Login() {
     const [openFP, setOpenFP] = useState(false);
     const { http, setToken, isValidToken } = AuthProvider();
     const [formData, setFormData] = useState({ email: '', password: '' });
+    const [backgroundImage, setBackgroundImage] = useState('/first-image.jpg');
+
+    useEffect(() => {
+        const fetchImage = () => {
+            const randomImageUrl = `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 5000)}`;
+            const img = new Image();
+            img.src = randomImageUrl;
+            img.onload = () =>
+                setBackgroundImage(randomImageUrl);
+        };
+
+        fetchImage();
+        const intervalId = setInterval(fetchImage, 5000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     useEffect(() => {
         (async () => {
@@ -80,12 +97,13 @@ export default function Login() {
             <Grid
                 size={{ xs: false, sm: false, md: 7 }}
                 sx={{
-                    backgroundImage: 'url(./login2.jpg)',
+                    backgroundImage: `url(${backgroundImage})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundColor: (t) =>
                         t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
+                    transition: 'background-image 0.5s ease-in-out'
                 }}
             />
             <Grid size={{ xs: 12, sm: 12, md: 5 }} elevation={6} className="login-container">

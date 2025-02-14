@@ -1,8 +1,13 @@
 import PropTypes from "prop-types";
 import { createContext, useState, useMemo } from "react";
 
-export const LoadingContext = createContext();
 
+// Create a new context
+const LoadingContext = createContext();
+export { LoadingContext };
+
+
+// Create a provider that will pass the loading
 export const LoadingProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const value = useMemo(() => ({ loading, setLoading }), [loading, setLoading]);

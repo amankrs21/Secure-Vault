@@ -93,7 +93,7 @@ const decryptVault = async (req, res, next) => {
         if (vault.password) {
             vault.password = decrypt(vault.password, key);
         }
-        return res.status(200).json(vault.password);
+        return res.status(200).json(btoa(vault.password));
     } catch (error) {
         next(error);
     }
