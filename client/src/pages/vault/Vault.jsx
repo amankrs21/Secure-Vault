@@ -113,7 +113,8 @@ export default function Vault() {
             setLoading(true);
             setCurrentId(id);
             const response = await http.post(`/vault/${id}`, { key: localStorage.getItem('eKey') });
-            setDecrypted(response.data);
+            setDecrypted(atob(response.data));
+            setTimeout(() => { setDecrypted(''); setCurrentId(null); }, 5000);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -132,7 +133,7 @@ export default function Vault() {
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-        toast.success('Copied to clipboard!');
+        toast.success('Text Copied to clipboard!');
     }
 
     return (
@@ -201,21 +202,17 @@ export default function Vault() {
                                     <TableCell className='vault-table-cell'>{index + 1}</TableCell>
                                     <TableCell className='vault-table-cell'>{data.title}</TableCell>
                                     <TableCell className='vault-table-cell'>
-                                        <button
-                                            style={{ cursor: 'pointer', border: 'none', background: 'none' }}
-                                            onClick={() => copyToClipboard(data.username)}
-                                        >
+                                        <Typography color='primary' variant='body1' fontWeight={600} sx={{ cursor: 'pointer' }}
+                                            onClick={() => copyToClipboard(data.username)}>
                                             {data.username}
-                                        </button>
+                                        </Typography>
                                     </TableCell>
                                     <TableCell className='vault-table-cell'>
                                         {currentId == data._id ? (
-                                            <button
-                                                style={{ cursor: 'pointer', border: 'none', background: 'none' }}
-                                                onClick={() => copyToClipboard(data.username)}
-                                            >
+                                            <Typography color="primary" variant='body1' fontWeight={600} sx={{ cursor: 'pointer' }}
+                                                onClick={() => copyToClipboard(data.username)}>
                                                 {decrypted}
-                                            </button>
+                                            </Typography>
                                         ) : (
                                             <Tooltip title="Decrypt Password" arrow sx={{ cursor: 'pointer' }}>
                                                 <VisibilityOffIcon color="primary" onClick={() => handleDecrypt(data._id)} />
