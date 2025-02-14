@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid2';
-import { Container } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import { toast } from 'react-toastify';
 
 import "./Account.css";
@@ -8,13 +8,15 @@ import AuthProvider from '../../middleware/AuthProvider';
 import AccountProfile from './AccountProfile';
 import AccountPass from './AccountPass';
 import { useLoading } from '../../components/loading/useLoading';
+import AccountDelete from './AccountDelete';
 
 export default function Account() {
     document.title = "SecureVault | Account";
 
     const { http } = AuthProvider();
-    const [userData, setUserData] = useState({});
     const { setLoading } = useLoading();
+    const [userData, setUserData] = useState({});
+    const [openDelete, setOpenDelete] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -38,6 +40,7 @@ export default function Account() {
 
     return (
         <Container maxWidth="md" className='account'>
+            {openDelete && <AccountDelete openDelete={openDelete} setOpenDelete={setOpenDelete} />}
             <div className='account-header'>
                 <div className='account-header-img'>
                     <img src={`https://robohash.org/${userData.name}`} alt={userData.name} />
@@ -57,6 +60,13 @@ export default function Account() {
                     <AccountPass />
                 </Grid>
             </Grid>
+            <Button
+                color='error'
+                variant='contained'
+                sx={{ float: 'right', mt: 3 }}
+                onClick={() => { setOpenDelete(true) }}>
+                Delete Account Permanently
+            </Button>
         </Container>
     );
 }
