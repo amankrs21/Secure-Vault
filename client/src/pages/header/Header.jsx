@@ -6,8 +6,9 @@ import {
     IconButton, Menu, Avatar
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
+import CloseIcon from '@mui/icons-material/Close';
+import PersonIcon from '@mui/icons-material/Person';
 import DescriptionIcon from '@mui/icons-material/Description';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
@@ -24,7 +25,6 @@ export default function Header() {
     const [popUser, setPopUser] = useState(null);
     const [openLogout, setOpenLogout] = useState(false);
 
-    const settings = ['Account', 'Logout'];
     const isActive = (page) => location.pathname === '/' + page;
 
     const toggleDrawer = (page) => {
@@ -40,8 +40,7 @@ export default function Header() {
 
     const handleCloseUserMenu = (setting) => {
         setPopUser(null);
-        if (setting === 'Account') navigate('/account');
-        else if (setting === 'Logout') setOpenLogout(true);
+        if (setting === 'logout') setOpenLogout(true);
     };
 
 
@@ -50,24 +49,39 @@ export default function Header() {
             {openLogout && <LogoutPop openLogout={openLogout} setOpenLogout={setOpenLogout} />}
             <Container maxWidth="lg">
                 <Toolbar disableGutters>
-                    <Avatar variant="square" alt="header-icon" src="header-icon.png" sx={{ display: { xs: 'none', md: 'flex' } }} />
+                    <Tooltip arrow title="Secure Vault Application" placement="bottom">
+                        <Avatar variant="square" alt="header-icon" src="header-icon.png" sx={{ display: { xs: 'none', md: 'flex' } }} />
+                    </Tooltip>
                     <Typography noWrap variant="h5" fontWeight={600} sx={{ display: { xs: 'none', md: 'flex' } }}>
                         &nbsp;Secure Vault
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} ml={3}>
-                        <MenuItem onClick={() => navigate('/home')} className={isActive('home') ? "active-route" : "non-active-route"}>
-                            <HomeIcon />&nbsp;<Typography variant="body1">Home</Typography>
-                        </MenuItem>
-                        <MenuItem onClick={() => navigate('/vault')} className={isActive('vault') ? "active-route" : "non-active-route"}>
-                            <EnhancedEncryptionIcon />&nbsp;<Typography variant="body1">Vault</Typography>
-                        </MenuItem>
-                        <MenuItem onClick={() => navigate('/journal')} className={isActive('journal') ? "active-route" : "non-active-route"}>
-                            <DescriptionIcon />&nbsp;<Typography variant="body1">Journal</Typography>
-                        </MenuItem>
-                        <MenuItem onClick={() => navigate('/collaborate')} className={isActive('collaborate') ? "active-route" : "non-active-route"}>
-                            <ConnectWithoutContactIcon />&nbsp;<Typography variant="body1">Collaborate</Typography>
-                        </MenuItem>
+                        <Tooltip arrow title="Home Page" placement="bottom">
+                            <MenuItem onClick={() => navigate('/home')} className={isActive('home') ? "active-route" : "non-active-route"}>
+                                <HomeIcon />&nbsp;<Typography variant="body1">Home</Typography>
+                            </MenuItem>
+                        </Tooltip>
+                        <Tooltip arrow title="Your Password Vault" placement="bottom">
+                            <MenuItem onClick={() => navigate('/vault')} className={isActive('vault') ? "active-route" : "non-active-route"}>
+                                <EnhancedEncryptionIcon />&nbsp;<Typography variant="body1">Vault</Typography>
+                            </MenuItem>
+                        </Tooltip>
+                        <Tooltip arrow title="Your Personal Journal" placement="bottom">
+                            <MenuItem onClick={() => navigate('/journal')} className={isActive('journal') ? "active-route" : "non-active-route"}>
+                                <DescriptionIcon />&nbsp;<Typography variant="body1">Journal</Typography>
+                            </MenuItem>
+                        </Tooltip>
+                        <Tooltip arrow title="Your Account Details" placement="bottom">
+                            <MenuItem onClick={() => navigate('/account')} className={isActive('account') ? "active-route" : "non-active-route"}>
+                                <PersonIcon />&nbsp;<Typography variant="body1">MyAccount</Typography>
+                            </MenuItem>
+                        </Tooltip>
+                        <Tooltip arrow title="Connect with Developer" placement="bottom">
+                            <MenuItem onClick={() => navigate('/collaborate')} className={isActive('collaborate') ? "active-route" : "non-active-route"}>
+                                <ConnectWithoutContactIcon />&nbsp;<Typography variant="body1">Collaborate</Typography>
+                            </MenuItem>
+                        </Tooltip>
                     </Box>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -86,7 +100,7 @@ export default function Header() {
                     </Typography>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
+                        <Tooltip arrow title="Logout User" placement="bottom">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt={userName} src={`https://robohash.org/${userName}`} className='profileAvt' />
                             </IconButton>
@@ -107,11 +121,9 @@ export default function Header() {
                             open={Boolean(popUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={() => handleCloseUserMenu(setting)}>
-                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                                </MenuItem>
-                            ))}
+                            <MenuItem onClick={() => handleCloseUserMenu("logout")}>
+                                <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
+                            </MenuItem>
                         </Menu>
                     </Box>
 
