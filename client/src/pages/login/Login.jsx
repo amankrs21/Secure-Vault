@@ -134,14 +134,16 @@ export default function Login() {
                             onChange={handleChange}
                             value={formData.password}
                             type={show ? 'text' : 'password'}
-                            InputProps={{
-                                endAdornment: (
-                                    <InputAdornment position="end">
-                                        <IconButton onClick={() => setShow(!show)} edge="end">
-                                            {show ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                )
+                            slotProps={{
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton onClick={() => setShow(!show)} edge="end">
+                                                {show ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }
                             }}
                         />
                         <Grid mt={1}>
