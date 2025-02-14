@@ -26,6 +26,7 @@ dist-ssr
 *.sln
 *.sw?
 *.vite
+server/src/test/
 
 # ignore all .env files
 .env*
