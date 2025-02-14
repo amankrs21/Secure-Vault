@@ -1,4 +1,4 @@
-name: CI/CD Pipeline for SonarCloud, Azure Web App, and Cloudflare Pages
+name: CI/CD Pipeline for Secure-Vault
 
 on:
   push:
