@@ -5,7 +5,6 @@ import {
     AppBar, Toolbar, Collapse, Typography, Container, Button, Tooltip, MenuItem,
     IconButton, Menu, Avatar
 } from '@mui/material';
-import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import HomeIcon from '@mui/icons-material/Home';
@@ -45,13 +44,14 @@ export default function Header() {
         else if (setting === 'Logout') setOpenLogout(true);
     };
 
+
     return (
         <AppBar position="fixed">
             {openLogout && <LogoutPop openLogout={openLogout} setOpenLogout={setOpenLogout} />}
             <Container maxWidth="lg">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' } }} />
-                    <Typography noWrap variant="h6" sx={{ display: { xs: 'none', md: 'flex' } }}>
+                    <Avatar variant="square" alt="header-icon" src="header-icon.png" sx={{ display: { xs: 'none', md: 'flex' } }} />
+                    <Typography noWrap variant="h5" fontWeight={600} sx={{ display: { xs: 'none', md: 'flex' } }}>
                         &nbsp;Secure Vault
                     </Typography>
 
@@ -80,7 +80,7 @@ export default function Header() {
                         </Button>
                     </Box>
 
-                    <AdbIcon sx={{ display: { xs: 'flex', md: 'none' } }} />
+                    <Avatar variant="square" alt="header-icon" src="header-icon.png" sx={{ display: { xs: 'flex', md: 'none' } }} />
                     <Typography noWrap variant="h5" sx={{ display: { xs: 'flex', md: 'none' }, flexGrow: 1 }}>
                         &nbsp;Secure Vault
                     </Typography>

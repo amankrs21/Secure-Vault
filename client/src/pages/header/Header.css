@@ -1,3 +1,8 @@
+.logo {
+    height: 2%;
+    width: 3%;
+}
+
 .logout-button {
     border-radius: 20px !important;
 }
