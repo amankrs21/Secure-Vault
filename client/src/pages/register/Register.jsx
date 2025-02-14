@@ -33,6 +33,22 @@ export default function Register() {
         password: '',
         cPassword: '',
     });
+    const [backgroundImage, setBackgroundImage] = useState('/first-image.jpg');
+
+    useEffect(() => {
+        const fetchImage = () => {
+            const randomImageUrl = `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 10000)}`;
+            const img = new Image();
+            img.src = randomImageUrl;
+            img.onload = () =>
+                setBackgroundImage(randomImageUrl);
+        };
+
+        fetchImage();
+        const intervalId = setInterval(fetchImage, 5000);
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     useEffect(() => {
         (async () => {
@@ -78,14 +94,16 @@ export default function Register() {
 
     return (
         <Grid container component="main" sx={{ height: '100vh' }}>
-            <Grid size={{ xs: false, sm: 4, md: 7 }}
+            <Grid
+                size={{ xs: false, sm: false, md: 7 }}
                 sx={{
-                    backgroundImage: 'url(./login2.jpg)',
+                    backgroundImage: `url(${backgroundImage})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundColor: (t) =>
                         t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
+                    transition: 'background-image 0.5s ease-in-out'
                 }}
             />
             <Grid size={{ xs: 12, sm: 8, md: 5 }} elevation={6} className="register-container">
