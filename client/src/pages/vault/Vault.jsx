@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import {
@@ -133,7 +134,7 @@ export default function Vault() {
 
     const copyToClipboard = (text) => {
         navigator.clipboard.writeText(text);
-        toast.success('Text Copied to clipboard!');
+        toast.success('Text has been copied to clipboard!');
     }
 
     return (
@@ -210,7 +211,7 @@ export default function Vault() {
                                     <TableCell className='vault-table-cell'>
                                         {currentId == data._id ? (
                                             <Typography color="primary" variant='body1' fontWeight={600} sx={{ cursor: 'pointer' }}
-                                                onClick={() => copyToClipboard(data.username)}>
+                                                onClick={() => copyToClipboard(decrypted)}>
                                                 {decrypted}
                                             </Typography>
                                         ) : (
