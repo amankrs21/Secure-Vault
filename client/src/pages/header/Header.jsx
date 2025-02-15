@@ -149,6 +149,9 @@ export default function Header() {
                         <MenuItem onClick={() => toggleDrawer('journal')} className={isActive('journal') ? "pop-active" : "pop-non-active"}>
                             <DescriptionIcon />&nbsp;<Typography variant="body1" fontWeight={800}>Journal</Typography>
                         </MenuItem>
+                        <MenuItem onClick={() => toggleDrawer('account')} className={isActive('account') ? "pop-active" : "pop-non-active"}>
+                            <PersonIcon />&nbsp;<Typography variant="body1" fontWeight={800}>MyAccount</Typography>
+                        </MenuItem>
                         <MenuItem onClick={() => toggleDrawer('collaborate')} className={isActive('collaborate') ? "pop-active" : "pop-non-active"}>
                             <ConnectWithoutContactIcon />&nbsp;<Typography variant="body1" fontWeight={800}>Collaborate</Typography>
                         </MenuItem>
