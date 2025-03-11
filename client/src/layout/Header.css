@@ -1,0 +1,35 @@
+.logout-button {
+    border-radius: 20px !important;
+}
+
+.active-route {
+    margin: 0 !important;
+    padding: 3px 6px !important;
+    color: #FFC107 !important;
+    font-weight: 800 !important;
+    border-radius: 5px !important;
+    border: 2px solid #FFC107 !important;
+}
+
+.non-active-route {
+    margin: 0 !important;
+    padding: 3px 6px !important;
+    color: #E0E0E0 !important;
+    font-weight: 800 !important;
+}
+
+.pop-active {
+    color: #1976d2 !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.pop-non-active {
+    color: black !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.profileAvt {
+    border: 2px solid #FFC107 !important;
+}
