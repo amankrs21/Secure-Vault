@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import {
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
     Button, TextField, IconButton, InputAdornment,
 } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { toast } from 'react-toastify';
-
-import AuthProvider from '../../middleware/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
+import { useAuth } from '../../hooks/useAuth';
+
+
+// KeyAccessModal component
 export default function KeyAccessModal({ openAccess, setOpenAccess }) {
+    const { http } = useAuth();
     const navigate = useNavigate();
-    const { http } = AuthProvider();
     const [forget, setForget] = useState(false);
     const [showPass, setShowPass] = useState(false);
 

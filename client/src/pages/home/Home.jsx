@@ -18,7 +18,7 @@ export default function Home() {
                 Welcome to <b className='custom-home-text'>SecureVault</b> 🔐 – your trusted companion for digital security!
             </Typography>
 
-            <Divider sx={{ opacity: 0.5, maxWidth: '90%', margin: '0 auto' }} />
+            <Divider sx={{ opacity: 0.5, maxWidth: '95%', margin: '0 auto' }} />
 
             <Grid container mt={2} p={2}>
 
@@ -42,22 +42,14 @@ export default function Home() {
                         <br /><br />
                         Stay <b>secure</b> ✅, stay <b>in control</b> 💪 of your private information, and safeguard your digital world with <b>peace of mind</b>! 🧠
                     </Typography>
-                    {/* <Typography variant="body2" align="justify">
-                        <ul className="home-features">
-                            <li>🔑 User-friendly password and secure note manager</li>
-                            <li>🔒 Military-grade encryption for ultimate data protection</li>
-                            <li>🔐 Only accessible via your unique personal PIN</li>
-                            <li>🛡️ Zero-knowledge architecture – even we can’t see your data</li>
-                            <li>🚀 Built with MERN stack for high performance and reliability</li>
-                            <li>💪 Take complete control of your private information</li>
-                        </ul>
-                    </Typography> */}
                 </Grid>
 
             </Grid>
-            <Typography variant="body2" align="center" mt={4} md={2}>
+
+            <Typography variant="body2" align="center" mt={3} md={1}>
                 Powered by <b>React</b> and enhanced with <b>Material UI</b>, SecureVault delivers a smooth and intuitive user experience. React’s <b>component-based architecture</b> ensures dynamic, responsive interfaces, while Material UI’s <b>modern design elements</b> bring a polished look and feel.
             </Typography>
+
         </Container>
     );
 }
