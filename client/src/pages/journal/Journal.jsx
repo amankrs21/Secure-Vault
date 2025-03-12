@@ -16,14 +16,14 @@ import './Journal.css';
 import JournalAdd from './JournalAdd';
 import JournalUpdate from './JournalUpdate';
 import JournalDelete from './JournalDelete';
-import AuthProvider from '../../middleware/AuthProvider';
-import { useLoading } from "../../components/loading/useLoading";
+import { useAuth } from "../../hooks/useAuth";
+import { useLoading } from "../../hooks/useLoading";
 
 
 export default function Journal() {
     document.title = 'SecureVault | Journal';
 
-    const { http } = AuthProvider();
+    const { http } = useAuth();
     const { setLoading } = useLoading();
     const [openAdd, setOpenAdd] = useState(false);
     const [decrypted, setDecrypted] = useState('');

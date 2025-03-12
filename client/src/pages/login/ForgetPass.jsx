@@ -6,7 +6,8 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { ERROR_MESSAGES } from '../../components/constants';
+
+import { ERROR_MESSAGES } from '../../utils/constants';
 
 export default function ForgetPass({ openFP, setOpenFP, data }) {
     const [show, setShow] = useState(false);
