@@ -4,13 +4,13 @@ import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
 import { TextField, Button } from '@mui/material';
 
-import AuthProvider from '../../middleware/AuthProvider';
-import { useLoading } from '../../components/loading/useLoading';
+import { useAuth } from '../../hooks/useAuth';
+import { useLoading } from '../../hooks/useLoading';
 
 
 export default function AccountProfile({ userData }) {
 
-    const { http } = AuthProvider();
+    const { http } = useAuth();
     const { setLoading } = useLoading();
     const [btnDisabled, setBtnDisabled] = useState(true);
 

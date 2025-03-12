@@ -4,16 +4,16 @@ import { Button, Container } from '@mui/material';
 import { toast } from 'react-toastify';
 
 import "./Account.css";
-import AuthProvider from '../../middleware/AuthProvider';
 import AccountProfile from './AccountProfile';
 import AccountPass from './AccountPass';
-import { useLoading } from '../../components/loading/useLoading';
 import AccountDelete from './AccountDelete';
+import { useAuth } from '../../hooks/useAuth';
+import { useLoading } from '../../hooks/useLoading';
 
 export default function Account() {
     document.title = "SecureVault | Account";
 
-    const { http } = AuthProvider();
+    const { http } = useAuth();
     const { setLoading } = useLoading();
     const [userData, setUserData] = useState({});
     const [openDelete, setOpenDelete] = useState(false);

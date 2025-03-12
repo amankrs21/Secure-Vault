@@ -3,13 +3,13 @@ import Box from '@mui/material/Box';
 import { TextField, Button, InputAdornment, IconButton, Typography } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import AuthProvider from '../../middleware/AuthProvider';
-import { useLoading } from '../../components/loading/useLoading';
+import { useAuth } from '../../hooks/useAuth';
+import { useLoading } from '../../hooks/useLoading';
 import { toast } from 'react-toastify';
 
 export default function AccountPass() {
 
-    const { http } = AuthProvider();
+    const { http } = useAuth();
     const { setLoading } = useLoading();
     const [btnDisabled, setBtnDisabled] = useState(true);
 
