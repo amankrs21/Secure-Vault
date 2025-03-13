@@ -31,7 +31,7 @@ export default function PrivateRoutes() {
             }
         };
         checkAuth();
-    }, []);
+    }, [http]);
 
     if (!isAuthenticated) {
         return null;
