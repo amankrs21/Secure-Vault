@@ -16,7 +16,7 @@ export default function AccountDelete({ openDelete, setOpenDelete }) {
     const handleDeleteUser = async () => {
         try {
             setLoading(true);
-            await http.delete('/auth/user/delete');
+            await http.delete('/user/delete');
             toast.success("Account deleted successfully");
             setOpenDelete(false);
             logout();

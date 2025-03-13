@@ -49,7 +49,7 @@ export default function AccountProfile({ userData }) {
         }
         try {
             setLoading(true);
-            const response = await http.patch('/auth/user/update', formValues);
+            const response = await http.patch('/user/update', formValues);
             toast.success(response.data.message);
             setBtnDisabled(true);
         } catch (error) {
@@ -92,7 +92,7 @@ export default function AccountProfile({ userData }) {
                     required
                     fullWidth
                     name="secretAnswer"
-                    label="Favorite Place (Changable, can't be viewed)"
+                    label="Favorite Place"
                     value={formValues.secretAnswer}
                     onChange={handleChange}
                 />

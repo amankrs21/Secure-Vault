@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
+import { toast } from 'react-toastify';
 import { TextField, Button, InputAdornment, IconButton, Typography } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useLoading } from '../../hooks/useLoading';
-import { toast } from 'react-toastify';
 
+
+// Component to update user password
 export default function AccountPass() {
 
     const { http } = useAuth();
@@ -28,7 +30,7 @@ export default function AccountPass() {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setPasswords((prev) => ({ ...prev, [name]: value }));
-        setBtnDisabled(false); // Enable the button when there's input
+        setBtnDisabled(false);
     };
 
     const handleTogglePassword = (field) => {
@@ -45,7 +47,7 @@ export default function AccountPass() {
 
         try {
             setLoading(true);
-            const response = await http.patch('/auth/user/changePassword', { oldPassword, newPassword });
+            const response = await http.patch('/user/changePassword', { oldPassword, newPassword });
             setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
             toast.success(response.data.message);
             setBtnDisabled(true);

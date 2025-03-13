@@ -1,12 +1,10 @@
-.account {
-    margin: 20px 0;
-}
-
 .account-header {
+    width: 100%;
     display: flex;
     text-align: center;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 .account-header-img {
@@ -24,12 +22,6 @@
     }
 }
 
-.account-header-name {
-    b {
-        color: #1976d2;
-    }
-}
-
 .account-main {
     gap: 20px;
     display: flex;
@@ -39,16 +31,21 @@
 
 .account-profile,
 .account-pass {
+    width: 100%;
+    max-width: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    /* Ensures full width on small screens */
-    max-width: 500px;
-    /* Restricts width on larger screens */
 }
 
 .account-profile-main,
 .account-pass-main {
     width: 90%;
+}
+
+@media (min-width: 768px) {
+    .account-header {
+        flex-direction: row;
+        text-align: left;
+    }
 }
