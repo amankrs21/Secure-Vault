@@ -3,6 +3,8 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button
 } from '@mui/material';
 
+
+// JournalAdd component
 export default function JournalAdd({ openAdd, setOpenAdd, data }) {
     return (
         <Dialog

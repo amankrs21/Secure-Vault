@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid2";
 import {
-    Accordion, AccordionDetails, AccordionSummary, Button, Container, Divider, TextField, Tooltip, Typography
+    Accordion, AccordionDetails, AccordionSummary, Button, Card, Container,
+    Divider, TextField, Tooltip, Typography
 } from "@mui/material";
 import { toast } from 'react-toastify';
 import debounce from 'lodash.debounce';
@@ -20,6 +21,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useLoading } from "../../hooks/useLoading";
 
 
+// Journal Component
 export default function Journal() {
     document.title = 'SecureVault | Journal';
 
@@ -52,7 +54,7 @@ export default function Journal() {
     const handleFetch = async () => {
         try {
             setLoading(true);
-            const response = await http.get('/journals');
+            const response = await http.get('/journal/fetch');
             localStorage.setItem('localJournal', JSON.stringify(response.data));
             setJournalData(response.data);
             if (expanded) { handleDecrypt(expanded); }
@@ -148,7 +150,7 @@ export default function Journal() {
             {(updateData !== null) && <JournalUpdate updateData={updateData} setUpdateData={setUpdateData} data={handleUpdate} />}
             {(deleteData !== null) && <JournalDelete deleteData={deleteData} setDeleteData={setDeleteData} data={handleDelete} />}
 
-            <Grid container justifyContent="space-between" alignItems="center" mt={3} spacing={2}>
+            <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }} textAlign={{ xs: 'center', md: 'left' }}>
                     <Typography pt={2} variant="h4" gutterBottom>
                         Your Secure Journals📝
@@ -170,33 +172,31 @@ export default function Journal() {
                         />
                         <Button variant='contained' color='primary' onClick={() => setOpenAdd(true)}
                             sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2' }}>
-                            Add New
+                            + Add New
                         </Button>
                     </div>
                 </Grid>
             </Grid>
 
-            <Divider sx={{ marginY: 3 }} />
+            <Divider sx={{ opacity: 0.8, margin: '0 auto' }} />
 
             {(journalData.length == 0) ? (
                 <div style={{ textAlign: "center", marginTop: "50px" }}>
                     <Typography variant="h6">
                         No journal available. Please add new records.
                     </Typography>
-                    <Button
-                        color='primary'
-                        variant='contained'
-                        onClick={() => setOpenAdd(true)}
-                        sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2', marginTop: 2 }}
-                    >
-                        Add New Journal
+                    <Button variant='contained' onClick={() => setOpenAdd(true)}
+                        sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2', marginTop: 2 }}>
+                        + Add New Journal
                     </Button>
                 </div>
             ) : (
-                <Container maxWidth="md" sx={{ backgroundColor: '#f2f2f2', paddingY: 2, borderRadius: 2 }}>
+                <Card raised sx={{ padding: 2, marginTop: 2, backgroundColor: '#f5f5f5' }}>
                     {journalData.map((data) => (
                         <Accordion key={data._id} sx={{ marginY: 1 }} expanded={expanded === data._id} onChange={handleChange(data._id)}>
-                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>{data.title}</AccordionSummary>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                                <Typography variant="h6" color="primary" fontWeight={600}>{data.title}</Typography>
+                            </AccordionSummary>
                             <AccordionDetails sx={{ whiteSpace: 'pre-wrap' }}>
                                 {decrypted}
                                 <Divider sx={{ marginTop: 1 }} />
@@ -223,7 +223,7 @@ export default function Journal() {
                             </AccordionDetails>
                         </Accordion>
                     ))}
-                </Container>
+                </Card>
             )}
         </Container>
     );

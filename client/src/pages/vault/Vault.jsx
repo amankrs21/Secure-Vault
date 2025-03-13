@@ -20,6 +20,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useLoading } from '../../hooks/useLoading';
 
 
+// Component to display user vault
 export default function Vault() {
     document.title = 'SecureVault | Vault';
 
@@ -44,7 +45,7 @@ export default function Vault() {
     const handleFetch = async (offSet, pageSize) => {
         try {
             setLoading(true);
-            const response = await http.post('/vaults', { offSet, pageSize });
+            const response = await http.post('/vault/fetch', { offSet, pageSize });
             localStorage.setItem('localVault', JSON.stringify(response.data));
             setVaultData(response.data);
         } catch (error) {
@@ -116,7 +117,8 @@ export default function Vault() {
             setTempLoading(true);
             const response = await http.post(`/vault/${id}`, { key: localStorage.getItem('eKey') });
             setDecrypted(atob(response.data));
-            setTimeout(() => { setDecrypted(''); setCurrentId(null); }, 5000);
+            setTimeout(() => { setDecrypted(''); setCurrentId(null); }, 6000);
+            return atob(response.data);
         } catch (error) {
             console.error(error);
             if (error.response) { toast.error(error.response.data.message); }
@@ -179,9 +181,8 @@ export default function Vault() {
                     <Typography variant="h6">
                         No Passwords available. Please add new records.
                     </Typography>
-                    <Button variant='contained' color='primary' onClick={() => setOpenAdd(true)}
-                        sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2', marginTop: 2 }}
-                    >
+                    <Button variant='contained' onClick={() => setOpenAdd(true)}
+                        sx={{ paddingX: 3, whiteSpace: 'nowrap', backgroundColor: '#1976d2', marginTop: 2 }}>
                         + Add New Password
                     </Button>
                 </div>
@@ -215,7 +216,8 @@ export default function Vault() {
                                                     <span className='imp-text'>{decrypted}</span>
                                                 </Tooltip> :
                                                 <Tooltip arrow title="Decrypt Password (Auto-Hides in 5s)">
-                                                    <Button variant='outlined' loading={tempLoading} onClick={() => handleDecrypt(data._id)}>
+                                                    <Button variant='outlined' loading={tempLoading && currentId === data._id}
+                                                        onClick={() => handleDecrypt(data._id)}>
                                                         Reveal <LockOpenIcon />
                                                     </Button>
                                                 </Tooltip>
@@ -230,7 +232,7 @@ export default function Vault() {
                                                 <EditIcon color="primary" />
                                             </Tooltip>
                                             &nbsp;&nbsp;
-                                            <Tooltip title="Edit Password" arrow sx={{ cursor: 'pointer' }} onClick={() => setDeleteData(data._id)}>
+                                            <Tooltip title="Delete Password" arrow sx={{ cursor: 'pointer' }} onClick={() => setDeleteData(data._id)}>
                                                 <DeleteForeverIcon color="error" />
                                             </Tooltip>
                                         </TableCell>

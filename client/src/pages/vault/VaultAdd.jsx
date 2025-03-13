@@ -3,6 +3,8 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button
 } from '@mui/material';
 
+
+// VaultAdd component
 export default function VaultAdd({ openAdd, setOpenAdd, data }) {
 
     return (

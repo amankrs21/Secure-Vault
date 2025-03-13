@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 
 
+// JournalUpdate component
 export default function JournalUpdate({ updateData, setUpdateData, data }) {
 
     const [formValues, setFormValues] = useState({
