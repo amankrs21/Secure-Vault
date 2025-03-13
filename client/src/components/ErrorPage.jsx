@@ -1,3 +1,4 @@
+// Error page component
 export default function ErrorPage() {
     const redirectToHome = () => {
         window.location.href = "/";

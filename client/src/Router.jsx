@@ -8,8 +8,8 @@ import Login from "./pages/login/Login";
 import Account from "./pages/account/Account";
 import Journal from "./pages/journal/Journal";
 import Register from "./pages/register/Register";
-import ServerUnavl from "./pages/error/ServerUnavl";
-import PageNotFound from "./pages/error/PageNotFound";
+import ServerUnavl from './pages/503/ServerUnavl';
+import PageNotFound from './pages/404/PageNotFound';
 import PrivateRoutes from "./middleware/PrivateRoutes";
 import Collaborate from "./pages/collaborate/Collaborate";
 

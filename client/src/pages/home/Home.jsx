@@ -5,6 +5,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import './Home.css';
 import { useAuth } from '../../hooks/useAuth';
 
+
 // Home page component
 export default function Home() {
     const { userData } = useAuth();

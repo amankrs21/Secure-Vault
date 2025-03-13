@@ -14,7 +14,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EnhancedEncryptionIcon from '@mui/icons-material/EnhancedEncryption';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 
-
 import './Header.css';
 import { useAuth } from '../hooks/useAuth';
 import LogoutPop from '../components/LogoutPop';

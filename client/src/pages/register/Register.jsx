@@ -17,6 +17,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useLoading } from '../../hooks/useLoading';
 
 
+// Register component
 export default function Register() {
     document.title = 'SecureVault | Register';
 

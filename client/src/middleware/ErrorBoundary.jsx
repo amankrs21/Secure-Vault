@@ -1,6 +1,8 @@
 import { Component } from "react";
 import PropTypes from "prop-types";
 
+
+// ErrorBoundary component to catch errors in the child components
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
