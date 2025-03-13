@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
-const UserModel = require("./model/user.model.js");
-const { decrypt } = require("./service/cipher.service.js");
 
-const SecretKey = process.env.SECRET_KEY;
+const userModel = require("../model/user.model.js");
+const { decrypt } = require("../service/cipher.service.js");
 
 
-const AuthSession = async (req, res, next) => {
+// function to check valid session
+const validSession = async (req, res, next) => {
     try {
         const token = req.headers.authorization?.slice(7);
         if (!token) {
@@ -13,7 +13,7 @@ const AuthSession = async (req, res, next) => {
         }
         let decoded;
         try {
-            decoded = jwt.verify(token, SecretKey);
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
         } catch (error) {
             if (error.name === 'TokenExpiredError') {
                 return res.status(401).json({ message: "Token has expired" });
@@ -23,7 +23,7 @@ const AuthSession = async (req, res, next) => {
             throw error;
         }
 
-        const user = await UserModel.findById(decoded?.id);
+        const user = await userModel.findById(decoded?.id);
         if (!user) { return res.status(401).json({ message: "Unauthorized" }); }
 
         // pass it to the next middleware if needed
@@ -47,4 +47,5 @@ const AuthSession = async (req, res, next) => {
 };
 
 
-module.exports = AuthSession;
+// export the function
+module.exports = validSession;
