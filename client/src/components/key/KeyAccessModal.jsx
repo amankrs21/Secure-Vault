@@ -51,7 +51,9 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
             slotProps={{
                 paper: {
                     component: 'form',
-                    onSubmit: handleSubmit,
+                    onSubmit: (event) => {
+                        handleSubmit(event);
+                    },
                 },
             }}
         >

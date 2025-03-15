@@ -43,7 +43,9 @@ export default function KeySetupModal({ openSetup, setOpenSetup }) {
             slotProps={{
                 paper: {
                     component: 'form',
-                    onSubmit: handleSubmit,
+                    onSubmit: (event) => {
+                        handleSubmit(event);
+                    },
                 },
             }}
         >
