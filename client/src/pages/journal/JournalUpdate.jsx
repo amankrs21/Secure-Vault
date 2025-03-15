@@ -27,11 +27,13 @@ export default function JournalUpdate({ updateData, setUpdateData, data }) {
             maxWidth="xs"
             open={updateData !== null}
             onClose={() => setUpdateData(null)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: (event) => {
-                    event.preventDefault();
-                    data(formValues);
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        data(formValues);
+                    },
                 },
             }}
         >

@@ -48,9 +48,11 @@ export default function KeyAccessModal({ openAccess, setOpenAccess }) {
             maxWidth="xs"
             open={openAccess}
             onClose={() => setOpenAccess(!openAccess)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: handleSubmit,
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: handleSubmit,
+                },
             }}
         >
             <DialogTitle>Encryption Key</DialogTitle>

@@ -40,9 +40,11 @@ export default function KeySetupModal({ openSetup, setOpenSetup }) {
             maxWidth="xs"
             open={openSetup}
             onClose={() => setOpenSetup(false)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: handleSubmit,
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: handleSubmit,
+                },
             }}
         >
             <DialogTitle>Encryption Key</DialogTitle>
