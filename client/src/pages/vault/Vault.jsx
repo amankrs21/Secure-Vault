@@ -149,7 +149,7 @@ export default function Vault() {
             <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
                 <Grid size={{ xs: 12, md: 6 }} textAlign={{ xs: 'center', md: 'left' }}>
                     <Typography pt={2} variant="h4" gutterBottom>
-                        Your Secured Passwords 🔒
+                        Your Secured Vault 🔒
                     </Typography>
                 </Grid>
 
