@@ -3,20 +3,24 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button
 } from '@mui/material';
 
+
+// JournalAdd component
 export default function JournalAdd({ openAdd, setOpenAdd, data }) {
     return (
         <Dialog
             maxWidth="xs"
             open={openAdd}
             onClose={() => setOpenAdd(!openAdd)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: (event) => {
-                    event.preventDefault();
-                    const formData = new FormData(event.currentTarget);
-                    const formJson = Object.fromEntries(formData.entries());
-                    data(formJson);
-                },
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+                        data(formJson);
+                    },
+                }
             }}
         >
             <DialogTitle>

@@ -1,27 +1,25 @@
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import {
     Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
-import PropTypes from 'prop-types';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
-import AuthProvider from '../../middleware/AuthProvider';
-import { useLoading } from '../../components/loading/useLoading';
+import { useAuth } from '../../hooks/useAuth';
+import { useLoading } from '../../hooks/useLoading';
 
+
+// Component to delete user account
 export default function AccountDelete({ openDelete, setOpenDelete }) {
-    const navigate = useNavigate();
-    const { http } = AuthProvider();
+    const { http, logout } = useAuth();
     const { setLoading } = useLoading();
 
     const handleDeleteUser = async () => {
         try {
             setLoading(true);
-            await http.delete('/auth/user/delete');
-            setOpenDelete(false);
+            await http.delete('/user/delete');
             toast.success("Account deleted successfully");
-            localStorage.clear();
-            navigate('/login');
-            navigate('/login');
+            setOpenDelete(false);
+            logout();
         } catch (error) {
             console.error(error);
             toast.error("Failed to delete account");

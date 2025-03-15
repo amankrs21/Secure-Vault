@@ -3,6 +3,8 @@ import {
     Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
 
+
+// Component that handles the deletion of a journal
 export default function JournalDelete({ deleteData, setDeleteData, data }) {
 
     const handleCancel = () => {

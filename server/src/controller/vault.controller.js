@@ -1,3 +1,4 @@
+const { set } = require("mongoose");
 const VaultModel = require("../model/vault.model.js");
 const { encrypt, decrypt } = require("../service/cipher.service.js");
 const { santizeId, validateFields } = require("../service/validation.service.js");

@@ -5,6 +5,7 @@ import {
 } from '@mui/material';
 
 
+// VaultUpdate component
 export default function VaultUpdate({ updateData, setUpdateData, data }) {
 
     const [formValues, setFormValues] = useState({
@@ -27,11 +28,13 @@ export default function VaultUpdate({ updateData, setUpdateData, data }) {
             maxWidth="xs"
             open={updateData !== null}
             onClose={() => setUpdateData(null)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: (event) => {
-                    event.preventDefault();
-                    data(formValues);
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        data(formValues);
+                    },
                 },
             }}
         >

@@ -12,11 +12,12 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import './Register.css';
-import AuthProvider from '../../middleware/AuthProvider';
-import { ERROR_MESSAGES } from '../../components/constants';
-import { useLoading } from '../../components/loading/useLoading';
+import { ERROR_MESSAGES } from '../../utils/constants';
+import { useAuth } from '../../hooks/useAuth';
+import { useLoading } from '../../hooks/useLoading';
 
 
+// Register component
 export default function Register() {
     document.title = 'SecureVault | Register';
 
@@ -24,7 +25,8 @@ export default function Register() {
     const { setLoading } = useLoading();
     const [show, setShow] = useState(false);
     const [errors, setErrors] = useState({});
-    const { http, isValidToken } = AuthProvider();
+    const { http, isAuthenticated } = useAuth();
+
     const [formData, setFormData] = useState({
         dob: '',
         name: '',
@@ -34,6 +36,12 @@ export default function Register() {
         cPassword: '',
     });
     const [backgroundImage, setBackgroundImage] = useState('/first-image.jpg');
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/home');
+        }
+    }, [isAuthenticated, navigate]);
 
     useEffect(() => {
         const fetchImage = () => {
@@ -49,13 +57,6 @@ export default function Register() {
 
         return () => clearInterval(intervalId);
     }, []);
-
-    useEffect(() => {
-        (async () => {
-            const token = localStorage.getItem('token') || null;
-            if (token && await isValidToken(token)) { navigate('/home'); }
-        })();
-    }, [isValidToken, navigate]);
 
     const handleChange = (e) => {
         setFormData({

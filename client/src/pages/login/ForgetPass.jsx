@@ -6,7 +6,8 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { ERROR_MESSAGES } from '../../components/constants';
+
+import { ERROR_MESSAGES } from '../../utils/constants';
 
 export default function ForgetPass({ openFP, setOpenFP, data }) {
     const [show, setShow] = useState(false);
@@ -16,24 +17,26 @@ export default function ForgetPass({ openFP, setOpenFP, data }) {
             maxWidth="xs"
             open={openFP}
             onClose={() => setOpenFP(!openFP)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: (event) => {
-                    event.preventDefault();
-                    const formData = new FormData(event.currentTarget);
-                    const formJson = Object.fromEntries(formData.entries());
-                    if (formJson.password !== formJson.cPassword) {
-                        setErrors({ cPassword: ERROR_MESSAGES.PASSWORDS_NOT_MATCH });
-                        return;
-                    } else if (formJson.password.length < 8) {
-                        setErrors({
-                            password: ERROR_MESSAGES.PASSWORD_TOO_SHORT,
-                            cPassword: ERROR_MESSAGES.PASSWORD_TOO_SHORT
-                        });
-                        return;
-                    }
-                    data(formJson);
-                },
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+                        if (formJson.password !== formJson.cPassword) {
+                            setErrors({ cPassword: ERROR_MESSAGES.PASSWORDS_NOT_MATCH });
+                            return;
+                        } else if (formJson.password.length < 8) {
+                            setErrors({
+                                password: ERROR_MESSAGES.PASSWORD_TOO_SHORT,
+                                cPassword: ERROR_MESSAGES.PASSWORD_TOO_SHORT
+                            });
+                            return;
+                        }
+                        data(formJson);
+                    },
+                }
             }}
         >
             <DialogTitle>Forgot Password!</DialogTitle>

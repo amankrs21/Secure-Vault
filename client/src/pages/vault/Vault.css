@@ -5,11 +5,17 @@
     text-align: center !important;
 }
 
+.imp-text {
+    font-size: 16px;
+    cursor: pointer;
+    color: #1976D2;
+    font-weight: bold;
+}
+
 .vault-table-cell {
     text-align: center !important;
 
-    button:hover {
+    button {
         font-weight: bold;
-        scale: 1.02;
     }
 }

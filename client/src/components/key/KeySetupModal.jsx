@@ -1,16 +1,18 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
 import {
     Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions,
     Button, TextField, IconButton, InputAdornment,
 } from '@mui/material';
-import { toast } from 'react-toastify';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import AuthUser from '../../middleware/AuthProvider';
+import { useAuth } from '../../hooks/useAuth';
 
+
+// KeySetupModal component
 export default function KeySetupModal({ openSetup, setOpenSetup }) {
-    const { http } = AuthUser();
+    const { http } = useAuth();
     const [showPass, setShowPass] = useState(false);
     const [showCPass, setShowCPass] = useState(false);
 
@@ -38,9 +40,13 @@ export default function KeySetupModal({ openSetup, setOpenSetup }) {
             maxWidth="xs"
             open={openSetup}
             onClose={() => setOpenSetup(false)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: handleSubmit,
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: (event) => {
+                        handleSubmit(event);
+                    },
+                },
             }}
         >
             <DialogTitle>Encryption Key</DialogTitle>

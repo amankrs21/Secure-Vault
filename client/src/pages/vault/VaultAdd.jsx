@@ -3,6 +3,8 @@ import {
     Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Button
 } from '@mui/material';
 
+
+// VaultAdd component
 export default function VaultAdd({ openAdd, setOpenAdd, data }) {
 
     return (
@@ -10,14 +12,16 @@ export default function VaultAdd({ openAdd, setOpenAdd, data }) {
             maxWidth="xs"
             open={openAdd}
             onClose={() => setOpenAdd(!openAdd)}
-            PaperProps={{
-                component: 'form',
-                onSubmit: (event) => {
-                    event.preventDefault();
-                    const formData = new FormData(event.currentTarget);
-                    const formJson = Object.fromEntries(formData.entries());
-                    data(formJson);
-                },
+            slotProps={{
+                paper: {
+                    component: 'form',
+                    onSubmit: (event) => {
+                        event.preventDefault();
+                        const formData = new FormData(event.currentTarget);
+                        const formJson = Object.fromEntries(formData.entries());
+                        data(formJson);
+                    },
+                }
             }}
         >
             <DialogTitle>

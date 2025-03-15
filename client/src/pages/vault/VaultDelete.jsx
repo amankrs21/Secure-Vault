@@ -3,6 +3,8 @@ import {
     Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
 
+
+// Component to delete a vault
 export default function VaultDelete({ deleteData, setDeleteData, data }) {
 
     const handleCancel = () => {

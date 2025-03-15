@@ -1,7 +1,7 @@
 
 // Centralized error-handling middleware
 const errorHandler = (err, req, res, next) => {
-    console.error(err.stack);
+    console.error("Something went wrong", err.stack);
 
     // Custom error handling based on the error message
     if (err.message === "Unsupported state or unable to authenticate data") {

@@ -11,31 +11,39 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
+import { useAuth } from '../../hooks/useAuth';
+import { useLoading } from '../../hooks/useLoading';
+import { ERROR_MESSAGES } from '../../utils/constants';
+
 import './Login.css';
 import ForgetPass from './ForgetPass';
-import AuthProvider from '../../middleware/AuthProvider';
-import { ERROR_MESSAGES } from '../../components/constants';
-import { useLoading } from '../../components/loading/useLoading';
 
 
+// Login component
 export default function Login() {
     document.title = 'SecureVault | Login';
 
     const navigate = useNavigate();
     const { setLoading } = useLoading();
+    const { http, login, isAuthenticated } = useAuth();
+
     const [show, setShow] = useState(false);
     const [openFP, setOpenFP] = useState(false);
-    const { http, setToken, isValidToken } = AuthProvider();
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [backgroundImage, setBackgroundImage] = useState('/first-image.jpg');
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            navigate('/home');
+        }
+    }, [isAuthenticated, navigate]);
 
     useEffect(() => {
         const fetchImage = () => {
             const randomImageUrl = `https://picsum.photos/800/600?random=${Math.floor(Math.random() * 5000)}`;
             const img = new Image();
             img.src = randomImageUrl;
-            img.onload = () =>
-                setBackgroundImage(randomImageUrl);
+            img.onload = () => setBackgroundImage(randomImageUrl);
         };
 
         fetchImage();
@@ -44,18 +52,29 @@ export default function Login() {
         return () => clearInterval(intervalId);
     }, []);
 
-    useEffect(() => {
-        (async () => {
-            const token = localStorage.getItem('token') || null;
-            if (token && await isValidToken(token)) { navigate('/home'); }
-        })();
-    }, [isValidToken, navigate]);
-
     const handleChange = (e) => {
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
         });
+    };
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const response = await http.post('/auth/login', formData);
+            if (response.data.token) {
+                login(response.data.token);
+                toast.success(response.data.message);
+                if (!response.data.isKeySet) localStorage.setItem("isKeySet", false);
+                navigate('/home');
+            }
+        } catch (error) {
+            console.error("Login failed:", error);
+            let errorMessage = error.response?.data?.message || ERROR_MESSAGES.UNKNOWN_ERROR;
+            toast.error(errorMessage);
+        } finally { setLoading(false); }
     };
 
     const handleForget = async (data) => {
@@ -70,24 +89,6 @@ export default function Login() {
                 return toast.error(error.response.data.message);
             }
             toast.error('Something went wrong!');
-        } finally { setLoading(false); }
-    };
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        try {
-            setLoading(true);
-            const response = await http.post('/auth/login', formData);
-            if (response.data.token) {
-                setToken(response.data.token);
-                toast.success(response.data.message);
-                if (!response.data.isKeySet) localStorage.setItem("isKeySet", false);
-                navigate('/home');
-            }
-        } catch (error) {
-            console.error("Login failed:", error);
-            let errorMessage = error.response?.data?.message || ERROR_MESSAGES.UNKNOWN_ERROR;
-            toast.error(errorMessage);
         } finally { setLoading(false); }
     };
 
