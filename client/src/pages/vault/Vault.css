@@ -13,6 +13,7 @@
 }
 
 .vault-table-cell {
+    padding: 3px 10px !important;
     text-align: center !important;
 
     button {
